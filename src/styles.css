@@ -1,0 +1,1011 @@
+    body {
+        overflow-x: hidden;
+        max-width: 100%;
+    }
+    
+    .bg-gradient {
+        background: linear-gradient(90deg, rgba(55, 2, 94, 1) 0%, rgba(155, 55, 199, 1) 48%, rgba(55, 2, 94, 1) 100%);
+    }
+    
+    .colorVioleta {
+        color: #6c2395;
+    }
+    
+    .animated {
+        -webkit-animation-duration: 1s;
+        animation-duration: 1s;
+        -webkit-animation-fill-mode: both;
+        animation-fill-mode: both;
+    }
+    
+    .lengt {
+        -webkit-animation-duration: 4s;
+        animation-duration: 4s;
+        -webkit-animation-fill-mode: both;
+        animation-fill-mode: both;
+    }
+    
+    .fast {
+        -webkit-animation-duration: 0.4s;
+        animation-duration: 0.4s;
+        -webkit-animation-fill-mode: both;
+        animation-fill-mode: both;
+    }
+    
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+    
+    .fadeIn {
+        animation-name: fadeIn;
+    }
+    
+    .img-logo {
+        width: 100px;
+    }
+    
+    .homeImg {
+        display: flex;
+        flex-direction: row-reverse;
+        flex-wrap: nowrap;
+        justify-content: space-between;
+        align-items: stretch;
+        align-content: stretch;
+    }
+    
+    .home img {
+        width: 100%;
+        height: auto;
+        padding: 0;
+        margin: 0;
+    }
+    
+    @supports(object-fit: cover) {
+        .home img {
+            height: 100%;
+            object-fit: cover;
+            object-position: center center;
+        }
+    }
+    
+    .marketing .col-lg-4 {
+        margin-bottom: 1.5rem;
+        text-align: center;
+    }
+    
+    .fondoBotones {
+        background-color: #f6f9fd;
+        width: 100%;
+        height: 100%;
+        padding-bottom: 5%;
+    }
+    
+    .marketing h2 {
+        font-weight: 400;
+    }
+    
+    .marketing .col-lg-4 p {
+        margin-right: .75rem;
+        margin-left: .75rem;
+    }
+    
+    .container {
+        padding-top: 50px;
+    }
+    
+    .bulets {
+        padding-bottom: 50px !important;
+    }
+    /*      EFECTOS DE TRANCICION     */
+    
+    .featurette {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: space-around;
+        align-items: stretch;
+        align-content: stretch;
+    }
+    
+    .featurette-divider {
+        padding-top: 8rem;
+        /* Space out the Bootstrap <hr> more */
+    }
+    /* Thin out the marketing headings */
+    
+    .featurette-heading {
+        font-weight: 900;
+        line-height: 1;
+        letter-spacing: -.05rem;
+        font-family: 'Roboto', sans-serif !important;
+    }
+    
+    .featurette-heading h2 {
+        font-weight: 900;
+        line-height: 1;
+        letter-spacing: -.05rem;
+        font-family: 'Roboto', sans-serif !important;
+    }
+    /* RESPONSIVE CSS
+  -------------------------------------------------- */
+    
+    @media (min-width: 40em) {
+        /* Bump up size of carousel content */
+        .carousel-caption p {
+            margin-bottom: 1.25rem;
+            font-size: 1.25rem;
+            line-height: 1.4;
+        }
+        .featurette-heading {
+            font-size: 50px;
+        }
+    }
+    
+    @media (min-width: 62em) {
+        .featurette-heading {
+            margin-top: 7rem;
+        }
+    }
+    /* I N I C I O   N A V  B A R */
+    
+    .tamañoLogo {
+        max-width: 20%;
+    }
+    
+    .tamañoLogoIcono {
+        max-width: 10%;
+    }
+    
+    .cuadradoVioletaNav {
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, rgba(18, 45, 98, 1) 0%, rgba(116, 25, 156, 1) 61%, rgba(55, 2, 94, 1) 100%);
+        transform: rotate(10deg);
+        position: absolute;
+        border-radius: 40px;
+        top: -30%;
+        left: -10%;
+    }
+    
+    .landing-page {
+        background-color: #f6f9fd;
+    }
+    
+    .landing-page .parallax .parallax-image img.cpu {
+        float: right;
+        width: 150%;
+    }
+    
+    .landing-page .parallax .parallax-image img.somos {
+        float: right;
+        width: 120%;
+        margin-bottom: 40%;
+    }
+    
+    .landing-page .parallax .parallax-image {
+        width: 100%;
+        margin: 0 auto;
+        margin-top: 100px;
+        float: right;
+        text-align: center;
+    }
+    
+    .landing-page .parallax .parallax-background img {
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+    
+    .landing-page .parallax .description {
+        margin-top: 200px;
+        color: white;
+        padding: 5px;
+    }
+    
+    .landing-page .parallax .description h2 {
+        text-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+        font-weight: 900;
+        font-size: 40px;
+    }
+    
+    .landing-page .parallax .description h5 {
+        line-height: 1.4;
+        font-weight: 400;
+        text-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);
+        font-size: 18px;
+    }
+    
+    .botonLogin {
+        color: violet !important;
+        border-color: violet !important;
+        font-size: 3rem;
+    }
+    
+    .tituloHeader {
+        color: violet;
+        font-family: 'Kaushan Script', cursive;
+        ;
+    }
+    
+    .btn {
+        font-size: 2rem !important;
+    }
+    
+    .landing-page1 .container {
+        max-width: 970px;
+    }
+    
+    .landing-page2 .container {
+        max-width: 1170px;
+    }
+    
+    .header-text {
+        text-transform: uppercase;
+        font-weight: 200;
+        color: #333;
+        margin-bottom: 20px;
+        font-size: 30px;
+        position: relative;
+        line-height: 24px;
+    }
+    
+    .landing-page .navbar-top {
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        z-index: 1030;
+    }
+    
+    .navbar .btn {
+        margin: 14px 3px;
+        font-size: 12px;
+    }
+    
+    .navbar-transparent .navbar-nav .nav-item .nav-link:not(.btn),
+    [class*="bg"] .navbar-nav .nav-item .nav-link:not(.btn) {
+        color: #FFFFFF;
+        border-color: #FFFFFF;
+        font-size: 1.5rem;
+    }
+    
+    .navbar-transparent .navbar-nav .active .nav-link .active .nav-link:hover,
+    .navbar-transparent .navbar-nav .active .nav-link:focus,
+    .navbar-transparent .navbar-nav .nav-item .nav-link:hover,
+    .navbar-transparent .navbar-nav .nav-item .nav-link:focus,
+    [class*="bg"] .navbar-nav .active .nav-link .active .nav-link:hover,
+    [class*="bg"] .navbar-nav .active .nav-link:focus,
+    [class*="bg"] .navbar-nav .nav-item .nav-link:hover,
+    [class*="bg"] .navbar-nav .nav-item .nav-link:focus {
+        background-color: transparent;
+        color: #FFFFFF;
+        opacity: 1;
+        filter: alpha(opacity=100);
+    }
+    
+    .navbar .navbar-nav .nav-item .nav-link {
+        line-height: 1.6;
+        margin: 15px 3px;
+        padding: 10px 15px;
+        opacity: .8;
+        font-size: 12px;
+        text-transform: uppercase;
+        font-weight: 600;
+        color: #66615B;
+    }
+    /* F I N    N A V  B A R */
+    
+    .tipografiaBotones p {
+        font-size: 1.7rem !important;
+    }
+    /* Since positioning the image, we need to help out the caption */
+    /* A N I M A C I O N  SVG 1 */
+    
+    @-webkit-keyframes animacionSvg1 {
+        from {
+            stroke-dashoffset: 250px;
+        }
+        to {
+            stroke-dashoffset: 0px;
+        }
+    }
+    
+    @-webkit-keyframes animacionSvg1L {
+        from {
+            stroke-dashoffset: 1100px;
+        }
+        to {
+            stroke-dashoffset: 0px;
+        }
+    }
+    
+    @-webkit-keyframes botonAparecer {
+        from {
+            fill: transparent;
+        }
+        to {
+            fill: #764A98;
+        }
+    }
+    
+    @-webkit-keyframes desaparecerLetras {
+        from {
+            fill: #764A98;
+        }
+        to {
+            fill: transparent;
+        }
+    }
+    
+    @-webkit-keyframes aparecerCerveza {
+        from {
+            transform: translate3d( 100%, 0, 0);
+        }
+        to {
+            transform: translate3d( 0, 0%, 0);
+        }
+    }
+    /* I N I C I O   A N I M A C I O N  SVG 2 */
+    
+    @-webkit-keyframes movimientoGrupo {
+        0% {
+            stroke-dashoffset: 700px;
+        }
+        80% {
+            stroke-dashoffset: 0px;
+            transform: rotate(0deg);
+        }
+        85% {
+            transform: rotate(10deg);
+        }
+        95% {
+            transform: rotate(-10deg);
+        }
+        100% {
+            transform: rotate(0deg);
+        }
+    }
+    
+    @-webkit-keyframes movimientoGrupo2 {
+        0% {
+            stroke-dashoffset: 700px;
+        }
+        80% {
+            stroke-dashoffset: 0px;
+            transform: rotate(0deg);
+            transform-origin: right top;
+        }
+        85% {
+            transform: rotate(-10deg);
+            transform-origin: right top;
+        }
+        95% {
+            transform: rotate(10deg);
+            transform-origin: right top;
+        }
+        100% {
+            transform: rotate(0deg);
+            transform-origin: right top;
+        }
+    }
+    
+    @-webkit-keyframes animacionSvg2M {
+        from {
+            stroke-dashoffset: 400px;
+        }
+        to {
+            stroke-dashoffset: 0px;
+        }
+    }
+    
+    @-webkit-keyframes animacionSvg2C {
+        from {
+            stroke-dashoffset: 200px;
+        }
+        to {
+            stroke-dashoffset: 0px;
+        }
+    }
+    
+    @-webkit-keyframes animacionSvg2L {
+        from {
+            stroke-dashoffset: 700px;
+        }
+        to {
+            stroke-dashoffset: 0px;
+        }
+    }
+    
+    .lead {
+        font-size: 2.3rem;
+        padding-top: 5%;
+    }
+    
+    .textoObjetivos {
+        font-size: 1.8rem;
+    }
+    
+    .subTitulo {
+        font-size: 4rem !important;
+        line-height: 1;
+    }
+    
+    p {
+        font-family: 'Roboto', sans-serif !important;
+        margin-block-end: 0em !important;
+    }
+    
+    .titulares {
+        font-size: 3rem;
+        line-height: 1;
+        z-index: 100;
+    }
+    
+    .copete {
+        font-size: 2rem;
+        color: grey;
+    }
+    
+    .tamañoBotonOp {
+        color: indigo;
+        font-size: 1rem;
+        padding: 15px;
+    }
+    
+    .estiloSeparador {
+        background-color: #764A98;
+        height: 5px;
+        width: 10%;
+        position: relative;
+        float: left;
+        margin-top: 5%;
+        margin-right: 100%;
+        margin-bottom: 5%;
+    }
+    
+    .separacionSuperior {
+        padding-top: 15%
+    }
+    
+    .colorBoton {
+        background-color: #8b44ba !important;
+        color: white;
+        margin-top: 20px;
+        padding: 10px;
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+    
+    .colorBoton:hover {
+        color: white !important;
+    }
+    
+    .estiloBannerCentral {
+        padding: 5%;
+    }
+    
+    .estiloBotonInferior .btn {
+        color: white !important;
+        background-color: white !important;
+    }
+    
+    .estiloTextoBannerCentral {
+        padding-top: 3%;
+        padding-bottom: 3%;
+        color: white;
+        line-height: 40px !important;
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        align-content: stretch;
+    }
+    
+    .weight900 {
+        font-weight: 900;
+    }
+    
+    .circuloRotacion {
+        fill: none;
+        stroke: rgba(255, 255, 255, 0.3);
+        stroke-width: 4;
+        stroke-miterlimit: 10;
+        stroke-dasharray: 12.0997, 12.0997;
+        animation: rotacionCirculo 25s infinite linear;
+        transform-origin: center center;
+    }
+    
+    .circuloDecoracion {
+        width: 20%;
+        height: 20%;
+        fill: none;
+        stroke: rgba(255, 255, 255, 0.2);
+        stroke-width: 80;
+        stroke-linecap: round;
+        position: absolute;
+        stroke-miterlimit: 10;
+        top: 55%;
+        left: 0%;
+    }
+    
+    .fondoBannerCentral {
+        width: 100%;
+        height: 100%;
+        position: relative;
+    }
+    
+    @-webkit-keyframes rotacionCirculo {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(360deg);
+        }
+    }
+    
+    .estiloBotonInferior {
+        margin: 1%;
+        padding-left: 2%;
+        padding-right: 2%;
+        -webkit-box-shadow: 0px 0px 50px 21px #C465EE;
+        box-shadow: 0px 0px 50px 21px #C465EE;
+    }
+    /* I N I C I O   F O O T E R */
+    
+    .footerEstilo {
+        list-style: none;
+        font-size: 1.8rem;
+        text-align: left;
+        line-height: 4rem;
+    }
+    
+    .footerEstilo a {
+        color: white;
+    }
+    
+    .footerTitulo {
+        color: rgba(255, 255, 255, 0.3);
+        font-size: 1.5rem;
+    }
+    
+    .footerHr {
+        border-top: 1px solid rgba(255, 255, 255, .1) !important;
+    }
+    
+    .footerContacto a {
+        margin-left: 10%;
+    }
+    
+    .footerLista a {
+        position: relative;
+        float: right;
+        color: #bd5aff;
+    }
+    
+    @media screen and (max-width: 450px) {
+        .footerEstilo {
+            padding-right: 5%;
+        }
+    }
+    /* F I N   F O O T E R */
+    /* C O M I E N Z O   D E C O R A C I O N   F O N D O    B O D Y */
+    
+    .fondoFiguraGeometrica {
+        position: absolute;
+        width: 700px;
+        height: 700px;
+        fill: #F7FAFE;
+        border-radius: 3rem;
+        top: 190%;
+        left: 75%;
+        z-index: -100;
+    }
+    /* F I N   D E C O R A C I O N   F O N D O    B O D Y */
+    /* P R I N C I P I O   L O G I N */
+    
+    .main-head {
+        height: 150px;
+        background: #FFF;
+    }
+    
+    .sidenav {
+        height: 100%;
+        background-image: url(assets/img/imgLogin.jpg);
+        background-position: center;
+        overflow-x: hidden;
+        padding-top: 20px;
+    }
+    
+    @media screen and (max-height: 450px) {
+        .sidenav {
+            padding-top: 15px;
+            height: 40%;
+        }
+        .login-form {
+            margin-top: 3%;
+        }
+    }
+    
+    @media screen and (max-width: 450px) {
+        .login-form {
+            margin-top: 10% !important;
+        }
+        .cuadradoVioletaLogin {
+            left: 0px !important;
+            top: -50% !important;
+        }
+        .register-form {
+            margin-top: 3%;
+        }
+        .cuadradoVioletaLogin {
+            width: 0px;
+            height: 0px;
+        }
+    }
+    
+    @media screen and (min-width: 768px) {
+        .mainLogin {
+            margin-left: 40%;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            justify-content: center;
+            align-items: center;
+            align-content: stretch;
+        }
+        .sidenav {
+            width: 40%;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+        }
+        .register-form {
+            margin-top: 5%;
+            margin-bottom: 5%;
+        }
+    }
+    
+    .login-main-text {
+        margin-top: 20%;
+        padding: 60px;
+        color: #fff;
+        font-size: 3rem;
+    }
+    
+    .login-main-text h2 {
+        font-weight: 300;
+        font-size: 4rem;
+    }
+    
+    .description h3 {
+        font-weight: 900;
+        font-size: 2.4rem !important;
+    }
+    
+    .login-form {
+        margin-top: 60%;
+        padding-top: 10%;
+        padding-bottom: 10%;
+        border-radius: 25px;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: center;
+        align-items: center;
+        align-content: stretch;
+    }
+    
+    .botonAceptar {
+        width: 120px;
+        height: 40px;
+        background-color: #8d46bc;
+        border-radius: 10px;
+        color: white;
+        margin: 20px 20px 20px 0px;
+        text-transform: none !important;
+    }
+    
+    .botonCancelar {
+        width: 120px;
+        height: 40px;
+        background-color: #818181;
+        border-radius: 10px;
+        color: white;
+        margin: 20px 20px 20px 0px;
+        text-transform: none !important;
+    }
+    
+    .loginSize {
+        font-size: 1.5rem;
+        background-color: white;
+        -webkit-box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.6);
+        box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.6);
+    }
+    
+    .cuadradoVioletaLogin {
+        width: 100%;
+        height: 1000px;
+        background-color: #8d46bc;
+        position: absolute;
+        top: -80%;
+        left: 25%;
+        z-index: -100;
+        border-radius: 50px;
+        animation: rotacionFiguraLogin 60s infinite linear;
+    }
+    
+    @-webkit-keyframes rotacionFiguraLogin {
+        0% {
+            top: -100%;
+            transform: rotate(0deg);
+        }
+        25% {
+            top: -70%;
+            transform: rotate(-45deg);
+        }
+        50% {
+            top: -100%;
+            transform: rotate(0deg);
+        }
+        75% {
+            top: -70%;
+            transform: rotate(45deg);
+        }
+        100% {
+            top: -100%;
+            transform: rotate(0deg);
+        }
+    }
+    
+    .form-group .form-control {
+        position: relative;
+        font-size: 16px;
+        height: auto;
+        padding: 10px;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+    }
+    /* F I N  L O G I N */
+    
+    .cuadradoMonitorDisenio {
+        width: 100%;
+        height: 100%;
+        position: relative;
+    }
+    
+    .cuadradoMonitorObjetos {
+        width: 40%;
+        top: 33%;
+        left: 30%;
+        position: absolute;
+        z-index: -100;
+    }
+    
+    .tituloTecnologias {
+        font-size: 2rem;
+        color: #a5a5a5;
+        letter-spacing: 0.3rem;
+        text-transform: uppercase;
+    }
+    
+    .subtituloTecnologias {
+        font-size: 4rem;
+    }
+    
+    .tecnologiaCaja {
+        background-color: #f6f9fd;
+        width: 100%;
+        display: block;
+        padding: 3%;
+    }
+    
+    .tamañoRow {
+        width: 80%;
+    }
+    
+    .paddingSuperior {
+        padding-top: 10%;
+    }
+    
+    .paddingInferior {
+        padding-bottom: 10%;
+    }
+    
+    .marginDerecho {
+        margin-right: 5%;
+    }
+    
+    .paddingIzquierdo {
+        padding-left: 5%;
+    }
+    /* C O M I E N Z O   Q U I E N E S   S O M O S */
+    
+    .descripcionNosotros {
+        font-size: 2rem;
+        padding-top: 30%;
+    }
+    /* F I N    Q U I E N E S   S O M O S */
+    /* C O M I E N Z O   C O N T A C T O */
+    
+    .signup {
+        background-color: #f6f9fd;
+    }
+    
+    .form-title {
+        padding: 0;
+        margin: 0;
+    }
+    
+    .cuadradoImagen {
+        width: auto;
+        height: auto;
+        background-color: chocolate;
+        position: fixed;
+    }
+    
+    .bloqueTipografiaContacto h2 {
+        font-size: 5rem;
+        padding-top: 13%;
+    }
+    
+    .bloqueTipografiaContacto p {
+        font-size: 3rem;
+    }
+    /* F I N   C O N T A C T O */
+    /* C O M I E N Z O  S O C I O */
+    
+    .imagenSocio {
+        background-image: url(assets/img/oficinaSocio.jpg);
+        width: 100%;
+        height: 400px;
+        background-attachment: fixed;
+        display: flex;
+        flex-direction: column;
+        flex-wrap: nowrap;
+        justify-content: center;
+        align-items: center;
+        align-content: stretch;
+    }
+    
+    .textoSocio h1 {
+        color: white;
+        text-align: center;
+        font-size: 4rem !important;
+        padding-top: 20px;
+    }
+    
+    .textoSocio {
+        width: 40%;
+    }
+    
+    .textoSocio p {
+        color: white;
+        text-align: center;
+        font-size: 2rem !important;
+        letter-spacing: 1rem;
+        background-color: #adadad;
+        padding: 1%;
+    }
+    
+    .logoSocio {
+        width: 40%;
+        margin-left: auto;
+        margin-right: auto;
+        display: block;
+        padding-top: 3%;
+    }
+    /* F I N   S O C I O */
+    /* R E S P O N S I V E    I M A G E N   A   C E L U L A R    4 5 0 P X */
+    
+    @media screen and (max-width: 450px) {
+        .textoSocio p {
+            font-size: 0rem !important;
+            background-color: transparent;
+        }
+        .textoSocio h1 {
+            color: white;
+            text-align: center;
+            font-size: 3rem !important;
+            padding-top: 10px;
+        }
+        .textoSocio {
+            width: 70%;
+        }
+        .bloqueTipografiaContacto h2,
+        p {
+            padding-left: 5%;
+        }
+        .register-form {
+            padding-left: 5%;
+            padding-bottom: 5%;
+        }
+        .imagenesTecnologias {
+            padding: 10%;
+        }
+        .titulares {
+            padding-left: 5%;
+        }
+        .subTitulo {
+            font-size: 3rem !important;
+            padding-left: 5%;
+        }
+        .estiloSeparador {
+            margin-left: 5%;
+        }
+        .colorBoton {
+            width: 100%;
+        }
+        .fondoBannerCentral .row .estiloTextoBannerCentral h2 {
+            font-size: 2rem !important;
+            text-align: center;
+            padding-top: 5%;
+            padding-bottom: 5%;
+        }
+        .fondoBannerCentral .row .estiloTextoBannerCentral .estiloBotonInferior {
+            box-shadow: none;
+        }
+        .bg-gradient {
+            background-color: #814bb4 !important;
+            background: none;
+        }
+        .tamañoLogoIcono {
+            max-width: 25%;
+        }
+        .tamañoLogo {
+            max-width: 40%;
+        }
+        .container .tamañoLogoIcono {
+            padding-left: 5%;
+        }
+        .landing-page .parallax .description {
+            margin-top: 25%;
+        }
+        .cuadradoVioletaNav {
+            transform: rotate(0deg);
+            left: 0;
+            top: -37%;
+        }
+        .landing-page {
+            padding-bottom: 10%;
+        }
+        .navbar-toggle {
+            color: white !important;
+            font-size: 3rem;
+        }
+        .navbar-nav .nav-item {
+            color: white !important;
+            background-color: rgba(0, 0, 0, 0.8)
+        }
+        .navbar .btn {
+            margin-left: 15px;
+        }
+        .descripcionNosotros {
+            padding-top: 10%;
+            padding-bottom: 10%;
+        }
+    }
+    
+    @media screen and (max-width: 750px) {
+        .navbar-toggle {
+            color: white !important;
+            font-size: 3rem;
+        }
+        .navbar-nav .nav-item {
+            color: white !important;
+            background-color: rgba(0, 0, 0, 0.8)
+        }
+        .navbar .btn {
+            margin-left: 15px;
+        }
+        .description h3 {
+            font-size: 2rem !important;
+        }
+    }

@@ -1,0 +1,51 @@
+<div class="content">
+    <div class="row signup justify-content-center ">
+
+        <div class="col-md-4 order-md-2 bloqueTipografiaContacto paddingIzquierdo">
+            <div class="form-group">
+                <h2><b>Cuéntanos<br> que tienes en<br></b> <b style="color: #8b44ba">mente</b></h2>
+                <p>¡y comencemos a crear el<br> proyecto juntos!</p>
+            </div>
+        </div>
+
+        <div class="col-md-4 order-md-2 marginDerecho ">
+            <form method="POST" class="register-form" id="register-form" #f="ngForm" (ngSubmit)="guardar(f)">
+                <h1 class="form-title">Envía tu mensaje</h1>
+
+                <div class="form-group">
+                    <label for="name"><i class="zmdi zmdi-account material-icons-name"></i></label>
+                    <input type="text" name="nombre" id="nombre" class="form-control" placeholder="Nombre" [(ngModel)]="contacto.nombre" name="nombre" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="empresa"><i class="zmdi zmdi-account material-icons-name"></i></label>
+                    <input type="text" name="empresa" id="empresa" class="form-control" placeholder="Empresa" [(ngModel)]="contacto.empresa" name="empresa">
+                </div>
+
+                <div class="form-group">
+                    <label for="email"><i class="zmdi zmdi-email"></i></label>
+                    <input type="email" name="email" id="email" class="form-control" placeholder="Email" [(ngModel)]="contacto.email" name="email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="numero"><i class="zmdi zmdi-account material-icons-name"></i></label>
+                    <input type="number" name="numero" id="numero" class="form-control" placeholder="Número de teléfono" [(ngModel)]="contacto.empresa" name="empresa">
+                </div>
+
+                <div class="form-group">
+                    <label for="mensaje"><i class="zmdi zmdi-account material-icons-name"></i></label>
+                    <textarea name="reservation-message" class="form-control" id="reservationMessage" cols="30" rows="5" placeholder="Tu Mensaje" [(ngModel)]="contacto.mensaje" name="mensaje"></textarea>
+                </div>
+
+
+                <div class="form-group form-button">
+                    <button type="submit" class="btn colorBoton btn-lg" name="signup" id="signup" value="Register">Enviar</button>
+
+                </div>
+            </form>
+        </div>
+
+
+
+    </div>
+</div>

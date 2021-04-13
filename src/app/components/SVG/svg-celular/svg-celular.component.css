@@ -1,0 +1,54 @@
+.st0 {
+    fill: #414797;
+}
+
+.st1 {
+    stroke-dasharray: 300px;
+    stroke-dashoffset: 0px;
+    fill: none;
+    stroke: #764C99;
+    stroke-width: 2;
+    animation: escritura 4s linear infinite alternate;
+    transform: translate3d(0, 0, 1);
+}
+
+.st2 {
+    fill: none;
+    stroke: #764C99;
+    stroke-width: 4;
+    stroke-miterlimit: 10;
+}
+
+.st3 {
+    font-size: 16.651px;
+    animation: tipografia 4s linear infinite alternate;
+}
+
+.st5 {
+    fill: #764C99;
+}
+
+.st4 {
+    fill: #764C99;
+    animation: tipografia 4s linear infinite alternate;
+}
+
+@-webkit-keyframes escritura {
+    from {
+        stroke-dashoffset: 300px;
+        fill: rgba(139, 68, 186, 0)
+    }
+    to {
+        stroke-dashoffset: 0px;
+        fill: rgba(139, 68, 186, 1)
+    }
+}
+
+@-webkit-keyframes tipografia {
+    from {
+        fill: #764C99
+    }
+    to {
+        fill: white
+    }
+}
