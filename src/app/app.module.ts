@@ -26,6 +26,7 @@ import { SvgDisenioObjetosComponent } from './components/SVG/svg-disenio-objetos
 import { TecnologiasComponent } from './components/tecnologias/tecnologias.component';
 import { SocioComponent } from './components/socio/socio.component';
 import { QuienesSomosComponent } from './components/quienes-somos/quienes-somos.component';
+import { PreguntasFrecuentesComponent } from './components/preguntas-frecuentes/preguntas-frecuentes.component';
 
 
 
@@ -48,6 +49,7 @@ import { QuienesSomosComponent } from './components/quienes-somos/quienes-somos.
     TecnologiasComponent,
     SocioComponent,
     QuienesSomosComponent,
+    PreguntasFrecuentesComponent,
   ],
   imports: [
     BrowserModule,

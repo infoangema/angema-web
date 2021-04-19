@@ -858,6 +858,12 @@
     
     .bloqueTipografiaContacto p {
         font-size: 3rem;
+        padding-bottom: 3%;
+    }
+    
+    .bloqueTipografiaEmail h2 {
+        font-size: 3rem;
+        padding-top: 25%;
     }
     /* F I N   C O N T A C T O */
     /* C O M I E N Z O  S O C I O */
@@ -990,6 +996,10 @@
         .descripcionNosotros {
             padding-top: 10%;
             padding-bottom: 10%;
+        }
+        .bloqueTipografiaEmail h2 {
+            padding: 5%;
+            font-size: 2rem;
         }
     }
     

@@ -4,6 +4,8 @@ import { HomeComponent } from './components/home/home.component';
 import { ContactoComponent } from './components/contacto/contacto.component';
 import { RegistroComponent } from './registro/registro.component';
 import { QuienesSomosComponent } from './components/quienes-somos/quienes-somos.component';
+import { PreguntasFrecuentesComponent } from './components/preguntas-frecuentes/preguntas-frecuentes.component';
+
 
 
 
@@ -15,6 +17,9 @@ const APP_ROUTES: Routes = [
 { path: 'contacto', component: ContactoComponent },
 { path: 'registro', component: RegistroComponent },
 { path: 'quienesSomos', component: QuienesSomosComponent },
+{ path: 'preguntasFrecuentes', component: PreguntasFrecuentesComponent },
+
+
 
 
 
