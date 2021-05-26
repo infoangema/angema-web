@@ -27,6 +27,10 @@ import { TecnologiasComponent } from './components/tecnologias/tecnologias.compo
 import { SocioComponent } from './components/socio/socio.component';
 import { QuienesSomosComponent } from './components/quienes-somos/quienes-somos.component';
 import { PreguntasFrecuentesComponent } from './components/preguntas-frecuentes/preguntas-frecuentes.component';
+import { BiComponent } from './components/bi/bi.component';
+import { BotonesBiComponent } from './components/botones-bi/botones-bi.component';
+import { TextoMovilComponent } from './components/recursos/texto-movil/texto-movil.component';
+import { SecuenciaComponent } from './components/recursos/secuencia/secuencia.component';
 
 
 
@@ -50,6 +54,10 @@ import { PreguntasFrecuentesComponent } from './components/preguntas-frecuentes/
     SocioComponent,
     QuienesSomosComponent,
     PreguntasFrecuentesComponent,
+    BiComponent,
+    BotonesBiComponent,
+    TextoMovilComponent,
+    SecuenciaComponent,
   ],
   imports: [
     BrowserModule,

@@ -5,6 +5,7 @@ import { ContactoComponent } from './components/contacto/contacto.component';
 import { RegistroComponent } from './registro/registro.component';
 import { QuienesSomosComponent } from './components/quienes-somos/quienes-somos.component';
 import { PreguntasFrecuentesComponent } from './components/preguntas-frecuentes/preguntas-frecuentes.component';
+import { BiComponent } from './components/bi/bi.component';
 
 
 
@@ -17,6 +18,7 @@ const APP_ROUTES: Routes = [
 { path: 'contacto', component: ContactoComponent },
 { path: 'registro', component: RegistroComponent },
 { path: 'quienesSomos', component: QuienesSomosComponent },
+{ path: 'bi', component: BiComponent},
 { path: 'preguntasFrecuentes', component: PreguntasFrecuentesComponent },
 
 

@@ -1,0 +1,78 @@
+<body class="landing-page landing-page1">
+    <nav class="navbar navbar-transparent navbar-expand-md navbar-expand-lg navbar-top" role="navigation">
+        <div class="container">
+            <img routerLink="/home" class="img-fluid pr-3 aa-logo-img tamañoLogoIcono" src="../../../../assets/img/logo.svg" alt="logo"><img routerLink="/home" src="../../../../assets/img/logoTipografia.svg" class="img-fluid pr-3 aa-logo-img tamañoLogo">
+            <button class=" navbar-toggle" data-target="#menu" data-toggle="collapse" type="button">
+                <i class="fa fa-bars" aria-hidden="true"></i>
+        </button>
+            <div class="collapse navbar-collapse" id="menu">
+                <ul class="navbar-nav ml-auto mr-auto">
+
+                    <li class="nav-item">
+                        <a class="nav-link h2" href="#servicio"> Servicios</a>
+                    </li>
+                    <li class="nav-item"><a class="nav-link h2" href="#tecnologia">Tecnologías</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link h2" routerLink="/bi">Business Intelligence</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link h2" routerLink="/quienesSomos">Nosotros</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-outline-light botonLogin" href="#contacto"><b>Contacto</b> </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+    </nav>
+    <div class="cuadradoVioletaNav"> </div>
+
+
+    <div class="parallax filter-gradient" data-color="blue">
+        <div class="parallax-background">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-5 hidden-xs">
+                        <div class="parallax-image">
+                            <img class="bi" src="../../../../assets/img/bi.svg" style="margin-top: 20px" />
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-md-offset-1">
+                        <div class="description">
+                            <h2><b class="tituloHeader">Tu Negocio
+                            </b><br>Estratégico</h2>
+                            <br>
+                            <h5>Nuestros clientes confían en nosotros para acompañar su transformación digital incorporando nuevas tecnologías y modelos de negocios. <br><br> Con las diferentes soluciones contribuimos a mejorar los procesos y la toma de decisiones
+                                de su empresa mediante la gestión de sus datos.<br><br>
+
+                            </h5>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <app-botones-bi></app-botones-bi>
+
+    <div class="content paddingSuperior ">
+        <div class="imagenBusiness">
+            <div class="textoSocio">
+                <app-texto-movil></app-texto-movil>
+              <div class="logoSocio">
+                <img src="../../../assets/img/qlik.png" alt="">
+              </div>
+                <h1>La solución <b>para tu empresa</b></h1>
+
+            </div>
+        </div>
+
+    </div>
+
+    <app-secuencia></app-secuencia>
+    <app-banner-central></app-banner-central>
+
+    <app-footer></app-footer>
+</body>
