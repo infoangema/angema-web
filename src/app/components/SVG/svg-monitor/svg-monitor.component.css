@@ -210,3 +210,8 @@
         transform-origin: center top;
     }
 }
+
+#Capa_1 {
+    position: relative;
+    top: -10%;
+}
