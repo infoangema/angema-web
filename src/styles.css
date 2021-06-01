@@ -1064,16 +1064,26 @@ p {
     .landing-page .parallax .description {
         margin-top: 25%;
     }
+    .cuadradoVioletaLiso {
+        transform: rotate(0deg);
+        left: 0;
+        top: 0%;
+        height: 100% !important;
+        border-radius: 0px;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, rgba(18, 45, 98, 1) 0%, rgba(116, 25, 156, 1) 61%, rgba(55, 2, 94, 1) 100%);
+        border-radius: 0px 0px 40px 40px;
+        padding-bottom: 50px;
+    }
     .cuadradoVioletaNav {
         transform: rotate(0deg);
         left: 0;
-        top: -37%;
-        height: 100% !important;
+        height: 0% !important;
     }
     .cuadradoVioletaQuienes {
         transform: rotate(0deg);
         left: 0;
-        top: -37%;
         height: 110% !important;
     }
     .navbar-toggle {

@@ -39,7 +39,7 @@
     stroke: #EB9C1B;
     stroke-dasharray: 300px;
     stroke-dashoffset: 0px;
-    animation: codigo 4s linear forwards;
+    animation: codigo 12s linear infinite;
 }
 
 .st5 {
@@ -49,7 +49,7 @@
     stroke-miterlimit: 10;
     stroke-dasharray: 300px;
     stroke-dashoffset: 300px;
-    animation: tildeOk 1s linear forwards 8s;
+    animation: tildeOk 12s linear infinite;
 }
 
 .st6 {
@@ -60,7 +60,7 @@
     stroke-miterlimit: 10;
     stroke-dasharray: 300px;
     stroke-dashoffset: 300px;
-    animation: tildeOk 2s linear forwards 8s;
+    animation: tildeOk 12s linear infinite;
 }
 
 .reloj {
@@ -70,7 +70,7 @@
 .st7 {
     fill: #0B79DD;
     stroke: #0B79DD;
-    animation: rotacionReloj 4s linear forwards 4s;
+    animation: rotacionReloj 12s linear infinite;
     opacity: 0;
 }
 
@@ -80,7 +80,7 @@
     stroke-width: 3;
     stroke-linecap: round;
     stroke-miterlimit: 10;
-    animation: rotacionCirculoReloj 4s linear forwards 4s;
+    animation: rotacionCirculoReloj 12s linear infinite;
     opacity: 0;
 }
 
@@ -89,60 +89,76 @@
         stroke-dashoffset: 300px;
         fill: rgba(235, 156, 27, 0);
     }
-    90% {
+    25% {
         stroke-dashoffset: 0px;
         fill: rgba(235, 156, 27, 1);
         opacity: 1;
     }
-    100% {
+    33% {
         stroke-dashoffset: 0px;
         fill: rgba(235, 156, 27, 1);
+        opacity: 0;
+        animation-timing-function: ;
+    }
+    100% {
         opacity: 0;
     }
 }
 
 @-webkit-keyframes rotacionReloj {
     0% {
+        opacity: 0;
+    }
+    33% {
         transform: rotate(0deg);
         transform-origin: center center;
         opacity: 0;
     }
-    15% {
+    49% {
         transform: rotate(360deg);
         transform-origin: center center;
         opacity: 1;
     }
-    90% {
+    57% {
         transform: rotate(720deg);
         transform-origin: center center;
         opacity: 1;
     }
-    100% {
+    66% {
         transform: rotate(720deg);
         transform-origin: center center;
+        opacity: 0;
+    }
+    100% {
         opacity: 0;
     }
 }
 
 @-webkit-keyframes rotacionCirculoReloj {
     0% {
+        opacity: 0;
+    }
+    33% {
         transform: rotate(0deg);
         transform-origin: center center;
         opacity: 0;
     }
-    15% {
+    49% {
         transform: rotate(-360deg);
         transform-origin: center center;
         opacity: 1;
     }
-    90% {
+    57% {
         transform: rotate(-720deg);
         transform-origin: center center;
         opacity: 1;
     }
-    100% {
+    66% {
         transform: rotate(-720deg);
         transform-origin: center center;
+        opacity: 0;
+    }
+    100% {
         opacity: 0;
     }
 }
@@ -157,11 +173,18 @@
 }
 
 @-webkit-keyframes tildeOk {
-    from {
+    0% {
         stroke-dashoffset: 300px;
     }
-    to {
+    66% {
+        stroke-dashoffset: 300px;
+    }
+    80% {
         stroke-dashoffset: 0px;
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
     }
 }
 
