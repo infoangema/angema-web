@@ -1,5 +1,4 @@
 body {
-    overflow-x: hidden;
     max-width: 100%;
 }
 
@@ -213,6 +212,10 @@ body {
     text-align: center;
 }
 
+.quienes {
+    position: absolute;
+}
+
 .landing-page .parallax .parallax-background img {
     width: 100%;
     height: auto;
@@ -220,7 +223,7 @@ body {
 }
 
 .landing-page .parallax .description {
-    margin-top: 200px;
+    margin-top: 150px;
     color: white;
     padding: 5px;
 }
@@ -444,6 +447,28 @@ body {
     }
     to {
         stroke-dashoffset: 0px;
+    }
+}
+
+.cpu {
+    animation: vueloCPU 6s infinite ease-in-out;
+}
+
+
+/* I N I C I O   A N I M A C I O N  C P U  H O M E */
+
+@-webkit-keyframes vueloCPU {
+    0% {
+        transform: translate3d( 0, 0, 0);
+    }
+    25% {
+        transform: translate3d( 0, 3%, 0);
+    }
+    75% {
+        transform: translate3d( 0, -3%, 0);
+    }
+    100% {
+        transform: translate3d( 0, 0, 0);
     }
 }
 
@@ -871,7 +896,12 @@ p {
 
 .descripcionNosotros {
     font-size: 2rem;
-    padding-top: 30%;
+    display: block;
+    padding-top: 90px;
+}
+
+.bloqueInferior {
+    background-color: #f6f9fd;
 }
 
 
@@ -928,6 +958,8 @@ p {
     justify-content: center;
     align-items: center;
     align-content: stretch;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
 .imagenBusiness {
@@ -1098,7 +1130,7 @@ p {
         margin-left: 15px;
     }
     .descripcionNosotros {
-        padding-top: 10%;
+        padding-top: 1%;
         padding-bottom: 10%;
     }
     .bloqueTipografiaEmail h2 {
