@@ -13,6 +13,6 @@ export class HomeComponent implements OnInit {
     setTimeout(() =>{
       this.load = true;
 
-  }, 130000);
+  }, 5000);
 }
 }
