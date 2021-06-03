@@ -31,6 +31,7 @@ import { BiComponent } from './components/bi/bi.component';
 import { BotonesBiComponent } from './components/botones-bi/botones-bi.component';
 import { TextoMovilComponent } from './components/recursos/texto-movil/texto-movil.component';
 import { SecuenciaComponent } from './components/recursos/secuencia/secuencia.component';
+import { SpinnerComponent } from './components/spinner/spinner.component';
 
 
 
@@ -58,6 +59,7 @@ import { SecuenciaComponent } from './components/recursos/secuencia/secuencia.co
     BotonesBiComponent,
     TextoMovilComponent,
     SecuenciaComponent,
+    SpinnerComponent,
   ],
   imports: [
     BrowserModule,
