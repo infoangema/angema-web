@@ -6,13 +6,17 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HomeComponent implements OnInit {
 
-  public load: Boolean = false;
+ // public load: Boolean = false;
   constructor() { }
 
   ngOnInit(): void {
-    setTimeout(() =>{
-      this.load = true;
+ //   if( this.load === false ){
+ //   setTimeout(() =>{
+ //     this.load = true;
 
-  }, 5000);
+ // }, 5000);
+//}
 }
+
+
 }
