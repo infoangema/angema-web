@@ -17,8 +17,6 @@ import { FooterComponent } from './components/footer/footer.component';
 import { ContactoHomeComponent } from './components/contacto-home/contacto-home.component';
 import { ContactoComponent } from './components/contacto/contacto.component';
 import { BannerCentralComponent } from './banner-central/banner-central.component';
-import { from } from 'rxjs';
-import { RegistroComponent } from './registro/registro.component';
 import { SvgMonitorComponent } from './components/SVG/svg-monitor/svg-monitor.component';
 import { SvgCelularComponent } from './components/SVG/svg-celular/svg-celular.component';
 import { SvgDisenioComponent } from './components/SVG/svg-disenio/svg-disenio.component';
@@ -46,7 +44,6 @@ import { SpinnerComponent } from './components/spinner/spinner.component';
     ContactoHomeComponent,
     ContactoComponent,
     BannerCentralComponent,
-    RegistroComponent,
     SvgMonitorComponent,
     SvgCelularComponent,
     SvgDisenioComponent,

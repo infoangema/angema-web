@@ -10,13 +10,13 @@ import { map } from 'rxjs/operators';
 })
 export class ContactoService {
 
-  private url = 'https://consultas-5003a.firebaseio.com';
+  private url = 'https://contactoangema-default-rtdb.firebaseio.com';
 
   constructor( private http: HttpClient) { }
 
   crearConsulta ( consulta : ContactoModel){
 
-     return this.http.post( `${this.url}/consulta.json`, consulta ).pipe(
+     return this.http.post( `${this.url}/contacto.json`, consulta ).pipe(
        map( (resp:any) => {
             consulta.id= resp.name;
             return consulta;
