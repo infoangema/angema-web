@@ -21,8 +21,12 @@ export class ContactoHomeComponent implements OnInit {
 
   guardar (form : NgForm){
    if ( form.invalid){
-     console.log('Formulario no válido');
-     return;
+    Swal.fire({
+      title: 'Faltan datos',
+      text: 'por favor, completar todo el formulario',
+      icon: 'error',
+      allowOutsideClick: true,
+    });     return;
    }
 
   Swal.fire({
