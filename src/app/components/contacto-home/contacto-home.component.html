@@ -35,7 +35,7 @@
 
                 <div class="form-group">
                     <label for="numero"><i class="zmdi zmdi-account material-icons-name"></i></label>
-                    <input type="number" name="tel" id="tel" class="form-control" placeholder="Número de teléfono" [(ngModel)]="contacto.phone" name="tel" required minlength="8" maxlength="15" [class.is-invalid]="tel.invalid && tel.touched" #tel="ngModel" pattern="^[0-9]{10}$">
+                    <input type="text" name="tel" id="tel" class="form-control" placeholder="Número de teléfono" [(ngModel)]="contacto.phone" name="tel" required minlength="8" maxlength="15" [class.is-invalid]="tel.invalid && tel.touched" #tel="ngModel" pattern="^[0-9]{8,15}">
                     <h3 *ngIf="tel.invalid && tel.touched" class="validacionTextoError text-danger coltext-danger animated fadeIn">Ingrese un Teléfono válido sin el "-"</h3>
 
                 </div>
