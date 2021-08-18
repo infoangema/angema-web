@@ -10,13 +10,13 @@ import { map } from 'rxjs/operators';
 })
 export class ContactoService {
 
-  private url = 'https://contactoangema-default-rtdb.firebaseio.com';
+  private url = 'https://angema-hours-backend.herokuapp.com';
 
   constructor( private http: HttpClient) { }
 
   crearConsulta ( consulta : ContactoModel){
 
-     return this.http.post( `${this.url}/contacto.json`, consulta ).pipe(
+     return this.http.post( `${this.url}/contacts`, consulta ).pipe(
        map( (resp:any) => {
             consulta.id= resp.name;
             return consulta;
@@ -24,4 +24,24 @@ export class ContactoService {
      })
      );
   }
+
+  // export class ContactoService {
+
+  //    private url = 'https://contactoangema-default-rtdb.firebaseio.com';
+  
+  //   constructor( private http: HttpClient) { }
+  
+  //   crearConsulta ( consulta : ContactoModel){
+  
+  //      return this.http.post( `${this.url}/contacto.json`, consulta ).pipe(
+  //        map( (resp:any) => {
+  //             consulta.id= resp.name;
+  //             return consulta;
+       
+  //      })
+  //      );
+  //   }
+
+
+
 }

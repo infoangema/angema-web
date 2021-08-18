@@ -15,27 +15,38 @@
 
                 <div class="form-group">
                     <label for="name"><i class="zmdi zmdi-account material-icons-name"></i></label>
-                    <input type="text" name="nombre" id="nombre" class="form-control" placeholder="Nombre" [(ngModel)]="contacto.nombre" name="nombre" required>
+                    <input type="text" name="nombre" id="nombre" class="form-control" placeholder="Nombre" [(ngModel)]="contacto.name" name="nombre" required minlength="5" maxlength="30" [class.is-invalid]="nombre.invalid && nombre.touched" #nombre="ngModel">
+                    <h3 *ngIf="nombre.invalid && nombre.touched" class="validacionTextoError text-danger coltext-danger animated fadeIn">El nombre debe contener entre 5 y 30 caracteres</h3>
                 </div>
 
                 <div class="form-group">
                     <label for="empresa"><i class="zmdi zmdi-account material-icons-name"></i></label>
-                    <input type="text" name="empresa" id="empresa" class="form-control" placeholder="Empresa" [(ngModel)]="contacto.empresa" name="empresa">
+                    <input type="text" name="empresa" id="empresa" class="form-control" placeholder="Empresa" [(ngModel)]="contacto.company" name="empresa" minlength="2" maxlength="30" [class.is-invalid]="empresa.invalid && empresa.touched" #empresa="ngModel">
+                    <h3 *ngIf="empresa.invalid && empresa.touched" class="validacionTextoError text-danger coltext-danger animated fadeIn">La empresa debe contener entre 2 y 30 caracteres</h3>
+
                 </div>
 
                 <div class="form-group">
                     <label for="email"><i class="zmdi zmdi-email"></i></label>
-                    <input type="email" name="email" id="email" class="form-control" placeholder="Email" [(ngModel)]="contacto.email" name="email" required>
+                    <input type="email" name="email" id="email" class="form-control" placeholder="Email" [(ngModel)]="contacto.mail" name="email" required [class.is-invalid]="email.invalid && email.touched" #email="ngModel" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$">
+                    <h3 *ngIf="email.invalid && email.touched" class="validacionTextoError text-danger coltext-danger animated fadeIn">Ingrese un email válido</h3>
+
                 </div>
 
                 <div class="form-group">
                     <label for="numero"><i class="zmdi zmdi-account material-icons-name"></i></label>
-                    <input type="number" name="numero" id="numero" class="form-control" placeholder="Número de teléfono" [(ngModel)]="contacto.telefono" name="empresa">
+                    <input type="number" name="tel" id="tel" class="form-control" placeholder="Número de teléfono" [(ngModel)]="contacto.phone" name="tel" required minlength="8" maxlength="15" [class.is-invalid]="tel.invalid && tel.touched" #tel="ngModel" pattern="^[0-9]{10}$">
+                    <h3 *ngIf="tel.invalid && tel.touched" class="validacionTextoError text-danger coltext-danger animated fadeIn">Ingrese un Teléfono válido sin el "-"</h3>
+
                 </div>
 
                 <div class="form-group">
                     <label for="mensaje"><i class="zmdi zmdi-account material-icons-name"></i></label>
-                    <textarea name="reservation-message" class="form-control" id="reservationMessage" cols="30" rows="5" placeholder="Tu Mensaje" [(ngModel)]="contacto.mensaje" name="mensaje"></textarea>
+                    <textarea name="reservation-message" class="form-control" id="reservationMessage" maxlength="250" cols="30" rows="5" placeholder="Tu Mensaje" [(ngModel)]="contacto.description" name="mensaje" [class.is-invalid]="mensaje.invalid && mensaje.touched" required
+                        #mensaje="ngModel"></textarea>
+                    <h3 *ngIf="mensaje.invalid && mensaje.touched" class="validacionTextoError text-danger coltext-danger animated fadeIn">Ingrese un Mensaje</h3>
+
+
                 </div>
 
 

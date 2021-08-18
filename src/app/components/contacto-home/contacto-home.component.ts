@@ -42,11 +42,11 @@ export class ContactoHomeComponent implements OnInit {
     console.log(resp);
     this.contacto = resp;
    } );
-   this.contacto.nombre="";
-   this.contacto.email="";
-   this.contacto.empresa="";
-   this.contacto.mensaje="";
-   this.contacto.telefono=0;
+   this.contacto.name="";
+   this.contacto.mail="";
+   this.contacto.company="";
+   this.contacto.description="";
+   this.contacto.phone="";
 
 
 }

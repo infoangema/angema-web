@@ -1154,3 +1154,8 @@ p {
         font-size: 2rem !important;
     }
 }
+
+.validacionTextoError {
+    padding-top: 10px;
+    ;
+}
