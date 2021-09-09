@@ -1,16 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 
 @Component({
   selector: 'app-botones',
   templateUrl: './botones.component.html',
-  styles: [
-  ]
+  styles: []
 })
 export class BotonesComponent implements OnInit {
 
-  constructor() { }
+  constructor() {
+  }
 
   ngOnInit(): void {
   }
-
 }

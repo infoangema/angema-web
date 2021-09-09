@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 
 @Component({
   selector: 'app-root',
@@ -7,36 +7,33 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AppComponent implements OnInit {
   title = 'spa';
-  verificarSpinner : string ='';
+  verificarSpinner: string = '';
 
 
-constructor(){
+  constructor() {
 
-  this.verificarSpinner = JSON.parse ( localStorage.getItem('data'));
-
-}
+    this.verificarSpinner = JSON.parse(localStorage.getItem('data'));
+  }
 
   ngOnInit(): void {
 
-    localStorage.setItem('data', JSON.stringify (this.verificarSpinner))
+    localStorage.setItem('data', JSON.stringify(this.verificarSpinner));
 
-      if( this.verificarSpinner === '' || this.verificarSpinner == null ){
-      setTimeout(() =>{
+    if (this.verificarSpinner === '' || this.verificarSpinner == null) {
+      setTimeout(() => {
         this.verificarSpinner = 'false';
         this.guardarStorage();
-   
-     }, 5000);
-   }
-   }
 
-  guardarStorage(){
-    localStorage.setItem('data', JSON.stringify (this.verificarSpinner))
-   }
+      }, 5000);
+    }
+  }
 
-   cargarStorage(){
-     
-     this.verificarSpinner = JSON.parse ( localStorage.getItem('data'));
-    
-                  }
+  guardarStorage() {
+    localStorage.setItem('data', JSON.stringify(this.verificarSpinner));
+  }
 
+  cargarStorage() {
+
+    this.verificarSpinner = JSON.parse(localStorage.getItem('data'));
+  }
 }

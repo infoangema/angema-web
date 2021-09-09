@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 
 @Component({
   selector: 'app-svg-disenio-objetos',
@@ -7,9 +7,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SvgDisenioObjetosComponent implements OnInit {
 
-  constructor() { }
+  constructor() {
+  }
 
   ngOnInit(): void {
   }
-
 }

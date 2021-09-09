@@ -1,10 +1,9 @@
-
-.imagenSecuencia1{
+.imagenSecuencia1 {
   position: absolute;
   left: 25%;
 }
 
-.textoSecuencia1{
+.textoSecuencia1 {
   position: relative;
   width: 100%;
   font-family: 'Roboto', sans-serif !important;
@@ -15,25 +14,22 @@
   z-index: 1000;
   margin-top: 10%;
   border-radius: 25px 0px 25px 25px;
-  font-weight: 600;
-
-;
+  font-weight: 600;;
 }
 
-.secuencia1{
+.secuencia1 {
   position: relative;
   height: 100%;
   padding-bottom: 20%;
-
 }
 
 
-.imagenSecuencia2{
+.imagenSecuencia2 {
   position: absolute;
   right: 25%;
 }
 
-.textoSecuencia2{
+.textoSecuencia2 {
   position: relative;
   float: right;
   width: 100%;
@@ -45,12 +41,10 @@
   z-index: 1000;
   margin-top: 10%;
   border-radius: 25px 0px 25px 25px;
-  font-weight: 600;
-
-;
+  font-weight: 600;;
 }
 
-.secuencia2{
+.secuencia2 {
   position: relative;
   height: 100%;
   padding-bottom: 20%;
@@ -59,19 +53,22 @@
 
 @media screen and (max-width: 450px) {
 
-  .textoSecuencia1{
+  .textoSecuencia1 {
     font-size: 4rem;
   }
-  .imagenSecuencia1{
+
+  .imagenSecuencia1 {
     position: absolute;
     left: 25%;
     width: 150%;
     top: 5%;
   }
-  .textoSecuencia2{
+
+  .textoSecuencia2 {
     font-size: 4rem;
   }
-  .imagenSecuencia2{
+
+  .imagenSecuencia2 {
     position: absolute;
     left: 25%;
     width: 150%;
