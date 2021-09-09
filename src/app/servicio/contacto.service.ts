@@ -8,7 +8,7 @@ import {map} from 'rxjs/operators';
 })
 export class ContactoService {
 
-  private url = 'https://hours-backend-pruebas.herokuapp.com';
+  private url = 'https://angema-hours-backend.herokuapp.com';
 
   constructor(private http: HttpClient) {
   }

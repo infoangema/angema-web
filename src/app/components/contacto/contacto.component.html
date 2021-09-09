@@ -40,17 +40,17 @@
 
         <div class="form-group">
           <label for="tel"><i class="zmdi zmdi-account material-icons-name"></i></label>
-          <input type="text" name="tel" id="tel" class="form-control" placeholder="Número de teléfono"
+          <input type="number" name="tel" id="tel" class="form-control" placeholder="Número de teléfono"
                  [(ngModel)]="contacto.phone" name="tel" minlength="8" maxlength="15"
                  [class.is-invalid]="tel.invalid && tel.touched" #tel="ngModel" pattern="^[0-9]{8,15}">
           <h3 *ngIf="tel.invalid && tel.touched"
-              class="validacionTextoError text-danger coltext-danger animated fadeIn">Ingrese un Teléfono válido sin el "-"</h3>
+              class="validacionTextoError text-danger coltext-danger animated fadeIn">Ingrese un Teléfono entre 8 a 15 caracter "-"</h3>
         </div>
 
         <div class="form-group">
           <label for="reservationMessage"><i class="zmdi zmdi-account material-icons-name"></i></label>
-          <textarea name="reservationMessage" class="form-control" id="reservationMessage" minlength="1" maxlength="250" cols="30"
-                    rows="10" placeholder="Tu Mensaje" [(ngModel)]="contacto.description" name="reservationMessage"
+          <textarea style="resize: none" name="reservationMessage" class="form-control" id="reservationMessage" minlength="1" maxlength="250" cols="30"
+                    rows="5" placeholder="Tu Mensaje" [(ngModel)]="contacto.description" name="reservationMessage"
                     [class.is-invalid]="mensaje.invalid && mensaje.touched" #mensaje="ngModel"></textarea>
           <h3 *ngIf="mensaje.invalid && mensaje.touched"
               class="validacionTextoError text-danger coltext-danger animated fadeIn">Ingrese un Mensaje</h3>
