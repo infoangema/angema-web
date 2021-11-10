@@ -65,16 +65,16 @@ body {
 .home img {
     width: 100%;
     height: auto;
-    margin-left: 10%;
 }
 
-@supports(object-fit: cover) {
+
+/* @supports(object-fit: cover) {
     .home img {
         height: 100%;
         object-fit: cover;
         object-position: center center;
     }
-}
+} */
 
 .marketing .col-lg-4 {
     margin-bottom: 1.5rem;
@@ -97,7 +97,7 @@ body {
     margin-left: .75rem;
 }
 
-.container {
+.homePadding {
     padding-top: 50px;
 }
 
@@ -170,6 +170,7 @@ body {
 
 .tamañoLogoIcono {
     max-width: 25%;
+    margin-left: 10%;
 }
 
 .cuadradoVioletaNav,
@@ -193,9 +194,9 @@ body {
     width: 150%;
 }
 
-.landing-page .parallax .parallax-image img.somos {
+.landing-page .parallax .parallax-image img.tablet {
     float: right;
-    width: 120%;
+    width: 180%;
     margin-bottom: 40%;
 }
 
@@ -1157,4 +1158,47 @@ p {
 
 .validacionTextoError {
     padding-top: 10px;
+}
+
+.tipografiaTablet {
+    color: white;
+}
+
+.videoHotel {
+    width: 100%;
+    z-index: 10;
+}
+
+.espaciadoVideo {
+    padding-top: 15%;
+    height: 100%;
+}
+
+.iconosRecuadro {
+    width: 50px;
+}
+
+.botonesAppHotel {
+    padding-bottom: 5%;
+    padding-top: 5%;
+    text-align: center;
+}
+
+.imagenIzquierdaApp {
+    bottom: 3px;
+    max-width: 61%;
+    position: absolute;
+    left: 45%;
+}
+
+.imagenDerechaApp {
+    max-width: 38%;
+    position: absolute;
+    right: 70%;
+    bottom: 2px;
+    z-index: 0;
+}
+
+.bannerInferior {
+    border-top: 10px solid #8b44ba
 }

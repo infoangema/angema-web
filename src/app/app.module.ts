@@ -29,6 +29,7 @@ import {BotonesBiComponent} from './components/botones-bi/botones-bi.component';
 import {TextoMovilComponent} from './components/recursos/texto-movil/texto-movil.component';
 import {SecuenciaComponent} from './components/recursos/secuencia/secuencia.component';
 import {SpinnerComponent} from './components/spinner/spinner.component';
+import { HotelAppComponent } from './components/hotel-app/hotel-app.component';
 
 @NgModule({
   declarations: [
@@ -53,6 +54,7 @@ import {SpinnerComponent} from './components/spinner/spinner.component';
     TextoMovilComponent,
     SecuenciaComponent,
     SpinnerComponent,
+    HotelAppComponent,
   ],
   imports: [
     BrowserModule,

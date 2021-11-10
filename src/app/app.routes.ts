@@ -5,6 +5,7 @@ import {ContactoComponent} from './components/contacto/contacto.component';
 import {QuienesSomosComponent} from './components/quienes-somos/quienes-somos.component';
 import {PreguntasFrecuentesComponent} from './components/preguntas-frecuentes/preguntas-frecuentes.component';
 import {BiComponent} from './components/bi/bi.component';
+import { HotelAppComponent } from './components/hotel-app/hotel-app.component';
 
 const APP_ROUTES: Routes = [
   {path: 'home', component: HomeComponent},
@@ -12,6 +13,8 @@ const APP_ROUTES: Routes = [
   {path: 'quienesSomos', component: QuienesSomosComponent},
   {path: 'bi', component: BiComponent},
   {path: 'preguntasFrecuentes', component: PreguntasFrecuentesComponent},
+  {path: 'appHotel', component: HotelAppComponent},
+
 
   {path: '**', pathMatch: 'full', redirectTo: 'home'},
 ];
