@@ -1,0 +1,27 @@
+{
+  "version": 2,
+  "functions": {
+    "app/**": {
+      "runtime": "@vercel/node@18.x"
+    }
+  },
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist/angema-web"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
+    }
+  ],
+  "buildCommand": "ng build --configuration production",
+  "outputDirectory": "dist/angema-web",
+  "framework": "angular",
+  "nodeVersion": "18.x"
+} 
