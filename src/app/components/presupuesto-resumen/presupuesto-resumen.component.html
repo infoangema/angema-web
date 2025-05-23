@@ -1,0 +1,351 @@
+<div class="container-fluid presupuesto-content">
+  <div class="row">
+    <div class="col-12">
+      <div class="header-section text-center mb-5">
+        <h1 class="display-4 text-primary mb-3">Propuesta y Presupuesto</h1>
+        <h2 class="h3 text-secondary">Sistema de Administración de SKUs</h2>
+        <button class="btn btn-outline-primary mt-3" routerLink="/presupuestos">
+          <i class="fas fa-arrow-left"></i> Volver a Presupuestos
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-3">
+      <div class="sidebar sticky-top">
+        <h5 class="sidebar-title">Índice</h5>
+        <nav class="nav flex-column">
+          <a class="nav-link" href="#descripcion">Descripción funcional por plan</a>
+          <a class="nav-link" href="#casos-uso">Casos de uso por versión</a>
+          <a class="nav-link" href="#alcance">Alcance de funcionalidades</a>
+          <a class="nav-link" href="#comparativa">Comparativa de beneficios</a>
+          <a class="nav-link" href="#estimacion">Estimación de tiempos y presupuesto</a>
+          <a class="nav-link" href="#proximos-pasos">Próximos pasos</a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="col-lg-9">
+      <div class="content-section">
+        
+        <!-- Descripción funcional por plan -->
+        <section id="descripcion" class="mb-5">
+          <h2 class="section-title">1. Descripción funcional por plan</h2>
+          <p class="lead">En esta sección se detallan las funcionalidades contempladas en cada versión del sistema de administración de SKUs (Stock Keeping Units). Cada plan (Básico, Medio, Avanzado) suma capacidades sobre el anterior, ofreciendo soluciones adaptadas al tamaño y necesidades del cliente.</p>
+          
+          <div class="plan-card mb-4">
+            <h3 class="plan-title">1.1 Plan Básico</h3>
+            <p><strong>Resumen:</strong> El plan Básico se enfoca en las necesidades fundamentales de gestión de inventario para un solo comercio pequeño. Incluye funcionalidades esenciales para crear y manejar SKUs, controlar stock de productos y automatizar tareas básicas de venta.</p>
+            <ul class="feature-list">
+              <li><strong>CRUD de SKUs:</strong> Permite Crear, Leer, Actualizar y Eliminar productos (SKUs) en el catálogo.</li>
+              <li><strong>Manejo de stock:</strong> Registro del stock disponible por producto, con posibilidad de ajustar entradas y salidas de inventario.</li>
+              <li><strong>Gestión de pedidos básica:</strong> Integración con API de TiendaNube para obtener información de pedidos y Mercado Pago para verificar pagos.</li>
+              <li><strong>Login genérico:</strong> Autenticación de usuario simple mediante email y contraseña, utilizando Firebase Authentication.</li>
+              <li><strong>Conexión a Firebase (Firestore):</strong> Almacenamiento de datos en Cloud Firestore.</li>
+              <li><strong>Integración con APIs externas:</strong> APIs de Mercado Pago y TiendaNube para sincronizar productos, stock y pedidos.</li>
+              <li><strong>Alertas por stock mínimo:</strong> Alerta visible en el panel principal y posibilidad de email automático al administrador.</li>
+              <li><strong>Generación automática de códigos SKU:</strong> Asistencia en la generación del código SKU siguiendo reglas definidas.</li>
+            </ul>
+          </div>
+
+          <div class="plan-card mb-4">
+            <h3 class="plan-title">1.2 Plan Medio</h3>
+            <p><strong>Resumen:</strong> El plan Medio incluye todas las funcionalidades del Básico y agrega características enfocadas en gestión multiusuario y análisis de ventas.</p>
+            <ul class="feature-list">
+              <li><strong>Roles de usuario y gestión de permisos:</strong> Implementación de roles (Administrador, Editor, Usuario/Consultor) con interfaz para asignación de permisos.</li>
+              <li><strong>Métricas de ventas y dashboard de análisis:</strong> Dashboard con visualización de datos agregados de ventas.</li>
+              <li><strong>Gestión de ventas multicanal:</strong> Posibilidad de consolidar ventas de tienda física y tienda online.</li>
+              <li><strong>Integración mejorada con TiendaNube y Mercado Pago:</strong> Automatización en tiempo real mediante webhooks.</li>
+              <li><strong>Historial básico de cambios (auditoría inicial):</strong> Registro de modificaciones en SKUs y stock.</li>
+              <li><strong>Mejoras en la generación de informes:</strong> Exportación de listados de productos, stock y ventas a Excel/PDF.</li>
+              <li><strong>Usabilidad y experiencia:</strong> Mejoras en la interfaz para uso colaborativo, diseño responsive.</li>
+            </ul>
+          </div>
+
+          <div class="plan-card mb-4">
+            <h3 class="plan-title">1.3 Plan Avanzado</h3>
+            <p><strong>Resumen:</strong> El plan Avanzado incluye todas las características de la versión Media y añade capacidades orientadas a un modelo SaaS (Software as a Service) multi-tenant.</p>
+            <ul class="feature-list">
+              <li><strong>Arquitectura Multi-Tenant (SaaS):</strong> Soporte para múltiples comercios independientes en la misma plataforma.</li>
+              <li><strong>Gestión avanzada de usuarios y roles por comercio:</strong> Vinculación de usuarios a tenants específicos.</li>
+              <li><strong>Escalabilidad y aislamiento:</strong> Infraestructura planificada para alto volumen.</li>
+              <li><strong>Auditoría completa de cambios (historial):</strong> Registro detallado e inmutable de todas las acciones relevantes.</li>
+              <li><strong>Notificaciones automáticas de reposición:</strong> Envío automático de correos a proveedores para reabastecimiento.</li>
+              <li><strong>Aplicación móvil (opcional con Flutter):</strong> Desarrollo de app móvil complementaria para Android/iOS.</li>
+              <li><strong>Infraestructura escalable y personalizada:</strong> Opciones de despliegue dedicado para clientes Enterprise.</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- Casos de uso por versión -->
+        <section id="casos-uso" class="mb-5">
+          <h2 class="section-title">2. Casos de uso por versión</h2>
+          <p class="lead">A continuación se presentan los casos de uso típicos para cada plan, ayudando a identificar cuál se adapta mejor a las necesidades específicas del negocio.</p>
+          
+          <div class="use-case-card mb-4">
+            <h3 class="use-case-title">Plan Básico - Ideal para:</h3>
+            <ul class="use-case-list">
+              <li><strong>Comercios pequeños:</strong> Tiendas con un solo punto de venta y catálogo de hasta 500 productos.</li>
+              <li><strong>Emprendimientos:</strong> Negocios que están digitalizando su inventario por primera vez.</li>
+              <li><strong>Tiendas online simples:</strong> E-commerce con TiendaNube que necesitan sincronización básica.</li>
+              <li><strong>Control básico de stock:</strong> Negocios que requieren alertas simples de reposición.</li>
+            </ul>
+          </div>
+
+          <div class="use-case-card mb-4">
+            <h3 class="use-case-title">Plan Medio - Ideal para:</h3>
+            <ul class="use-case-list">
+              <li><strong>Comercios en crecimiento:</strong> Tiendas con múltiples empleados que necesitan diferentes niveles de acceso.</li>
+              <li><strong>Multicanal:</strong> Negocios con tienda física y online que requieren consolidación de datos.</li>
+              <li><strong>Análisis de ventas:</strong> Comercios que necesitan métricas para tomar decisiones estratégicas.</li>
+              <li><strong>Gestión colaborativa:</strong> Equipos que requieren roles y permisos diferenciados.</li>
+            </ul>
+          </div>
+
+          <div class="use-case-card mb-4">
+            <h3 class="use-case-title">Plan Avanzado - Ideal para:</h3>
+            <ul class="use-case-list">
+              <li><strong>Empresas con múltiples sucursales:</strong> Cadenas de tiendas que necesitan gestión centralizada.</li>
+              <li><strong>Proveedores de servicios:</strong> Empresas que quieren ofrecer el sistema como servicio a sus clientes.</li>
+              <li><strong>Escalabilidad empresarial:</strong> Organizaciones con planes de crecimiento acelerado.</li>
+              <li><strong>Auditoría completa:</strong> Negocios que requieren trazabilidad total de cambios por compliance.</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- Alcance de funcionalidades -->
+        <section id="alcance" class="mb-5">
+          <h2 class="section-title">3. Alcance de funcionalidades por versión</h2>
+          <div class="table-responsive">
+            <table class="table table-striped table-hover">
+              <thead class="table-dark">
+                <tr>
+                  <th>Funcionalidad</th>
+                  <th>Plan Básico</th>
+                  <th>Plan Medio</th>
+                  <th>Plan Avanzado</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>CRUD de SKUs</td>
+                  <td><span class="badge bg-success">Sí</span></td>
+                  <td><span class="badge bg-success">Sí</span></td>
+                  <td><span class="badge bg-success">Sí</span></td>
+                </tr>
+                <tr>
+                  <td>Manejo de Stock</td>
+                  <td><span class="badge bg-success">Sí</span></td>
+                  <td><span class="badge bg-success">Sí</span></td>
+                  <td><span class="badge bg-success">Sí</span></td>
+                </tr>
+                <tr>
+                  <td>Alertas de Stock Mínimo</td>
+                  <td><span class="badge bg-success">Sí</span></td>
+                  <td><span class="badge bg-success">Sí</span></td>
+                  <td><span class="badge bg-primary">Sí (mejorada)</span></td>
+                </tr>
+                <tr>
+                  <td>Login de Usuario</td>
+                  <td><span class="badge bg-warning">Genérico</span></td>
+                  <td><span class="badge bg-info">Roles</span></td>
+                  <td><span class="badge bg-primary">Roles por Tienda</span></td>
+                </tr>
+                <tr>
+                  <td>Integración TiendaNube</td>
+                  <td><span class="badge bg-warning">Básica</span></td>
+                  <td><span class="badge bg-info">Tiempo Real</span></td>
+                  <td><span class="badge bg-info">Tiempo Real</span></td>
+                </tr>
+                <tr>
+                  <td>Roles y Permisos de Usuario</td>
+                  <td><span class="badge bg-danger">No</span></td>
+                  <td><span class="badge bg-success">Sí</span></td>
+                  <td><span class="badge bg-primary">Sí (avanzado)</span></td>
+                </tr>
+                <tr>
+                  <td>Dashboard y Métricas de Ventas</td>
+                  <td><span class="badge bg-danger">No</span></td>
+                  <td><span class="badge bg-success">Sí</span></td>
+                  <td><span class="badge bg-success">Sí</span></td>
+                </tr>
+                <tr>
+                  <td>Arquitectura Multi-Tenant (SaaS)</td>
+                  <td><span class="badge bg-danger">No</span></td>
+                  <td><span class="badge bg-danger">No</span></td>
+                  <td><span class="badge bg-success">Sí</span></td>
+                </tr>
+                <tr>
+                  <td>Aplicación Móvil (Flutter)</td>
+                  <td><span class="badge bg-danger">No</span></td>
+                  <td><span class="badge bg-danger">No</span></td>
+                  <td><span class="badge bg-warning">Opcional</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Comparativa de beneficios -->
+        <section id="comparativa" class="mb-5">
+          <h2 class="section-title">4. Comparativa de beneficios</h2>
+          <p class="lead">Análisis comparativo de los beneficios y retorno de inversión esperado para cada plan.</p>
+          
+          <div class="benefits-comparison">
+            <div class="row">
+              <div class="col-md-4 mb-4">
+                <div class="benefit-card basic-benefit">
+                  <h4>Plan Básico</h4>
+                  <div class="benefit-item">
+                    <h5><i class="fas fa-clock text-primary"></i> Ahorro de Tiempo</h5>
+                    <p>Reducción del 60% en tiempo de gestión manual de inventario</p>
+                  </div>
+                  <div class="benefit-item">
+                    <h5><i class="fas fa-exclamation-triangle text-warning"></i> Reducción de Errores</h5>
+                    <p>Eliminación de errores de stock por gestión manual</p>
+                  </div>
+                  <div class="benefit-item">
+                    <h5><i class="fas fa-sync text-info"></i> Sincronización</h5>
+                    <p>Actualización automática entre tienda online y sistema</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-4 mb-4">
+                <div class="benefit-card medium-benefit">
+                  <h4>Plan Medio</h4>
+                  <div class="benefit-item">
+                    <h5><i class="fas fa-users text-primary"></i> Gestión de Equipo</h5>
+                    <p>Control de acceso y responsabilidades por rol</p>
+                  </div>
+                  <div class="benefit-item">
+                    <h5><i class="fas fa-chart-line text-success"></i> Análisis de Datos</h5>
+                    <p>Decisiones basadas en métricas reales de ventas</p>
+                  </div>
+                  <div class="benefit-item">
+                    <h5><i class="fas fa-file-export text-info"></i> Reportes</h5>
+                    <p>Informes exportables para análisis externo</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-4 mb-4">
+                <div class="benefit-card advanced-benefit">
+                  <h4>Plan Avanzado</h4>
+                  <div class="benefit-item">
+                    <h5><i class="fas fa-building text-primary"></i> Escalabilidad</h5>
+                    <p>Soporte para múltiples tiendas y crecimiento</p>
+                  </div>
+                  <div class="benefit-item">
+                    <h5><i class="fas fa-shield-alt text-success"></i> Auditoría</h5>
+                    <p>Trazabilidad completa para compliance</p>
+                  </div>
+                  <div class="benefit-item">
+                    <h5><i class="fas fa-mobile-alt text-info"></i> Movilidad</h5>
+                    <p>Acceso desde cualquier dispositivo móvil</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Estimación de tiempos y presupuesto -->
+        <section id="estimacion" class="mb-5">
+          <h2 class="section-title">5. Estimación de tiempos de desarrollo y presupuesto por plan</h2>
+          
+          <div class="pricing-cards">
+            <div class="row">
+              <div class="col-md-4 mb-4">
+                <div class="pricing-card basic">
+                  <div class="pricing-header">
+                    <h3>Plan Básico</h3>
+                    <div class="price">USD $4.500</div>
+                    <div class="duration">~4-5 semanas</div>
+                  </div>
+                  <div class="pricing-body">
+                    <p><strong>Alcance:</strong> Sistema standalone para un comercio, con gestión esencial de SKUs, stock y sincronización simple con tienda online.</p>
+                    <h5>Módulos principales:</h5>
+                    <ul>
+                      <li>Autenticación Genérica</li>
+                      <li>CRUD SKUs & Catálogo</li>
+                      <li>Gestión de Stock & Alertas Básicas</li>
+                      <li>Integración Pedidos (TiendaNube/MercadoPago - básica)</li>
+                      <li>Configuración Inicial Firebase</li>
+                    </ul>
+                    <p><strong>Valor para el cliente:</strong> Digitalización inmediata del inventario, reducción de errores, ahorro de tiempo.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-4 mb-4">
+                <div class="pricing-card medium">
+                  <div class="pricing-header">
+                    <h3>Plan Medio</h3>
+                    <div class="price">USD $6.000</div>
+                    <div class="duration">~6-7 semanas</div>
+                  </div>
+                  <div class="pricing-body">
+                    <p><strong>Alcance:</strong> Sistema multiusuario para un comercio, con roles, dashboard de métricas, y automatizaciones en tiempo real.</p>
+                    <h5>Módulos adicionales:</h5>
+                    <ul>
+                      <li>Gestión de Roles y Usuarios</li>
+                      <li>Dashboard y Métricas de Ventas</li>
+                      <li>Reportes Exportables</li>
+                      <li>Integraciones en Tiempo Real (webhooks)</li>
+                      <li>Historial de Cambios Básico</li>
+                    </ul>
+                    <p><strong>Valor para el cliente:</strong> Control interno mejorado, visibilidad total de ventas y stock, decisiones basadas en datos.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-4 mb-4">
+                <div class="pricing-card advanced">
+                  <div class="pricing-header">
+                    <h3>Plan Avanzado</h3>
+                    <div class="price">USD $7.000</div>
+                    <div class="duration">~7-8 semanas</div>
+                    <div class="optional">+ USD $5.000 (app móvil opcional)</div>
+                  </div>
+                  <div class="pricing-body">
+                    <p><strong>Alcance:</strong> Plataforma SaaS completa, multi-tenant, con auditoría avanzada y automatización de reabastecimiento.</p>
+                    <h5>Módulos adicionales:</h5>
+                    <ul>
+                      <li>Arquitectura Multi-Tenant</li>
+                      <li>Panel de Administración SaaS</li>
+                      <li>Auditoría Completa y Detallada</li>
+                      <li>Notificaciones Avanzadas a Proveedores</li>
+                      <li>(Opcional) Aplicación Móvil Flutter</li>
+                    </ul>
+                    <p><strong>Valor para el cliente:</strong> Transformación digital completa, potencial para nuevo modelo de negocio SaaS.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-box">
+            <h4><i class="fas fa-lightbulb"></i> Sugerencia</h4>
+            <p>Se recomienda abordar el proyecto en fases, iniciando con el Plan Básico o Medio para validar resultados y obtener valor rápidamente, y luego reinvertir hacia planes superiores. La arquitectura propuesta permite que la inversión en etapas iniciales sea aprovechable en fases posteriores.</p>
+          </div>
+        </section>
+
+        <!-- Próximos pasos -->
+        <section id="proximos-pasos" class="mb-5">
+          <h2 class="section-title">6. Próximos pasos</h2>
+          <div class="next-steps-box">
+            <p>El siguiente paso sugerido es revisar conjuntamente cualquier duda sobre los requerimientos, priorizar módulos si fuese necesario ajustar el presupuesto y, una vez acordado, proceder con la elaboración de un plan de proyecto detallado para la fase inicial seleccionada.</p>
+            
+            <div class="contact-info mt-4">
+              <h5>Contacto para consultas:</h5>
+              <p>Para más información o aclaraciones sobre este presupuesto, no dude en contactarnos.</p>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </div>
+  </div>
+</div> 
