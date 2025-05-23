@@ -5,17 +5,21 @@
       "src": "package.json",
       "use": "@vercel/static-build",
       "config": {
-        "distDir": "dist/angema-web"
+        "distDir": "dist/angema-web/browser"
       }
     }
   ],
   "routes": [
     {
+      "src": "/favicon.ico",
+      "dest": "/favicon.ico"
+    },
+    {
       "src": "/assets/(.*)",
       "dest": "/assets/$1"
     },
     {
-      "src": "/(.*\\.(js|css|ico|png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot))",
+      "src": "/(.*\\.(js|css|ico|png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot|map))",
       "dest": "/$1"
     },
     {
