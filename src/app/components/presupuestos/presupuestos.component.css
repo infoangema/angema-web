@@ -48,14 +48,40 @@
 /* Estilos para modales - Bootstrap 5 compatible */
 .modal {
   z-index: 1055;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  outline: 0;
 }
 
 .modal.show {
   display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.modal-dialog {
+  position: relative;
+  width: auto;
+  margin: 1.75rem;
+  pointer-events: none;
+}
+
+.modal.show .modal-dialog {
+  pointer-events: auto;
 }
 
 .modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
   z-index: 1050;
+  width: 100vw;
+  height: 100vh;
   background-color: rgba(0, 0, 0, 0.5);
 }
 

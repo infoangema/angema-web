@@ -72,10 +72,12 @@
             (keyup.enter)="verificarPasswordResumen()"
             autocomplete="off">
         </div>
-        <div *ngIf="errorResumen" class="alert alert-danger" role="alert">
-          <i class="fas fa-exclamation-triangle me-2"></i>
-          Contraseña incorrecta. Inténtelo nuevamente.
-        </div>
+        @if (errorResumen) {
+          <div class="alert alert-danger" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            Contraseña incorrecta. Inténtelo nuevamente.
+          </div>
+        }
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" (click)="cerrarModal('modalResumen')">
@@ -112,10 +114,12 @@
             (keyup.enter)="verificarPasswordPlanificacion()"
             autocomplete="off">
         </div>
-        <div *ngIf="errorPlanificacion" class="alert alert-danger" role="alert">
-          <i class="fas fa-exclamation-triangle me-2"></i>
-          Contraseña incorrecta. Inténtelo nuevamente.
-        </div>
+        @if (errorPlanificacion) {
+          <div class="alert alert-danger" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            Contraseña incorrecta. Inténtelo nuevamente.
+          </div>
+        }
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" (click)="cerrarModal('modalPlanificacion')">

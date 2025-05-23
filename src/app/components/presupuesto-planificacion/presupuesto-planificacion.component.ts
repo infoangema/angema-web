@@ -1,20 +1,26 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-presupuesto-planificacion',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './presupuesto-planificacion.component.html',
   styleUrls: ['./presupuesto-planificacion.component.css']
 })
 export class PresupuestoPlanificacionComponent implements OnInit {
 
-  constructor() { }
+  constructor(private router: Router) { }
 
   ngOnInit(): void {
     // Agregar scroll suave a todos los enlaces del índice
     this.setupSmoothScrolling();
+  }
+
+  volverAPresupuestos(): void {
+    console.log('Navegando de vuelta a presupuestos...');
+    this.router.navigate(['/presupuestos']);
   }
 
   private setupSmoothScrolling(): void {
