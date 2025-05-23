@@ -97,6 +97,12 @@ export class PresupuestosComponent implements OnInit, AfterViewInit {
       modalElement.setAttribute('aria-hidden', 'false');
       modalElement.setAttribute('aria-modal', 'true');
       
+      // Asegurar centrado
+      const modalDialog = modalElement.querySelector('.modal-dialog');
+      if (modalDialog) {
+        modalDialog.classList.add('modal-dialog-centered');
+      }
+      
       // Crear backdrop
       this.createBackdrop();
       

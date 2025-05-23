@@ -67,12 +67,29 @@
 .modal-dialog {
   position: relative;
   width: auto;
-  margin: 1.75rem;
+  max-width: 500px;
+  margin: 0;
   pointer-events: none;
+  transform: translate(0, 0);
 }
 
 .modal.show .modal-dialog {
   pointer-events: auto;
+}
+
+/* Centrado vertical y horizontal perfecto */
+.modal-dialog-centered {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  margin: 0;
+  padding: 1rem;
+}
+
+.modal-dialog-centered .modal-content {
+  width: 100%;
+  max-width: 500px;
 }
 
 .modal-backdrop {
