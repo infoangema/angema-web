@@ -1,0 +1,67 @@
+.st0 {
+    fill: #8D46BC;
+    animation: aparicion 4s infinite 4s;
+    animation-direction: alternate;
+    opacity: 0;
+}
+
+.st1 {
+    fill: #6C2395;
+    animation: aparicion 4s infinite 3.5s;
+    animation-direction: alternate;
+    opacity: 0;
+}
+
+.st2 {
+    fill: #3D0464;
+    animation: aparicion 4s infinite 3s;
+    animation-direction: alternate;
+    opacity: 0;
+}
+
+.st3 {
+    fill: #E5D510;
+    animation: aparicion 4s infinite 2.5s;
+    animation-direction: alternate;
+    opacity: 0;
+}
+
+.st4 {
+    fill: #E2A713;
+    animation: aparicion 4s infinite 2s;
+    animation-direction: alternate;
+    opacity: 0;
+}
+
+.st5 {
+    fill: none;
+    stroke: #000000;
+    stroke-width: 5;
+    stroke-miterlimit: 10;
+    stroke-dasharray: 1500px;
+    stroke-dashoffset: 0px;
+    animation: lineas 6s infinite;
+    animation-direction: alternate;
+}
+
+@-webkit-keyframes lineas {
+    0% {
+        stroke-dashoffset: 1500px;
+    }
+    75% {
+        stroke-dashoffset: 0px;
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+@-webkit-keyframes aparicion {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}

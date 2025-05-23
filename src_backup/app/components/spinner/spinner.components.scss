@@ -1,0 +1,128 @@
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+svg {
+    display: none;
+}
+
+.loader-container {
+    width: 50%;
+    height: 100%;
+    position: relative;
+    filter: url(#gooey);
+}
+
+.loader-container>* {
+    position: absolute;
+    display: inline-block;
+    left: 0;
+    width: 4rem;
+    height: 4rem;
+    background: #fff;
+    border-radius: 50%;
+    animation: loading 4s infinite;
+    transform: scale(.1);
+    opacity: 0;
+    &:nth-child(1) {
+        animation-delay: .5s;
+    }
+    &:nth-child(2) {
+        animation-delay: 1s;
+    }
+    &:nth-child(3) {
+        animation-delay: 1.5s;
+    }
+    &:nth-child(4) {
+        animation-delay: 2s;
+    }
+}
+
+@keyframes loading {
+    50% {
+        transform: scale(1.25);
+        left: 50%;
+        opacity: 1;
+    }
+    100% {
+        transform: scale(.1);
+        left: 100%;
+        opacity: 0;
+    }
+}
+
+@keyframes spinner {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.spinner {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: #8d46bc;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    align-content: stretch;
+}
+
+.cerrar {
+    transform: translateY(-100%);
+    transition: all 0.5s;
+}
+
+.logoBienvenida {
+    position: relative;
+    width: 30%;
+}
+
+.textoBienvenida {
+    font-size: 4rem;
+    color: white;
+    width: 30%;
+    display: block;
+    position: relative;
+    width: 30%;
+    margin: 0;
+    padding-top: 10%;
+    margin-left: 10%;
+}
+
+.fondoBienvenida {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-image: url(../../../assets/img/fondoBienvenida.svg);
+    background-repeat: no-repeat;
+    background-position: bottom;
+}
+
+@media screen and (max-width: 450px) {
+    .logoBienvenida {
+        width: 80%;
+    }
+    .textoBienvenida {
+        padding-top: 50%;
+        display: block;
+        float: left;
+        width: 80%;
+    }
+    .fondoBienvenida {
+        background-image: url(../../../assets/img/fondoBienvenidaCelu.svg);
+    }
+}
