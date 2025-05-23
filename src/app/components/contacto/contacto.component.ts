@@ -1,11 +1,14 @@
-import {Component, OnInit} from '@angular/core';
-import {ContactoModel} from '../../models/contacto.model';
-import {ContactoService} from '../../servicio/contacto.service';
-import {NgForm} from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule, NgForm } from '@angular/forms';
+import { ContactoModel } from '../../models/contacto.model';
+import { ContactoService } from '../../servicio/contacto.service';
 import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-contacto',
+  standalone: true,
+  imports: [CommonModule, FormsModule],
   templateUrl: './contacto.component.html',
   styles: []
 })
