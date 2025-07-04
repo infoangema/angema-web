@@ -8,6 +8,7 @@ import { HotelAppComponent } from './components/hotel-app/hotel-app.component';
 import { PresupuestosComponent } from './components/presupuestos/presupuestos.component';
 import { PresupuestoResumenComponent } from './components/presupuesto-resumen/presupuesto-resumen.component';
 import { PresupuestoPlanificacionComponent } from './components/presupuesto-planificacion/presupuesto-planificacion.component';
+import { SkuDemoComponent } from './components/sku-demo/sku-demo.component';
 
 export const routes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -19,6 +20,7 @@ export const routes: Routes = [
   { path: 'presupuestos', component: PresupuestosComponent },
   { path: 'presupuesto-resumen', component: PresupuestoResumenComponent },
   { path: 'presupuesto-planificacion', component: PresupuestoPlanificacionComponent },
+  { path: 'sku-demo', component: SkuDemoComponent },
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: '**', redirectTo: '/home' }
 ];

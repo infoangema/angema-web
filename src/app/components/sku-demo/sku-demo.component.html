@@ -1,0 +1,680 @@
+<!-- Demo Container -->
+<div class="demo-container bg-light min-vh-100">
+  
+  <!-- Header -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm">
+    <div class="container-fluid">
+      <!-- Logo and Brand -->
+      <div class="navbar-brand d-flex align-items-center">
+        <div class="brand-icon mr-2">
+          <i class="fa fa-cube text-primary" style="font-size: 1.5rem;"></i>
+        </div>
+        <h4 class="mb-0 font-weight-bold text-primary">InventoryPro</h4>
+      </div>
+      
+      <!-- Navigation -->
+      <div class="navbar-nav d-flex flex-row mr-auto ml-4">
+        <a class="nav-link mr-3" [class.active]="currentView === 'dashboard'" 
+           (click)="setView('dashboard')" href="javascript:void(0)">
+          <i class="fa fa-tachometer mr-1"></i> Dashboard
+        </a>
+        <a class="nav-link mr-3" [class.active]="currentView === 'skus'" 
+           (click)="setView('skus')" href="javascript:void(0)">
+          <i class="fa fa-cube mr-1"></i> Products
+        </a>
+        <a class="nav-link mr-3" [class.active]="currentView === 'pedidos'" 
+           (click)="setView('pedidos')" href="javascript:void(0)">
+          <i class="fa fa-shopping-cart mr-1"></i> Orders
+        </a>
+        <a class="nav-link mr-3" [class.active]="currentView === 'clientes'" 
+           (click)="setView('clientes')" href="javascript:void(0)">
+          <i class="fa fa-users mr-1"></i> Customers
+        </a>
+      </div>
+      
+      <!-- Search and Actions -->
+      <div class="d-flex align-items-center">
+        <div class="input-group mr-3" style="width: 250px;">
+          <div class="input-group-prepend">
+            <span class="input-group-text bg-light">
+              <i class="fa fa-search text-muted"></i>
+            </span>
+          </div>
+          <input type="text" class="form-control bg-light" 
+                 placeholder="Search SKU, Product Name..." 
+                 [(ngModel)]="searchTerm">
+        </div>
+        
+        <button class="btn btn-outline-secondary btn-sm mr-2 position-relative">
+          <i class="fa fa-bell"></i>
+          <span class="position-absolute badge badge-danger rounded-pill" style="top: -5px; right: -5px; font-size: 0.6rem;">
+            {{stats.stockBajo}}
+          </span>
+        </button>
+        
+        <div class="dropdown">
+          <button class="btn btn-light btn-sm dropdown-toggle border-0" type="button" data-toggle="dropdown">
+            <img src="https://via.placeholder.com/32" class="rounded-circle mr-1" width="24" height="24" alt="User">
+            Admin
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="container-fluid py-4">
+    
+    <!-- Dashboard View -->
+    <div *ngIf="currentView === 'dashboard'" class="dashboard-section">
+      <div class="row mb-4">
+        <div class="col-12">
+          <h2 class="h3 text-dark font-weight-bold mb-3">Dashboard Overview</h2>
+        </div>
+      </div>
+      
+      <!-- Stats Cards -->
+      <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+          <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+              <div class="d-flex align-items-center">
+                <div class="stat-icon text-primary rounded p-2 mr-3" style="background-color: rgba(37, 99, 235, 0.1);">
+                  <i class="fa fa-cube fa-lg"></i>
+                </div>
+                <div>
+                  <h3 class="mb-0 font-weight-bold text-dark">{{stats.totalSkus}}</h3>
+                  <p class="text-muted mb-0 small">Total SKUs</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-3 mb-3">
+          <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+              <div class="d-flex align-items-center">
+                <div class="stat-icon text-warning rounded p-2 mr-3" style="background-color: rgba(245, 158, 11, 0.1);">
+                  <i class="fa fa-exclamation-triangle fa-lg"></i>
+                </div>
+                <div>
+                  <h3 class="mb-0 font-weight-bold text-dark">{{stats.stockBajo}}</h3>
+                  <p class="text-muted mb-0 small">Low Stock</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-3 mb-3">
+          <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+              <div class="d-flex align-items-center">
+                <div class="stat-icon text-info rounded p-2 mr-3" style="background-color: rgba(59, 130, 246, 0.1);">
+                  <i class="fa fa-shopping-cart fa-lg"></i>
+                </div>
+                <div>
+                  <h3 class="mb-0 font-weight-bold text-dark">{{stats.totalPedidos}}</h3>
+                  <p class="text-muted mb-0 small">Total Orders</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-3 mb-3">
+          <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+              <div class="d-flex align-items-center">
+                <div class="stat-icon text-success rounded p-2 mr-3" style="background-color: rgba(16, 185, 129, 0.1);">
+                  <i class="fa fa-dollar fa-lg"></i>
+                </div>
+                <div>
+                  <h3 class="mb-0 font-weight-bold text-dark">${{stats.valorInventario.toLocaleString()}}</h3>
+                  <p class="text-muted mb-0 small">Inventory Value</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Quick Info Tables -->
+      <div class="row">
+        <div class="col-md-6 mb-4">
+          <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-bottom">
+              <h5 class="mb-0 font-weight-bold text-dark">
+                <i class="fa fa-exclamation-circle text-warning mr-2"></i>
+                Low Stock Alert
+              </h5>
+            </div>
+            <div class="card-body p-0">
+              <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                  <thead class="thead-light">
+                    <tr>
+                      <th class="border-0 font-weight-bold small text-uppercase">SKU</th>
+                      <th class="border-0 font-weight-bold small text-uppercase">Product</th>
+                      <th class="border-0 font-weight-bold small text-uppercase">Stock</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let sku of getSkusConStockBajo().slice(0, 5)">
+                      <td class="font-weight-medium">{{sku.codigo}}</td>
+                      <td>{{sku.nombre}}</td>
+                      <td>
+                        <span class="badge badge-danger">{{sku.stock}}</span>
+                      </td>
+                    </tr>
+                    <tr *ngIf="getSkusConStockBajo().length === 0">
+                      <td colspan="3" class="text-center text-muted py-3">
+                        <i class="fa fa-check-circle text-success mr-2"></i>
+                        All products have sufficient stock
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-6 mb-4">
+          <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-bottom">
+              <h5 class="mb-0 font-weight-bold text-dark">
+                <i class="fa fa-clock-o text-info mr-2"></i>
+                Recent Orders
+              </h5>
+            </div>
+            <div class="card-body p-0">
+              <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                  <thead class="thead-light">
+                    <tr>
+                      <th class="border-0 font-weight-bold small text-uppercase">Order</th>
+                      <th class="border-0 font-weight-bold small text-uppercase">Customer</th>
+                      <th class="border-0 font-weight-bold small text-uppercase">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let pedido of pedidos.slice(-5)">
+                      <td class="font-weight-medium">{{pedido.numero}}</td>
+                      <td>{{pedido.clienteNombre}}</td>
+                      <td>
+                        <span class="badge" [class]="'badge-' + getEstadoColor(pedido.estado)">
+                          {{pedido.estado}}
+                        </span>
+                      </td>
+                    </tr>
+                    <tr *ngIf="pedidos.length === 0">
+                      <td colspan="3" class="text-center text-muted py-3">
+                        <i class="fa fa-inbox mr-2"></i>
+                        No orders yet
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SKUs Management View -->
+    <div *ngIf="currentView === 'skus'" class="skus-section">
+      <div class="row mb-4">
+        <div class="col-md-8">
+          <h2 class="h3 text-dark font-weight-bold mb-0">SKU Management</h2>
+          <p class="text-muted">Manage your product inventory</p>
+        </div>
+        <div class="col-md-4 text-right">
+          <button class="btn btn-primary" (click)="setView('nuevo-sku')">
+            <i class="fa fa-plus mr-2"></i>New SKU
+          </button>
+        </div>
+      </div>
+      
+      <!-- Filters -->
+      <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label small font-weight-bold text-uppercase">Search</label>
+              <input type="text" class="form-control" placeholder="Search products..." 
+                     [(ngModel)]="searchTerm">
+            </div>
+            <div class="col-md-4 mb-3">
+              <label class="form-label small font-weight-bold text-uppercase">Category</label>
+              <select class="form-control" [(ngModel)]="selectedCategory">
+                <option value="">All Categories</option>
+                <option *ngFor="let cat of getCategorias()" [value]="cat">{{cat}}</option>
+              </select>
+            </div>
+            <div class="col-md-2 mb-3">
+              <label class="form-label small font-weight-bold text-uppercase">&nbsp;</label>
+              <button class="btn btn-outline-secondary btn-block" (click)="searchTerm = ''; selectedCategory = ''">
+                <i class="fa fa-times mr-1"></i>Clear
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Products Table -->
+      <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover mb-0">
+              <thead class="thead-light">
+                <tr>
+                  <th class="border-0 font-weight-bold small text-uppercase">SKU</th>
+                  <th class="border-0 font-weight-bold small text-uppercase">Name</th>
+                  <th class="border-0 font-weight-bold small text-uppercase">Category</th>
+                  <th class="border-0 font-weight-bold small text-uppercase">Stock</th>
+                  <th class="border-0 font-weight-bold small text-uppercase">Price</th>
+                  <th class="border-0 font-weight-bold small text-uppercase">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let sku of getSkusFiltrados()" class="cursor-pointer">
+                  <td class="font-weight-medium">{{sku.codigo}}</td>
+                  <td>{{sku.nombre}}</td>
+                  <td>
+                    <span class="badge badge-light text-dark">{{sku.categoria}}</span>
+                  </td>
+                  <td>
+                    <span class="badge" [class]="sku.stock <= sku.stockMinimo ? 'badge-danger' : 'badge-success'">
+                      {{sku.stock}}
+                    </span>
+                  </td>
+                  <td class="text-muted">${{sku.precio.toLocaleString()}}</td>
+                  <td>
+                    <div class="btn-group btn-group-sm">
+                      <button class="btn btn-outline-primary" (click)="editarSku(sku)">
+                        <i class="fa fa-edit"></i>
+                      </button>
+                      <button class="btn btn-outline-danger" (click)="eliminarSku(sku.id)">
+                        <i class="fa fa-trash"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+                <tr *ngIf="getSkusFiltrados().length === 0">
+                  <td colspan="6" class="text-center text-muted py-4">
+                    <i class="fa fa-search mr-2"></i>
+                    No products found
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- New SKU Form -->
+    <div *ngIf="currentView === 'nuevo-sku'" class="form-section">
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <div class="card border-0 shadow">
+            <div class="card-header bg-white border-bottom">
+              <div class="d-flex align-items-center justify-content-between">
+                <h4 class="mb-0 font-weight-bold text-dark">
+                  <i class="fa fa-plus-circle text-primary mr-2"></i>
+                  Create New SKU
+                </h4>
+                <button class="btn btn-outline-secondary" (click)="setView('skus')">
+                  <i class="fa fa-arrow-left mr-1"></i>Back
+                </button>
+              </div>
+            </div>
+            <div class="card-body">
+              <form (ngSubmit)="crearSku()">
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label font-weight-bold">Product Name *</label>
+                    <input type="text" class="form-control" [(ngModel)]="nuevoSku.nombre" 
+                           name="nombre" required placeholder="Enter product name">
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label font-weight-bold">Category</label>
+                    <input type="text" class="form-control" [(ngModel)]="nuevoSku.categoria" 
+                           name="categoria" placeholder="e.g., Electronics">
+                  </div>
+                  <div class="col-md-4 mb-3">
+                    <label class="form-label font-weight-bold">Price *</label>
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">$</span>
+                      </div>
+                      <input type="number" class="form-control" [(ngModel)]="nuevoSku.precio" 
+                             name="precio" required placeholder="0.00" step="0.01">
+                    </div>
+                  </div>
+                  <div class="col-md-4 mb-3">
+                    <label class="form-label font-weight-bold">Initial Stock</label>
+                    <input type="number" class="form-control" [(ngModel)]="nuevoSku.stock" 
+                           name="stock" placeholder="0">
+                  </div>
+                  <div class="col-md-4 mb-3">
+                    <label class="form-label font-weight-bold">Minimum Stock</label>
+                    <input type="number" class="form-control" [(ngModel)]="nuevoSku.stockMinimo" 
+                           name="stockMinimo" placeholder="5">
+                  </div>
+                  <div class="col-12 mb-3">
+                    <label class="form-label font-weight-bold">Description</label>
+                    <textarea class="form-control" rows="3" [(ngModel)]="nuevoSku.descripcion" 
+                              name="descripcion" placeholder="Product description..."></textarea>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label font-weight-bold">Brand</label>
+                    <input type="text" class="form-control" [(ngModel)]="nuevoSku.marca" 
+                           name="marca" placeholder="Brand name">
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label font-weight-bold">Weight (kg)</label>
+                    <input type="number" class="form-control" [(ngModel)]="nuevoSku.peso" 
+                           name="peso" placeholder="0.0" step="0.1">
+                  </div>
+                  <div class="col-12 mb-3">
+                    <label class="form-label font-weight-bold">Dimensions</label>
+                    <input type="text" class="form-control" [(ngModel)]="nuevoSku.dimensiones" 
+                           name="dimensiones" placeholder="L x W x H (e.g., 10x5x2)">
+                  </div>
+                </div>
+                
+                <div class="text-right mt-4">
+                  <button type="button" class="btn btn-outline-secondary mr-2" (click)="setView('skus')">
+                    Cancel
+                  </button>
+                  <button type="submit" class="btn btn-primary">
+                    <i class="fa fa-save mr-1"></i>Create SKU
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Customers View -->
+    <div *ngIf="currentView === 'clientes'" class="customers-section">
+      <div class="row mb-4">
+        <div class="col-md-8">
+          <h2 class="h3 text-dark font-weight-bold mb-0">Customer Management</h2>
+          <p class="text-muted">Manage your customer database</p>
+        </div>
+        <div class="col-md-4 text-right">
+          <button class="btn btn-primary" (click)="setView('nuevo-cliente')">
+            <i class="fa fa-plus mr-2"></i>New Customer
+          </button>
+        </div>
+      </div>
+      
+      <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover mb-0">
+              <thead class="thead-light">
+                <tr>
+                  <th class="border-0 font-weight-bold small text-uppercase">Name</th>
+                  <th class="border-0 font-weight-bold small text-uppercase">Email</th>
+                  <th class="border-0 font-weight-bold small text-uppercase">Phone</th>
+                  <th class="border-0 font-weight-bold small text-uppercase">Registration</th>
+                  <th class="border-0 font-weight-bold small text-uppercase">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let cliente of clientes">
+                  <td class="font-weight-medium">{{cliente.nombre}}</td>
+                  <td class="text-muted">{{cliente.email}}</td>
+                  <td class="text-muted">{{cliente.telefono}}</td>
+                  <td class="text-muted">{{cliente.fechaRegistro | date:'short':'':'es'}}</td>
+                  <td>
+                    <button class="btn btn-outline-danger btn-sm" (click)="eliminarCliente(cliente.id)">
+                      <i class="fa fa-trash"></i>
+                    </button>
+                  </td>
+                </tr>
+                <tr *ngIf="clientes.length === 0">
+                  <td colspan="5" class="text-center text-muted py-4">
+                    <i class="fa fa-users mr-2"></i>
+                    No customers registered
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- New Customer Form -->
+    <div *ngIf="currentView === 'nuevo-cliente'" class="form-section">
+      <div class="row justify-content-center">
+        <div class="col-lg-6">
+          <div class="card border-0 shadow">
+            <div class="card-header bg-white border-bottom">
+              <div class="d-flex align-items-center justify-content-between">
+                <h4 class="mb-0 font-weight-bold text-dark">
+                  <i class="fa fa-user-plus text-primary mr-2"></i>
+                  New Customer
+                </h4>
+                <button class="btn btn-outline-secondary" (click)="setView('clientes')">
+                  <i class="fa fa-arrow-left mr-1"></i>Back
+                </button>
+              </div>
+            </div>
+            <div class="card-body">
+              <form (ngSubmit)="crearCliente()">
+                <div class="mb-3">
+                  <label class="form-label font-weight-bold">Full Name *</label>
+                  <input type="text" class="form-control" [(ngModel)]="nuevoCliente.nombre" 
+                         name="nombre" required>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label font-weight-bold">Email *</label>
+                  <input type="email" class="form-control" [(ngModel)]="nuevoCliente.email" 
+                         name="email" required>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label font-weight-bold">Phone</label>
+                  <input type="tel" class="form-control" [(ngModel)]="nuevoCliente.telefono" 
+                         name="telefono">
+                </div>
+                <div class="mb-3">
+                  <label class="form-label font-weight-bold">Address</label>
+                  <textarea class="form-control" rows="2" [(ngModel)]="nuevoCliente.direccion" 
+                            name="direccion"></textarea>
+                </div>
+                
+                <div class="text-right">
+                  <button type="button" class="btn btn-outline-secondary mr-2" (click)="setView('clientes')">
+                    Cancel
+                  </button>
+                  <button type="submit" class="btn btn-primary">
+                    <i class="fa fa-save mr-1"></i>Save Customer
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Orders View -->
+    <div *ngIf="currentView === 'pedidos'" class="orders-section">
+      <div class="row mb-4">
+        <div class="col-md-8">
+          <h2 class="h3 text-dark font-weight-bold mb-0">Order Management</h2>
+          <p class="text-muted">Track and manage customer orders</p>
+        </div>
+        <div class="col-md-4 text-right">
+          <button class="btn btn-primary" (click)="setView('nuevo-pedido')">
+            <i class="fa fa-plus mr-2"></i>New Order
+          </button>
+        </div>
+      </div>
+      
+      <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover mb-0">
+              <thead class="thead-light">
+                <tr>
+                  <th class="border-0 font-weight-bold small text-uppercase">Order #</th>
+                  <th class="border-0 font-weight-bold small text-uppercase">Customer</th>
+                  <th class="border-0 font-weight-bold small text-uppercase">Total</th>
+                  <th class="border-0 font-weight-bold small text-uppercase">Status</th>
+                  <th class="border-0 font-weight-bold small text-uppercase">Date</th>
+                  <th class="border-0 font-weight-bold small text-uppercase">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let pedido of pedidos">
+                  <td class="font-weight-medium">{{pedido.numero}}</td>
+                  <td>{{pedido.clienteNombre}}</td>
+                  <td class="font-weight-medium">${{pedido.total.toLocaleString()}}</td>
+                  <td>
+                    <select class="form-control form-control-sm" [value]="pedido.estado" 
+                            (change)="onEstadoChange(pedido, $event)">
+                      <option value="pendiente">Pending</option>
+                      <option value="procesado">Processed</option>
+                      <option value="enviado">Shipped</option>
+                      <option value="entregado">Delivered</option>
+                    </select>
+                  </td>
+                  <td class="text-muted">{{pedido.fecha | date:'short':'':'es'}}</td>
+                  <td>
+                    <button class="btn btn-outline-primary btn-sm mr-1">
+                      <i class="fa fa-eye"></i>
+                    </button>
+                    <button class="btn btn-outline-danger btn-sm">
+                      <i class="fa fa-trash"></i>
+                    </button>
+                  </td>
+                </tr>
+                <tr *ngIf="pedidos.length === 0">
+                  <td colspan="6" class="text-center text-muted py-4">
+                    <i class="fa fa-shopping-cart mr-2"></i>
+                    No orders yet
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- New Order Form -->
+    <div *ngIf="currentView === 'nuevo-pedido'" class="form-section">
+      <div class="row justify-content-center">
+        <div class="col-lg-10">
+          <div class="card border-0 shadow">
+            <div class="card-header bg-white border-bottom">
+              <div class="d-flex align-items-center justify-content-between">
+                <h4 class="mb-0 font-weight-bold text-dark">
+                  <i class="fa fa-plus-circle text-primary mr-2"></i>
+                  Create New Order
+                </h4>
+                <button class="btn btn-outline-secondary" (click)="setView('pedidos')">
+                  <i class="fa fa-arrow-left mr-1"></i>Back
+                </button>
+              </div>
+            </div>
+            <div class="card-body">
+              <form (ngSubmit)="crearPedido()">
+                <div class="row mb-4">
+                  <div class="col-md-6">
+                    <label class="form-label font-weight-bold">Customer *</label>
+                    <select class="form-control" [(ngModel)]="nuevoPedido.clienteId" name="clienteId" required>
+                      <option value="">Select a customer</option>
+                      <option *ngFor="let cliente of clientes" [value]="cliente.id">
+                        {{cliente.nombre}} - {{cliente.email}}
+                      </option>
+                    </select>
+                  </div>
+                                      <div class="col-md-6">
+                      <label class="form-label font-weight-bold">Order Date</label>
+                      <input type="text" class="form-control" [value]="getCurrentDate()" readonly>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                  <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="mb-0 font-weight-bold">Order Items</h5>
+                    <button type="button" class="btn btn-outline-primary btn-sm" (click)="agregarItemAPedido()">
+                      <i class="fa fa-plus mr-1"></i>Add Item
+                    </button>
+                  </div>
+                  
+                  <div *ngFor="let item of nuevoPedido.items; let i = index" class="border rounded p-3 mb-3">
+                    <div class="row">
+                      <div class="col-md-4 mb-2">
+                        <label class="form-label small">Product</label>
+                        <select class="form-control" [value]="item.skuId" (change)="onSkuChange(item, $event)">
+                          <option value="">Select product</option>
+                          <option *ngFor="let sku of skus" [value]="sku.id">
+                            {{sku.codigo}} - {{sku.nombre}}
+                          </option>
+                        </select>
+                      </div>
+                      <div class="col-md-2 mb-2">
+                        <label class="form-label small">Quantity</label>
+                        <input type="number" class="form-control" [(ngModel)]="item.cantidad" 
+                               name="cantidad{{i}}" (input)="actualizarSubtotal(item)" min="1">
+                      </div>
+                      <div class="col-md-2 mb-2">
+                        <label class="form-label small">Price</label>
+                        <input type="text" class="form-control" [value]="'$' + item.precio.toLocaleString()" readonly>
+                      </div>
+                      <div class="col-md-2 mb-2">
+                        <label class="form-label small">Subtotal</label>
+                        <input type="text" class="form-control" [value]="'$' + item.subtotal.toLocaleString()" readonly>
+                      </div>
+                      <div class="col-md-2 mb-2">
+                        <label class="form-label small">&nbsp;</label>
+                        <button type="button" class="btn btn-outline-danger btn-block" (click)="eliminarItemDePedido(i)">
+                          <i class="fa fa-trash"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div *ngIf="!nuevoPedido.items || nuevoPedido.items.length === 0" 
+                       class="text-center text-muted py-4">
+                    <i class="fa fa-shopping-cart mr-2"></i>
+                    No items added yet
+                  </div>
+                </div>
+
+                                  <div class="d-flex justify-content-between align-items-center">
+                    <div class="h5 mb-0">
+                      Total: ${{getTotalPedido()}}
+                    </div>
+                  <div>
+                    <button type="button" class="btn btn-outline-secondary mr-2" (click)="setView('pedidos')">
+                      Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary" 
+                            [disabled]="!nuevoPedido.clienteId || !nuevoPedido.items || nuevoPedido.items.length === 0">
+                      <i class="fa fa-save mr-1"></i>Create Order
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div> 

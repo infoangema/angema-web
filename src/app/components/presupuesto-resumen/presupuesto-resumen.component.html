@@ -32,27 +32,48 @@
         <!-- Descripción funcional por plan -->
         <section id="descripcion" class="mb-5">
           <h2 class="section-title">1. Descripción funcional por plan</h2>
-          <p class="lead">En esta sección se detallan las funcionalidades contempladas en cada versión del sistema de administración de SKUs (Stock Keeping Units). Cada plan (Básico, Medio, Avanzado) suma capacidades sobre el anterior, ofreciendo soluciones adaptadas al tamaño y necesidades del cliente.</p>
+          <p class="lead">En esta sección se detallan las funcionalidades contempladas en cada versión del sistema de administración de SKUs (Stock Keeping Units). Cada plan suma capacidades sobre el anterior, ofreciendo soluciones adaptadas al tamaño y necesidades del cliente.</p>
           
           <div class="plan-card mb-4">
             <h3 class="plan-title">1.1 Plan Básico</h3>
-            <p><strong>Resumen:</strong> El plan Básico se enfoca en las necesidades fundamentales de gestión de inventario para un solo comercio pequeño. Incluye funcionalidades esenciales para crear y manejar SKUs, controlar stock de productos y automatizar tareas básicas de venta.</p>
+            <p><strong>Resumen:</strong> El plan Básico es una solución de escritorio desarrollada con Flutter Desktop que proporciona una interfaz nativa y eficiente para la gestión de inventario. Ideal para comercios que prefieren una aplicación de escritorio sin dependencias de navegador web.</p>
             <ul class="feature-list">
-              <li><strong>CRUD de SKUs:</strong> Permite Crear, Leer, Actualizar y Eliminar productos (SKUs) en el catálogo.</li>
-              <li><strong>Manejo de stock:</strong> Registro del stock disponible por producto, con posibilidad de ajustar entradas y salidas de inventario.</li>
-              <li><strong>Gestión de pedidos básica:</strong> Integración con API de TiendaNube para obtener información de pedidos y Mercado Pago para verificar pagos.</li>
-              <li><strong>Login genérico:</strong> Autenticación de usuario simple mediante email y contraseña, utilizando Firebase Authentication.</li>
-              <li><strong>Conexión a Firebase (Firestore):</strong> Almacenamiento de datos en Cloud Firestore.</li>
-              <li><strong>Integración con APIs externas:</strong> APIs de Mercado Pago y TiendaNube para sincronizar productos, stock y pedidos.</li>
-              <li><strong>Alertas por stock mínimo:</strong> Alerta visible en el panel principal y posibilidad de email automático al administrador.</li>
-              <li><strong>Generación automática de códigos SKU:</strong> Asistencia en la generación del código SKU siguiendo reglas definidas.</li>
+              <li><strong>Flutter Desktop (Frontend):</strong> Interfaz nativa de escritorio con diseño moderno y responsive.</li>
+              <li><strong>Interfaz para generar SKUs:</strong> Formularios intuitivos para crear y gestionar productos con generación automática de códigos.</li>
+              <li><strong>Administración de productos por sector:</strong> Organización y filtrado de productos por categorías o sectores.</li>
+              <li><strong>Dashboard de pedidos en tiempo real:</strong> Vista centralizada de todos los pedidos con actualizaciones en tiempo real.</li>
+              <li><strong>Sincronización automática con Firebase:</strong> Almacenamiento en la nube con sincronización automática de datos.</li>
+              <li><strong>CRUD de clientes:</strong> Gestión completa de clientes con información de contacto y historial.</li>
+              <li><strong>Carga manual de pedidos:</strong> Creación de pedidos seleccionando cliente y productos del catálogo.</li>
+              <li><strong>Firebase Firestore (Base de Datos):</strong> Almacenamiento en la nube para productos, SKUs, pedidos, configuraciones de sectores, logs de webhooks y clientes.</li>
+              <li><strong>Firebase Cloud Functions (Backend/API):</strong> Funciones serverless para lógica de negocio y procesamiento de datos.</li>
+            </ul>
+            <div class="demo-link mt-3">
+              <a href="/sku-demo" class="btn btn-outline-primary" target="_blank">
+                <i class="fas fa-play"></i> Ver Demo Interactiva
+              </a>
+              <small class="text-muted d-block mt-2">Experimenta la funcionalidad del sistema con datos de ejemplo</small>
+            </div>
+          </div>
+
+          <div class="plan-card mb-4">
+            <h3 class="plan-title">1.2 Plan Básico Plus</h3>
+            <p><strong>Resumen:</strong> El plan Básico Plus incluye todas las funcionalidades del Básico y agrega integraciones con plataformas de e-commerce populares para automatizar la sincronización de datos.</p>
+            <ul class="feature-list">
+              <li><strong>Todas las funcionalidades del Plan Básico</strong></li>
+              <li><strong>Integración con MercadoLibre:</strong> Sincronización automática de pedidos desde MercadoLibre (+ USD $500).</li>
+              <li><strong>Integración con TiendaNube:</strong> Sincronización automática de productos y pedidos desde TiendaNube (+ USD $500).</li>
+              <li><strong>Webhooks automáticos:</strong> Recepción automática de actualizaciones de pedidos y stock.</li>
+              <li><strong>Alertas por stock mínimo:</strong> Notificaciones automáticas cuando el stock baja del mínimo establecido.</li>
+              <li><strong>Generación automática de códigos SKU:</strong> Sistema inteligente de generación de códigos basado en categorías.</li>
             </ul>
           </div>
 
           <div class="plan-card mb-4">
-            <h3 class="plan-title">1.2 Plan Medio</h3>
-            <p><strong>Resumen:</strong> El plan Medio incluye todas las funcionalidades del Básico y agrega características enfocadas en gestión multiusuario y análisis de ventas.</p>
+            <h3 class="plan-title">1.3 Plan Medio</h3>
+            <p><strong>Resumen:</strong> El plan Medio incluye todas las funcionalidades del Básico Plus y agrega características enfocadas en gestión multiusuario y análisis de ventas.</p>
             <ul class="feature-list">
+              <li><strong>Todas las funcionalidades del Plan Básico Plus</strong></li>
               <li><strong>Roles de usuario y gestión de permisos:</strong> Implementación de roles (Administrador, Editor, Usuario/Consultor) con interfaz para asignación de permisos.</li>
               <li><strong>Métricas de ventas y dashboard de análisis:</strong> Dashboard con visualización de datos agregados de ventas.</li>
               <li><strong>Gestión de ventas multicanal:</strong> Posibilidad de consolidar ventas de tienda física y tienda online.</li>
@@ -64,9 +85,10 @@
           </div>
 
           <div class="plan-card mb-4">
-            <h3 class="plan-title">1.3 Plan Avanzado</h3>
+            <h3 class="plan-title">1.4 Plan Avanzado</h3>
             <p><strong>Resumen:</strong> El plan Avanzado incluye todas las características de la versión Media y añade capacidades orientadas a un modelo SaaS (Software as a Service) multi-tenant.</p>
             <ul class="feature-list">
+              <li><strong>Todas las funcionalidades del Plan Medio</strong></li>
               <li><strong>Arquitectura Multi-Tenant (SaaS):</strong> Soporte para múltiples comercios independientes en la misma plataforma.</li>
               <li><strong>Gestión avanzada de usuarios y roles por comercio:</strong> Vinculación de usuarios a tenants específicos.</li>
               <li><strong>Escalabilidad y aislamiento:</strong> Infraestructura planificada para alto volumen.</li>
@@ -86,10 +108,21 @@
           <div class="use-case-card mb-4">
             <h3 class="use-case-title">Plan Básico - Ideal para:</h3>
             <ul class="use-case-list">
-              <li><strong>Comercios pequeños:</strong> Tiendas con un solo punto de venta y catálogo de hasta 500 productos.</li>
+              <li><strong>Comercios pequeños:</strong> Tiendas con un solo punto de venta que prefieren aplicaciones de escritorio.</li>
               <li><strong>Emprendimientos:</strong> Negocios que están digitalizando su inventario por primera vez.</li>
-              <li><strong>Tiendas online simples:</strong> E-commerce con TiendaNube que necesitan sincronización básica.</li>
-              <li><strong>Control básico de stock:</strong> Negocios que requieren alertas simples de reposición.</li>
+              <li><strong>Gestión manual de pedidos:</strong> Comercios que manejan pedidos de forma manual sin integraciones automáticas.</li>
+              <li><strong>Control básico de stock:</strong> Negocios que requieren gestión simple de inventario y clientes.</li>
+              <li><strong>Preferencia por aplicaciones nativas:</strong> Usuarios que valoran la velocidad y experiencia de aplicaciones de escritorio.</li>
+            </ul>
+          </div>
+
+          <div class="use-case-card mb-4">
+            <h3 class="use-case-title">Plan Básico Plus - Ideal para:</h3>
+            <ul class="use-case-list">
+              <li><strong>Comercios con e-commerce:</strong> Tiendas que venden en MercadoLibre o TiendaNube y necesitan sincronización.</li>
+              <li><strong>Automatización de pedidos:</strong> Negocios que quieren automatizar la recepción de pedidos online.</li>
+              <li><strong>Gestión multicanal:</strong> Comercios que manejan ventas online y offline de forma integrada.</li>
+              <li><strong>Reducción de trabajo manual:</strong> Empresas que buscan eliminar la entrada manual de pedidos.</li>
             </ul>
           </div>
 
@@ -100,6 +133,7 @@
               <li><strong>Multicanal:</strong> Negocios con tienda física y online que requieren consolidación de datos.</li>
               <li><strong>Análisis de ventas:</strong> Comercios que necesitan métricas para tomar decisiones estratégicas.</li>
               <li><strong>Gestión colaborativa:</strong> Equipos que requieren roles y permisos diferenciados.</li>
+              <li><strong>Reportes gerenciales:</strong> Empresas que necesitan exportar datos para análisis externo.</li>
             </ul>
           </div>
 
@@ -123,19 +157,43 @@
                 <tr>
                   <th>Funcionalidad</th>
                   <th>Plan Básico</th>
+                  <th>Plan Básico Plus</th>
                   <th>Plan Medio</th>
                   <th>Plan Avanzado</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td>CRUD de SKUs</td>
+                  <td>Flutter Desktop</td>
+                  <td><span class="badge bg-success">Sí</span></td>
                   <td><span class="badge bg-success">Sí</span></td>
                   <td><span class="badge bg-success">Sí</span></td>
                   <td><span class="badge bg-success">Sí</span></td>
                 </tr>
                 <tr>
+                  <td>CRUD de SKUs</td>
+                  <td><span class="badge bg-success">Sí</span></td>
+                  <td><span class="badge bg-success">Sí</span></td>
+                  <td><span class="badge bg-success">Sí</span></td>
+                  <td><span class="badge bg-success">Sí</span></td>
+                </tr>
+                <tr>
+                  <td>CRUD de Clientes</td>
+                  <td><span class="badge bg-success">Sí</span></td>
+                  <td><span class="badge bg-success">Sí</span></td>
+                  <td><span class="badge bg-success">Sí</span></td>
+                  <td><span class="badge bg-success">Sí</span></td>
+                </tr>
+                <tr>
+                  <td>Gestión de Pedidos</td>
+                  <td><span class="badge bg-success">Manual</span></td>
+                  <td><span class="badge bg-success">Manual</span></td>
+                  <td><span class="badge bg-success">Manual</span></td>
+                  <td><span class="badge bg-success">Manual</span></td>
+                </tr>
+                <tr>
                   <td>Manejo de Stock</td>
+                  <td><span class="badge bg-success">Sí</span></td>
                   <td><span class="badge bg-success">Sí</span></td>
                   <td><span class="badge bg-success">Sí</span></td>
                   <td><span class="badge bg-success">Sí</span></td>
@@ -144,28 +202,40 @@
                   <td>Alertas de Stock Mínimo</td>
                   <td><span class="badge bg-success">Sí</span></td>
                   <td><span class="badge bg-success">Sí</span></td>
+                  <td><span class="badge bg-success">Sí</span></td>
                   <td><span class="badge bg-primary">Sí (mejorada)</span></td>
                 </tr>
                 <tr>
+                  <td>Integración MercadoLibre</td>
+                  <td><span class="badge bg-danger">No</span></td>
+                  <td><span class="badge bg-success">Sí (+$500)</span></td>
+                  <td><span class="badge bg-success">Sí</span></td>
+                  <td><span class="badge bg-success">Sí</span></td>
+                </tr>
+                <tr>
+                  <td>Integración TiendaNube</td>
+                  <td><span class="badge bg-danger">No</span></td>
+                  <td><span class="badge bg-success">Sí (+$500)</span></td>
+                  <td><span class="badge bg-info">Tiempo Real</span></td>
+                  <td><span class="badge bg-info">Tiempo Real</span></td>
+                </tr>
+                <tr>
                   <td>Login de Usuario</td>
+                  <td><span class="badge bg-warning">Genérico</span></td>
                   <td><span class="badge bg-warning">Genérico</span></td>
                   <td><span class="badge bg-info">Roles</span></td>
                   <td><span class="badge bg-primary">Roles por Tienda</span></td>
                 </tr>
                 <tr>
-                  <td>Integración TiendaNube</td>
-                  <td><span class="badge bg-warning">Básica</span></td>
-                  <td><span class="badge bg-info">Tiempo Real</span></td>
-                  <td><span class="badge bg-info">Tiempo Real</span></td>
-                </tr>
-                <tr>
                   <td>Roles y Permisos de Usuario</td>
+                  <td><span class="badge bg-danger">No</span></td>
                   <td><span class="badge bg-danger">No</span></td>
                   <td><span class="badge bg-success">Sí</span></td>
                   <td><span class="badge bg-primary">Sí (avanzado)</span></td>
                 </tr>
                 <tr>
                   <td>Dashboard y Métricas de Ventas</td>
+                  <td><span class="badge bg-danger">No</span></td>
                   <td><span class="badge bg-danger">No</span></td>
                   <td><span class="badge bg-success">Sí</span></td>
                   <td><span class="badge bg-success">Sí</span></td>
@@ -174,10 +244,12 @@
                   <td>Arquitectura Multi-Tenant (SaaS)</td>
                   <td><span class="badge bg-danger">No</span></td>
                   <td><span class="badge bg-danger">No</span></td>
+                  <td><span class="badge bg-danger">No</span></td>
                   <td><span class="badge bg-success">Sí</span></td>
                 </tr>
                 <tr>
                   <td>Aplicación Móvil (Flutter)</td>
+                  <td><span class="badge bg-danger">No</span></td>
                   <td><span class="badge bg-danger">No</span></td>
                   <td><span class="badge bg-danger">No</span></td>
                   <td><span class="badge bg-warning">Opcional</span></td>
@@ -194,25 +266,43 @@
           
           <div class="benefits-comparison">
             <div class="row">
-              <div class="col-md-4 mb-4">
+              <div class="col-md-3 mb-4">
                 <div class="benefit-card basic-benefit">
                   <h4>Plan Básico</h4>
                   <div class="benefit-item">
-                    <h5><i class="fas fa-clock text-primary"></i> Ahorro de Tiempo</h5>
+                    <h5><i class="fas fa-desktop text-primary"></i> Aplicación Nativa</h5>
+                    <p>Interfaz de escritorio rápida y eficiente sin dependencias de navegador</p>
+                  </div>
+                  <div class="benefit-item">
+                    <h5><i class="fas fa-clock text-warning"></i> Ahorro de Tiempo</h5>
                     <p>Reducción del 60% en tiempo de gestión manual de inventario</p>
                   </div>
                   <div class="benefit-item">
-                    <h5><i class="fas fa-exclamation-triangle text-warning"></i> Reducción de Errores</h5>
-                    <p>Eliminación de errores de stock por gestión manual</p>
-                  </div>
-                  <div class="benefit-item">
-                    <h5><i class="fas fa-sync text-info"></i> Sincronización</h5>
-                    <p>Actualización automática entre tienda online y sistema</p>
+                    <h5><i class="fas fa-users text-info"></i> Gestión de Clientes</h5>
+                    <p>Control completo de clientes y pedidos manuales</p>
                   </div>
                 </div>
               </div>
 
-              <div class="col-md-4 mb-4">
+              <div class="col-md-3 mb-4">
+                <div class="benefit-card basic-plus-benefit">
+                  <h4>Plan Básico Plus</h4>
+                  <div class="benefit-item">
+                    <h5><i class="fas fa-plug text-primary"></i> Integraciones</h5>
+                    <p>Conectividad automática con MercadoLibre y TiendaNube</p>
+                  </div>
+                  <div class="benefit-item">
+                    <h5><i class="fas fa-robot text-warning"></i> Automatización</h5>
+                    <p>Eliminación de entrada manual de pedidos online</p>
+                  </div>
+                  <div class="benefit-item">
+                    <h5><i class="fas fa-sync text-info"></i> Sincronización</h5>
+                    <p>Actualización automática entre canales de venta</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-3 mb-4">
                 <div class="benefit-card medium-benefit">
                   <h4>Plan Medio</h4>
                   <div class="benefit-item">
@@ -230,7 +320,7 @@
                 </div>
               </div>
 
-              <div class="col-md-4 mb-4">
+              <div class="col-md-3 mb-4">
                 <div class="benefit-card advanced-benefit">
                   <h4>Plan Avanzado</h4>
                   <div class="benefit-item">
@@ -257,29 +347,54 @@
           
           <div class="pricing-cards">
             <div class="row">
-              <div class="col-md-4 mb-4">
+              <div class="col-md-3 mb-4">
                 <div class="pricing-card basic">
                   <div class="pricing-header">
                     <h3>Plan Básico</h3>
-                    <div class="price">USD $4.500</div>
-                    <div class="duration">~4-5 semanas</div>
+                    <div class="price">USD $3.000</div>
+                    <div class="duration">~3-4 semanas</div>
                   </div>
                   <div class="pricing-body">
-                    <p><strong>Alcance:</strong> Sistema standalone para un comercio, con gestión esencial de SKUs, stock y sincronización simple con tienda online.</p>
+                    <p><strong>Alcance:</strong> Aplicación de escritorio Flutter con gestión completa de SKUs, clientes y pedidos manuales.</p>
                     <h5>Módulos principales:</h5>
                     <ul>
-                      <li>Autenticación Genérica</li>
+                      <li>Flutter Desktop (Frontend)</li>
                       <li>CRUD SKUs & Catálogo</li>
-                      <li>Gestión de Stock & Alertas Básicas</li>
-                      <li>Integración Pedidos (TiendaNube/MercadoPago - básica)</li>
-                      <li>Configuración Inicial Firebase</li>
+                      <li>CRUD Clientes</li>
+                      <li>Gestión de Pedidos Manuales</li>
+                      <li>Firebase Firestore (Base de Datos)</li>
+                      <li>Firebase Cloud Functions (Backend)</li>
                     </ul>
-                    <p><strong>Valor para el cliente:</strong> Digitalización inmediata del inventario, reducción de errores, ahorro de tiempo.</p>
+                    <p><strong>Valor para el cliente:</strong> Aplicación nativa de escritorio, gestión completa de inventario y clientes, sin dependencias de navegador.</p>
                   </div>
                 </div>
               </div>
 
-              <div class="col-md-4 mb-4">
+              <div class="col-md-3 mb-4">
+                <div class="pricing-card basic-plus">
+                  <div class="pricing-header">
+                    <h3>Plan Básico Plus</h3>
+                    <div class="price">USD $4.000</div>
+                    <div class="duration">~4-5 semanas</div>
+                    <div class="optional">+ USD $500 (MercadoLibre)</div>
+                    <div class="optional">+ USD $500 (TiendaNube)</div>
+                  </div>
+                  <div class="pricing-body">
+                    <p><strong>Alcance:</strong> Incluye todas las funcionalidades del Plan Básico más integraciones opcionales con plataformas de e-commerce.</p>
+                    <h5>Módulos adicionales:</h5>
+                    <ul>
+                      <li>Todas las funcionalidades del Plan Básico</li>
+                      <li>Integración MercadoLibre (opcional)</li>
+                      <li>Integración TiendaNube (opcional)</li>
+                      <li>Webhooks automáticos</li>
+                      <li>Sincronización de pedidos</li>
+                    </ul>
+                    <p><strong>Valor para el cliente:</strong> Automatización completa de pedidos online, eliminación de trabajo manual, sincronización multicanal.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-3 mb-4">
                 <div class="pricing-card medium">
                   <div class="pricing-header">
                     <h3>Plan Medio</h3>
@@ -290,6 +405,7 @@
                     <p><strong>Alcance:</strong> Sistema multiusuario para un comercio, con roles, dashboard de métricas, y automatizaciones en tiempo real.</p>
                     <h5>Módulos adicionales:</h5>
                     <ul>
+                      <li>Todas las funcionalidades del Plan Básico Plus</li>
                       <li>Gestión de Roles y Usuarios</li>
                       <li>Dashboard y Métricas de Ventas</li>
                       <li>Reportes Exportables</li>
@@ -301,7 +417,7 @@
                 </div>
               </div>
 
-              <div class="col-md-4 mb-4">
+              <div class="col-md-3 mb-4">
                 <div class="pricing-card advanced">
                   <div class="pricing-header">
                     <h3>Plan Avanzado</h3>
@@ -313,6 +429,7 @@
                     <p><strong>Alcance:</strong> Plataforma SaaS completa, multi-tenant, con auditoría avanzada y automatización de reabastecimiento.</p>
                     <h5>Módulos adicionales:</h5>
                     <ul>
+                      <li>Todas las funcionalidades del Plan Medio</li>
                       <li>Arquitectura Multi-Tenant</li>
                       <li>Panel de Administración SaaS</li>
                       <li>Auditoría Completa y Detallada</li>
