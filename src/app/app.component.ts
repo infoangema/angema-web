@@ -1,42 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { SpinnerComponent } from './components/spinner/spinner.component';
 import { NotificationsComponent } from './shared/components/notifications/notifications.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, CommonModule, SpinnerComponent, NotificationsComponent],
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  imports: [RouterOutlet, CommonModule, NotificationsComponent],
+  template: `
+    <router-outlet></router-outlet>
+    <app-notifications></app-notifications>
+  `
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
   title = 'angema-web';
-  verificarSpinner: string = '';
-
-  constructor() {
-    const storedData = localStorage.getItem('data');
-    this.verificarSpinner = storedData ? JSON.parse(storedData) : '';
-  }
-
-  ngOnInit(): void {
-    localStorage.setItem('data', JSON.stringify(this.verificarSpinner));
-
-    if (this.verificarSpinner === '' || this.verificarSpinner == null) {
-      setTimeout(() => {
-        this.verificarSpinner = 'false';
-        this.guardarStorage();
-      }, 5000);
-    }
-  }
-
-  guardarStorage() {
-    localStorage.setItem('data', JSON.stringify(this.verificarSpinner));
-  }
-
-  cargarStorage() {
-    const storedData = localStorage.getItem('data');
-    this.verificarSpinner = storedData ? JSON.parse(storedData) : '';
-  }
 }

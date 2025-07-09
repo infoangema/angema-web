@@ -19,7 +19,12 @@
 
                 <div class="flex items-center space-x-6 relative z-50">
                     <a class="text-white text-lg md:text-xl font-semibold hover:text-purple-200 transition-colors uppercase tracking-wide drop-shadow-lg" routerLink="/">Home</a>
-                    <a class="text-white text-lg md:text-xl font-semibold hover:text-purple-200 transition-colors  tracking-wide drop-shadow-lg" routerLink="/app/login">STOCKin MANAGER</a>
+                    <button 
+                        (click)="goToStockInManager()"
+                        class="text-white text-lg md:text-xl font-semibold hover:text-purple-200 transition-colors tracking-wide drop-shadow-lg bg-transparent border-none cursor-pointer"
+                    >
+                        STOCKin MANAGER
+                    </button>
                     <a class="bg-transparent border-2 border-white text-white px-4 py-1 md:px-6 md:py-2 rounded hover:bg-white hover:text-purple-900 transition-all duration-300 font-bold text-lg md:text-xl drop-shadow-lg" href="#contacto">Contacto</a>
                 </div>
             </div>

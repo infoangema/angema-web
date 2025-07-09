@@ -2,13 +2,25 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NotificationService, NotificationMessage } from '../../../core/services/notification.service';
 import { Observable } from 'rxjs';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 @Component({
   selector: 'app-notifications',
   standalone: true,
   imports: [CommonModule],
   templateUrl: './notifications.component.html',
-  styleUrls: ['./notifications.component.css']
+  styleUrls: ['./notifications.component.css'],
+  animations: [
+    trigger('slideIn', [
+      transition(':enter', [
+        style({ transform: 'translateX(100%)', opacity: 0 }),
+        animate('150ms ease-out', style({ transform: 'translateX(0)', opacity: 1 }))
+      ]),
+      transition(':leave', [
+        animate('100ms ease-in', style({ transform: 'translateX(100%)', opacity: 0 }))
+      ])
+    ])
+  ]
 })
 export class NotificationsComponent implements OnInit {
   notifications$: Observable<NotificationMessage[]>;

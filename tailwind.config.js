@@ -1,61 +1,36 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: [
-    "./src/**/*.{html,ts}",
-    "./node_modules/flowbite/**/*.js"
-  ],
+  darkMode: 'class',
+  content: ['./src/**/*.{html,ts}'],
   theme: {
     extend: {
       colors: {
         primary: {
-          100: '#E3F2FD',
-          200: '#BBDEFB',
-          300: '#90CAF9',
-          400: '#64B5F6',
-          500: '#2196F3',
-          600: '#1976D2',
-          700: '#1565C0',
-          800: '#0D47A1',
-          900: '#0277BD',
+          50: '#eff6ff',
+          100: '#dbeafe',
+          200: '#bfdbfe',
+          300: '#93c5fd',
+          400: '#60a5fa',
+          500: '#3b82f6',
+          600: '#2563eb',
+          700: '#1d4ed8',
+          800: '#1e40af',
+          900: '#1e3a8a'
         },
-        secondary: {
-          100: '#F8E6FF',
-          200: '#E1B3FF',
-          300: '#CA80FF',
-          400: '#B34DFF',
-          500: '#9C1AFF',
-          600: '#7A14CC',
-          700: '#580E99',
-          800: '#360866',
-          900: '#140233',
-        },
-        purple: {
-          50: '#F3E5F5',
-          100: '#E1BEE7',
-          200: '#CE93D8',
-          300: '#BA68C8',
-          400: '#AB47BC',
-          500: '#9C27B0',
-          600: '#8E24AA',
-          700: '#7B1FA2',
-          800: '#6A1B9A',
-          900: '#4A148C',
-        },
-        gradient: {
-          from: '#8B5CF6',
-          to: '#A855F7',
+        dark: {
+          50: '#F9FAFB',
+          100: '#F3F4F6',
+          200: '#E5E7EB',
+          300: '#D1D5DB',
+          400: '#9CA3AF',
+          500: '#6B7280',
+          600: '#4B5563',
+          700: '#374151',
+          800: '#1F2937',
+          900: '#111827'
         }
-      },
-      fontFamily: {
-        'sans': ['Inter', 'ui-sans-serif', 'system-ui'],
-      },
-      backgroundImage: {
-        'gradient-purple': 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        'gradient-main': 'linear-gradient(135deg, #8B5CF6 0%, #A855F7 100%)',
       }
-    },
+    }
   },
-  plugins: [
-    require('flowbite/plugin')
-  ],
-}
+  plugins: []
+};

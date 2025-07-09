@@ -120,27 +120,31 @@
         <div class="text-sm">
           <button 
             type="button"
-            (click)="toggleEmailLinkOption()"
+            (click)="toggleForgotPassword()"
             class="font-medium text-primary-600 hover:text-primary-500"
           >
-            {{ showEmailLinkOption ? 'Login con contraseña' : 'Acceso sin contraseña' }}
+            ¿Olvidaste tu contraseña?
           </button>
         </div>
       </div>
 
-      <!-- Email Link Form -->
-      <div *ngIf="showEmailLinkOption" class="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-        <h3 class="text-lg font-medium text-gray-900 mb-4">Acceso sin contraseña</h3>
-        <p class="text-sm text-gray-600 mb-4">Te enviaremos un enlace seguro a tu email para acceder directamente.</p>
+
+
+
+
+      <!-- Forgot Password Form -->
+      <div *ngIf="showForgotPassword" class="mt-6 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+        <h3 class="text-lg font-medium text-gray-900 mb-4">Recuperar contraseña</h3>
+        <p class="text-sm text-gray-600 mb-4">Te enviaremos un enlace para restablecer tu contraseña.</p>
         
-        <form [formGroup]="emailLinkForm" (ngSubmit)="sendEmailLink()">
+        <form [formGroup]="forgotPasswordForm" (ngSubmit)="sendPasswordReset()">
           <div>
-            <label for="emailLink" class="block text-sm font-medium text-gray-700">
+            <label for="forgotPasswordEmail" class="block text-sm font-medium text-gray-700">
               Email
             </label>
             <input
-              id="emailLink"
-              name="emailLink"
+              id="forgotPasswordEmail"
+              name="forgotPasswordEmail"
               type="email"
               formControlName="email"
               autocomplete="email"
@@ -148,27 +152,27 @@
               class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
               placeholder="tu@email.com"
             >
-            <div class="text-red-500 text-sm mt-1" *ngIf="getErrorMessage('email', 'emailLink')">
-              {{ getErrorMessage('email', 'emailLink') }}
+            <div class="text-red-500 text-sm mt-1" *ngIf="getErrorMessage('email', 'forgotPassword')">
+              {{ getErrorMessage('email', 'forgotPassword') }}
             </div>
           </div>
 
           <button
             type="submit"
-            [disabled]="loadingEmailLink"
-            class="mt-4 w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            [disabled]="loadingForgotPassword"
+            class="mt-4 w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-yellow-600 hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <span class="flex items-center">
               <svg
                 class="animate-spin h-5 w-5 mr-2"
                 fill="none"
                 viewBox="0 0 24 24"
-                *ngIf="loadingEmailLink"
+                *ngIf="loadingForgotPassword"
               >
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
               </svg>
-              {{ loadingEmailLink ? 'Enviando...' : 'Enviar enlace de acceso' }}
+              {{ loadingForgotPassword ? 'Enviando...' : 'Enviar enlace de recuperación' }}
             </span>
           </button>
         </form>

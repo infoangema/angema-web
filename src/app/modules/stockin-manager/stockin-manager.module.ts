@@ -4,6 +4,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './pages/login/login.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { AuthGuard } from '../../core/guards/auth.guard';
+import { RootGuard } from '../../core/guards/root.guard';
 
 const routes: Routes = [
   {
@@ -39,6 +40,11 @@ const routes: Routes = [
     path: 'reports',
     loadComponent: () => import('./pages/reports/reports.page').then(m => m.StockinReportsPage),
     canActivate: [AuthGuard]
+  },
+  {
+    path: 'root-admin',
+    loadComponent: () => import('./pages/root-admin/root-admin.component').then(m => m.RootAdminComponent),
+    canActivate: [AuthGuard, RootGuard]
   }
 ];
 

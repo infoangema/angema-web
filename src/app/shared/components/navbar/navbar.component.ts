@@ -18,4 +18,11 @@ export class NavbarComponent implements OnInit {
   ngOnInit(): void {
 
   }
+
+  goToStockInManager() {
+    // Limpiar cualquier sesión previa para poder acceder al login
+    localStorage.clear();
+    sessionStorage.clear();
+    this.router.navigate(['/app/login']);
+  }
 }
