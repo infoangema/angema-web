@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NavbarComponent } from '../shared/navbar/navbar.component';
-import { BotonesComponent } from '../botones/botones.component';
-import { ContactoComponent } from '../contacto/contacto.component';
-import { FooterComponent } from '../footer/footer.component';
+import { NavbarComponent } from '../../../../shared/components/navbar/navbar.component';
+import { BotonesComponent } from '../../../../shared/components/botones/botones.component';
+import { ContactoComponent } from '../../../../shared/components/contacto/contacto.component';
+import { FooterComponent } from '../../../../shared/components/footer/footer.component';
 
 @Component({
   selector: 'app-home',

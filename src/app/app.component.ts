@@ -2,11 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { SpinnerComponent } from './components/spinner/spinner.component';
+import { NotificationsComponent } from './shared/components/notifications/notifications.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, CommonModule, SpinnerComponent],
+  imports: [RouterOutlet, CommonModule, SpinnerComponent, NotificationsComponent],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })

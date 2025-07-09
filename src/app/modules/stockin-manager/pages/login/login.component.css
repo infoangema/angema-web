@@ -1,0 +1,22 @@
+/* Estilos adicionales para el componente de login */
+.login-container {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.form-input:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 1px #3b82f6;
+}
+
+.login-logo {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: .8;
+  }
+} 

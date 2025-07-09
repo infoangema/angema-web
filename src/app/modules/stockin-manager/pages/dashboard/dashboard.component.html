@@ -1,0 +1,172 @@
+<stockin-navbar></stockin-navbar>
+
+<div class="min-h-screen bg-gray-50">
+  <!-- Main Content: Mock Dashboard -->
+  <main class="w-full px-4 py-6 sm:px-6 lg:px-8">
+    <div class="w-full max-w-7xl mx-auto">
+      
+      <!-- Cards de métricas con Flowbite -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="p-6 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 dark:bg-gray-800">
+          <div class="flex items-center">
+            <div class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-blue-500 bg-blue-100 rounded-lg dark:bg-blue-900 dark:text-blue-300">
+              <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M10 0C4.477 0 0 4.477 0 10c0 4.991 3.657 9.128 8.438 9.879V12.89h-2.54V10H8.438V7.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V10h2.773l-.443 2.89h-2.33v6.989C16.343 19.129 20 14.99 20 10c0-5.523-4.477-10-10-10z"/>
+              </svg>
+            </div>
+            <div class="ml-4">
+              <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Total productos</h3>
+              <p class="text-2xl font-bold text-gray-900 dark:text-white">1,250</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-6 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 dark:bg-gray-800">
+          <div class="flex items-center">
+            <div class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-yellow-500 bg-yellow-100 rounded-lg dark:bg-yellow-900 dark:text-yellow-300">
+              <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M10 0C4.477 0 0 4.477 0 10c0 4.991 3.657 9.128 8.438 9.879V12.89h-2.54V10H8.438V7.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V10h2.773l-.443 2.89h-2.33v6.989C16.343 19.129 20 14.99 20 10c0-5.523-4.477-10-10-10z"/>
+              </svg>
+            </div>
+            <div class="ml-4">
+              <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Stock bajo</h3>
+              <p class="text-2xl font-bold text-gray-900 dark:text-white">32</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-6 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 dark:bg-gray-800">
+          <div class="flex items-center">
+            <div class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-green-500 bg-green-100 rounded-lg dark:bg-green-900 dark:text-green-300">
+              <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M10 0C4.477 0 0 4.477 0 10c0 4.991 3.657 9.128 8.438 9.879V12.89h-2.54V10H8.438V7.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V10h2.773l-.443 2.89h-2.33v6.989C16.343 19.129 20 14.99 20 10c0-5.523-4.477-10-10-10z"/>
+              </svg>
+            </div>
+            <div class="ml-4">
+              <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Total inventario</h3>
+              <p class="text-2xl font-bold text-gray-900 dark:text-white">$2.150.000</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Botones de acción con Flowbite -->
+      <div class="mb-8">
+        <button type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+          + Nuevo producto
+        </button>
+        <button type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+          + Nuevo pedido
+        </button>
+        <button type="button" class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
+          Ver reportes
+        </button>
+      </div>
+
+      <!-- Tablas de datos con Flowbite -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Tabla de productos con stock bajo -->
+        <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+          <div class="flex items-center justify-between pb-4">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Top 10 productos con stock mínimo</h3>
+          </div>
+          <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+              <tr>
+                <th scope="col" class="px-6 py-3">SKU</th>
+                <th scope="col" class="px-6 py-3">Nombre</th>
+                <th scope="col" class="px-6 py-3">Stock</th>
+                <th scope="col" class="px-6 py-3">Mínimo</th>
+                <th scope="col" class="px-6 py-3">Acción</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">SKU-001</td>
+                <td class="px-6 py-4">Producto A</td>
+                <td class="px-6 py-4">2</td>
+                <td class="px-6 py-4">5</td>
+                <td class="px-6 py-4">
+                  <button type="button" class="text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-xs px-3 py-1.5 dark:focus:ring-yellow-900">
+                    Reponer
+                  </button>
+                </td>
+              </tr>
+              <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">SKU-002</td>
+                <td class="px-6 py-4">Producto B</td>
+                <td class="px-6 py-4">3</td>
+                <td class="px-6 py-4">6</td>
+                <td class="px-6 py-4">
+                  <button type="button" class="text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-xs px-3 py-1.5 dark:focus:ring-yellow-900">
+                    Reponer
+                  </button>
+                </td>
+              </tr>
+              <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">SKU-003</td>
+                <td class="px-6 py-4">Producto C</td>
+                <td class="px-6 py-4">1</td>
+                <td class="px-6 py-4">4</td>
+                <td class="px-6 py-4">
+                  <button type="button" class="text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-xs px-3 py-1.5 dark:focus:ring-yellow-900">
+                    Reponer
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Tabla de últimos pedidos -->
+        <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+          <div class="flex items-center justify-between pb-4">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Últimos 10 pedidos</h3>
+          </div>
+          <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+              <tr>
+                <th scope="col" class="px-6 py-3">Pedido</th>
+                <th scope="col" class="px-6 py-3">Cliente</th>
+                <th scope="col" class="px-6 py-3">Fecha</th>
+                <th scope="col" class="px-6 py-3">Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">#1001</td>
+                <td class="px-6 py-4">Juan Pérez</td>
+                <td class="px-6 py-4">2024-06-01</td>
+                <td class="px-6 py-4">
+                  <span class="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300">
+                    Pendiente
+                  </span>
+                </td>
+              </tr>
+              <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">#1000</td>
+                <td class="px-6 py-4">María López</td>
+                <td class="px-6 py-4">2024-05-31</td>
+                <td class="px-6 py-4">
+                  <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">
+                    Entregado
+                  </span>
+                </td>
+              </tr>
+              <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">#999</td>
+                <td class="px-6 py-4">Empresa X</td>
+                <td class="px-6 py-4">2024-05-30</td>
+                <td class="px-6 py-4">
+                  <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">
+                    Procesando
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+</div> 

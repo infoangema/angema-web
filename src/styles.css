@@ -1,14 +1,30 @@
+/* Flowbite CSS */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 body {
     max-width: 100%;
 }
 
-.row {
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-}
-
 .bg-gradient {
     background: linear-gradient(90deg, rgba(55, 2, 94, 1) 0%, rgba(155, 55, 199, 1) 48%, rgba(55, 2, 94, 1) 100%);
+}
+
+@keyframes vueloCPU {
+    0% {
+        transform: translate3d(0, 0, 0);
+    }
+    25% {
+        transform: translate3d(0, 3%, 0);
+    }
+    75% {
+        transform: translate3d(0, -3%, 0);
+    }
+    100% {
+        transform: translate3d(0, 0, 0);
+    }
 }
 
 .colorVioleta {
@@ -60,11 +76,6 @@ body {
     justify-content: space-between;
     align-items: stretch;
     align-content: stretch;
-}
-
-.home img {
-    width: 100%;
-    height: auto;
 }
 
 

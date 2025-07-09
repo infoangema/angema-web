@@ -1,7 +1,8 @@
-<div *ngIf="verificarSpinner === null  ">
+<div *ngIf="verificarSpinner === null">
     <app-spinner></app-spinner>
 </div>
 
 <div *ngIf="verificarSpinner === 'false'" class="home">
     <router-outlet></router-outlet>
+    <app-notifications></app-notifications>
 </div>

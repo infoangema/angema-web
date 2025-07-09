@@ -1,0 +1,41 @@
+img[src*="logoCompletoAngema.svg"] {
+  max-width: 450px !important;
+  height: auto !important;
+  width: auto !important;
+}
+
+@media (max-width: 768px) {
+  img[src*="logoCompletoAngema.svg"] {
+    max-width: 200px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  img[src*="logoCompletoAngema.svg"] {
+    max-width: 150px !important;
+  }
+}
+
+/* Texto principal más grande */
+h2.font-black span {
+  font-size: 5rem !important;
+  line-height: 1.1 !important;
+}
+
+@media (max-width: 1024px) {
+  h2.font-black span {
+    font-size: 4rem !important;
+  }
+}
+
+@media (max-width: 768px) {
+  h2.font-black span {
+    font-size: 3rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  h2.font-black span {
+    font-size: 2.5rem !important;
+  }
+}
