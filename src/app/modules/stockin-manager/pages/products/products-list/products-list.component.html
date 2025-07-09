@@ -1,0 +1,158 @@
+<!-- Filtros -->
+<div class="mb-4 bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+    <!-- Búsqueda -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-200">Buscar</label>
+      <input
+        type="text"
+        [(ngModel)]="filters.search"
+        (ngModelChange)="onFiltersChange()"
+        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600"
+        placeholder="Buscar productos...">
+    </div>
+
+    <!-- Categoría -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-200">Categoría</label>
+      <select
+        [(ngModel)]="filters.category"
+        (ngModelChange)="onFiltersChange()"
+        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600">
+        <option [ngValue]="null">Todas las categorías</option>
+        <option *ngFor="let category of categories" [value]="category.id">
+          {{category.name}}
+        </option>
+      </select>
+    </div>
+
+    <!-- Almacén -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-200">Almacén</label>
+      <select
+        [(ngModel)]="filters.warehouse"
+        (ngModelChange)="onFiltersChange()"
+        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600">
+        <option [ngValue]="null">Todos los almacenes</option>
+        <option *ngFor="let warehouse of warehouses" [value]="warehouse.id">
+          {{warehouse.name}}
+        </option>
+      </select>
+    </div>
+
+    <!-- Stock bajo -->
+    <div class="flex items-center mt-6">
+      <input
+        type="checkbox"
+        [(ngModel)]="filters.lowStock"
+        (ngModelChange)="onFiltersChange()"
+        class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+      <label class="ml-2 block text-sm text-gray-900 dark:text-gray-200">
+        Stock bajo
+      </label>
+    </div>
+  </div>
+</div>
+
+<!-- Tabla de productos -->
+<div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+  <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+      <tr>
+        <th scope="col" class="px-16 py-3">
+          <span class="sr-only">Image</span>
+        </th>
+        <th scope="col" class="px-6 py-3 cursor-pointer" (click)="sortBy('name')">
+          Producto
+          <span class="ml-1">{{ getSortIcon('name') }}</span>
+        </th>
+        <th scope="col" class="px-6 py-3 cursor-pointer" (click)="sortBy('stock.current')">
+          Stock
+          <span class="ml-1">{{ getSortIcon('stock.current') }}</span>
+        </th>
+        <th scope="col" class="px-6 py-3 cursor-pointer" (click)="sortBy('pricing.price')">
+          Precio
+          <span class="ml-1">{{ getSortIcon('pricing.price') }}</span>
+        </th>
+        <th scope="col" class="px-6 py-3">Ubicación</th>
+        <th scope="col" class="px-6 py-3">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let product of products" 
+          class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+        <td class="p-4">
+          <img [src]="product.imageUrl || 'assets/img/no-image.png'" 
+               class="w-16 md:w-32 max-w-full max-h-full" 
+               [alt]="product.name">
+        </td>
+        <td class="px-6 py-4 font-semibold text-gray-900 dark:text-white">
+          <div>{{product.name}}</div>
+          <div class="text-sm text-gray-500">{{product.code}}</div>
+        </td>
+        <td class="px-6 py-4">
+          <div class="flex items-center">
+            <span [class]="product.stock.current <= product.stock.minimum ? 'text-red-500' : ''">
+              {{product.stock.current}}
+            </span>
+            <span class="text-gray-500 ml-2">(Min: {{product.stock.minimum}})</span>
+          </div>
+        </td>
+        <td class="px-6 py-4">
+          {{product.pricing.price | currency}}
+        </td>
+        <td class="px-6 py-4">
+          <div>{{getWarehouseName(product.location.warehouseId)}}</div>
+          <div class="text-sm text-gray-500">
+            {{product.location.sector}} - {{product.location.position}}
+          </div>
+        </td>
+        <td class="px-6 py-4">
+          <button (click)="editProduct(product)"
+                  class="font-medium text-blue-600 dark:text-blue-500 hover:underline mr-3">
+            Editar
+          </button>
+          <button (click)="deleteProduct(product)"
+                  class="font-medium text-red-600 dark:text-red-500 hover:underline">
+            Eliminar
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Paginación -->
+<div class="flex items-center justify-between mt-4">
+  <div class="flex items-center">
+    <label class="mr-2">Mostrar:</label>
+    <select [(ngModel)]="pageSize" (ngModelChange)="onPageSizeChange()" 
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+      <option value="10">10</option>
+      <option value="25">25</option>
+      <option value="50">50</option>
+    </select>
+  </div>
+  
+  <div class="flex items-center space-x-2">
+    <button [disabled]="currentPage === 1"
+            (click)="previousPage()"
+            class="px-3 py-1 border rounded-md disabled:opacity-50">
+      Anterior
+    </button>
+    <span>Página {{currentPage}}</span>
+    <button [disabled]="!hasMorePages"
+            (click)="nextPage()"
+            class="px-3 py-1 border rounded-md disabled:opacity-50">
+      Siguiente
+    </button>
+  </div>
+</div>
+
+<!-- Botón Agregar -->
+<div class="mt-4 flex justify-end">
+  <button (click)="createProduct()"
+          class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+    Agregar Producto
+  </button>
+</div> 

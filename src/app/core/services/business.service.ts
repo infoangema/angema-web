@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, firstValueFrom } from 'rxjs';
 import { createUserWithEmailAndPassword, UserCredential } from '@angular/fire/auth';
 import { where } from '@angular/fire/firestore';
 import { DatabaseService } from './database.service';
 import { FirebaseService } from './firebase.service';
+import { AuthService } from './auth.service';
 import { Business, CreateBusinessRequest, User, CreateUserRequest, DEFAULT_BUSINESS_SETTINGS } from '../models/business.model';
 
 @Injectable({
@@ -13,7 +14,8 @@ export class BusinessService {
 
   constructor(
     private databaseService: DatabaseService,
-    private firebaseService: FirebaseService
+    private firebaseService: FirebaseService,
+    private authService: AuthService
   ) {}
 
   // === GESTIÓN DE NEGOCIOS ===
@@ -220,5 +222,16 @@ export class BusinessService {
         description: 'Funcionalidades completas' 
       }
     ];
+  }
+
+  /**
+   * Obtener el ID del negocio del usuario actual
+   */
+  async getCurrentBusinessId(): Promise<string> {
+    const profile = await firstValueFrom(this.authService.currentUser$);
+    if (!profile?.businessId) {
+      throw new Error('No hay un negocio asociado al usuario actual');
+    }
+    return profile.businessId;
   }
 } 

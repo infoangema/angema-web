@@ -17,7 +17,11 @@ import {
   QueryConstraint,
   DocumentData,
   CollectionReference,
-  DocumentReference
+  DocumentReference,
+  startAfter,
+  DocumentSnapshot,
+  QueryDocumentSnapshot,
+  QuerySnapshot
 } from '@angular/fire/firestore';
 import { FirebaseService } from './firebase.service';
 
@@ -282,6 +286,75 @@ export class DatabaseService {
       });
     } catch (error) {
       console.error(`Error creating document with ID ${id} in ${collectionName}:`, error);
+      throw error;
+    }
+  }
+
+  /**
+   * Ejecutar una consulta compleja con paginación
+   */
+  async query<T extends DocumentData>(
+    collectionName: string, 
+    constraints: {
+      where?: { field: string; operator: any; value: any }[];
+      orderBy?: { field: string; direction?: 'asc' | 'desc' }[];
+      pageSize?: number;
+      startAfter?: DocumentSnapshot<T>;
+    }
+  ): Promise<{
+    items: T[];
+    lastDoc: QueryDocumentSnapshot<T> | null;
+    hasMore: boolean;
+  }> {
+    try {
+      const collectionRef = collection(this.firebaseService.firestore, collectionName) as CollectionReference<T>;
+      const queryConstraints: QueryConstraint[] = [];
+
+      // Agregar condiciones WHERE
+      if (constraints.where) {
+        constraints.where.forEach(condition => {
+          queryConstraints.push(where(condition.field, condition.operator, condition.value));
+        });
+      }
+
+      // Agregar ordenamiento
+      if (constraints.orderBy) {
+        constraints.orderBy.forEach(sort => {
+          queryConstraints.push(orderBy(sort.field, sort.direction || 'asc'));
+        });
+      }
+
+      // Agregar paginación
+      if (constraints.startAfter) {
+        queryConstraints.push(startAfter(constraints.startAfter));
+      }
+      if (constraints.pageSize) {
+        queryConstraints.push(limit(constraints.pageSize + 1)); // +1 para saber si hay más páginas
+      }
+
+      const q = query(collectionRef, ...queryConstraints);
+      const snapshot = await getDocs(q) as QuerySnapshot<T>;
+
+      let items = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+        createdAt: doc.data()['createdAt']?.toDate(),
+        updatedAt: doc.data()['updatedAt']?.toDate()
+      })) as T[];
+
+      let hasMore = false;
+      if (constraints.pageSize && items.length > constraints.pageSize) {
+        hasMore = true;
+        items = items.slice(0, constraints.pageSize);
+      }
+
+      return {
+        items,
+        lastDoc: items.length > 0 ? snapshot.docs[items.length - 1] : null,
+        hasMore
+      };
+    } catch (error) {
+      console.error(`Error executing query on ${collectionName}:`, error);
       throw error;
     }
   }

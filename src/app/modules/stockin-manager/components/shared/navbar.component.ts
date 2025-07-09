@@ -22,10 +22,10 @@ import { ThemeService } from '../../../../core/services/theme.service';
       </div>
       <nav class="flex items-center gap-6">
         <a class="text-blue-600 dark:text-blue-400 text-sm font-semibold leading-normal" routerLink="/app/dashboard">Dashboard</a>
-        <a class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 text-sm font-medium leading-normal transition-colors" routerLink="/app/products">Products</a>
-        <a class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 text-sm font-medium leading-normal transition-colors" routerLink="/app/orders">Orders</a>
-        <a class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 text-sm font-medium leading-normal transition-colors" routerLink="/app/customers">Customers</a>
-        <a class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 text-sm font-medium leading-normal transition-colors" routerLink="/app/reports">Reports</a>
+        <a class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 text-sm font-medium leading-normal transition-colors" routerLink="/app/products">Productos</a>
+        <a class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 text-sm font-medium leading-normal transition-colors" routerLink="/app/orders">Pedidos</a>
+        <a class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 text-sm font-medium leading-normal transition-colors" routerLink="/app/customers">Clientes</a>
+        <a class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 text-sm font-medium leading-normal transition-colors" routerLink="/app/reports">Reportes</a>
         <a *ngIf="isRoot()" class="text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-500 text-sm font-semibold leading-normal transition-colors" routerLink="/app/root-admin">Root Admin</a>
       </nav>
     </div>
@@ -36,7 +36,7 @@ import { ThemeService } from '../../../../core/services/theme.service';
             <path d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"></path>
           </svg>
         </div>
-        <input class="form-input w-72 rounded-md border-gray-300 dark:border-dark-600 bg-gray-50 dark:bg-dark-700 py-2 pl-10 pr-4 text-sm text-gray-800 dark:text-gray-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 placeholder:text-gray-400 dark:placeholder:text-gray-500" placeholder="Search SKU, Product Name..." />
+        <input class="form-input w-72 rounded-md border-gray-300 dark:border-dark-600 bg-gray-50 dark:bg-dark-700 py-2 pl-10 pr-4 text-sm text-gray-800 dark:text-gray-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 placeholder:text-gray-400 dark:placeholder:text-gray-500" placeholder="Buscar por SKU, nombre de producto..." />
       </label>
 
       <!-- Theme Toggle Button -->
@@ -138,7 +138,7 @@ export class StockinNavbarComponent {
       await this.authService.logout();
       this.notificationService.success('Sesión cerrada correctamente');
       this.showUserMenu = false;
-      await this.router.navigate(['/app/login']); // Agregar redirección al login
+      await this.router.navigate(['/app/login']);
     } catch (error) {
       this.notificationService.error('Error al cerrar sesión');
     }
