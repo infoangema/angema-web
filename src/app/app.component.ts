@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { NotificationsComponent } from './shared/components/notifications/notifications.component';
+import { initFlowbite } from 'flowbite';
 
 @Component({
   selector: 'app-root',
@@ -12,6 +13,10 @@ import { NotificationsComponent } from './shared/components/notifications/notifi
     <app-notifications></app-notifications>
   `
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'angema-web';
+
+  ngOnInit(): void {
+    initFlowbite();
+  }
 }

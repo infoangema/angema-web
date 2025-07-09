@@ -27,8 +27,8 @@ export class LoginComponent {
     private notificationService: NotificationService
   ) {
     this.loginForm = this.fb.group({
-      email: ['info@angema.com.ar', [Validators.required, Validators.email]],
-      password: ['geraDevs9003..Root', [Validators.required, Validators.minLength(6)]]
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]]
     });
 
     this.forgotPasswordForm = this.fb.group({

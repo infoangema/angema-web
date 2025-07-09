@@ -29,7 +29,6 @@
     "bootstrap": "^5.3.3",
     "firebase": "^11.10.0",
     "flowbite": "^3.1.2",
-    "flowbite-angular": "^20.0.5",
     "jquery": "^3.7.1",
     "rxjs": "~7.8.0",
     "sweetalert2": "^11.14.5",
