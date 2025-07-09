@@ -1,9 +1,17 @@
 // This file can be replaced during build by using the `fileReplacements` array.
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
-// The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  firebase: {
+    apiKey: 'AIzaSyAEDW7vh5YTDV6sEkOfhdYTAEG7kosAM4Q',
+    authDomain: 'stockin-manager.firebaseapp.com',
+    projectId: 'stockin-manager',
+    storageBucket: 'stockin-manager.firebasestorage.app',
+    messagingSenderId: '951330132229',
+    appId: '1:951330132229:web:91fafddba915cad00aa76c',
+    measurementId: 'G-KM6N26FJQC'
+  }
 };
 
 /*
