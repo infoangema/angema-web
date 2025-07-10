@@ -36,6 +36,11 @@ export const routes: Routes = [
         loadComponent: () => import('./modules/stockin-manager/pages/products/products.page').then(m => m.StockinProductsPage)
       },
       {
+        path: 'categories',
+        canActivate: [AuthGuard],
+        loadComponent: () => import('./modules/stockin-manager/pages/categories/categories.page').then(m => m.CategoriesPage)
+      },
+      {
         path: 'orders',
         canActivate: [AuthGuard],
         loadComponent: () => import('./modules/stockin-manager/pages/orders/orders.page').then(m => m.StockinOrdersPage)

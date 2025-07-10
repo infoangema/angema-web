@@ -20,6 +20,7 @@ import { ProductsListComponent } from './products-list/products-list.component';
               </p>
             </div>
             <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
+<!--todo: crear logica para mostrar modal de producto y guardar en firebase-->
               <button
                 type="button"
                 (click)="productsList.createProduct()"
@@ -37,4 +38,4 @@ import { ProductsListComponent } from './products-list/products-list.component';
 })
 export class StockinProductsPage {
   @ViewChild('productsList') productsList!: ProductsListComponent;
-} 
+}

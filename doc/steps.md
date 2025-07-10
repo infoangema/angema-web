@@ -188,12 +188,14 @@ src/
 - [x] Configurar permisos especiales
 
 ### 5. Módulo de Productos 🔄: Tareas detalladas en "5. modulo de productos.md"
-- [x] Crear modelo de productos segun archivo "dev-plan.md"
-- [x] Implementar ProductService
-- [x] Crear componentes CRUD
-- [x] Implementar búsqueda y filtros
-- [x] Agregar gestión de categorías
+- [ ] Crear modelo de productos en "src/app/modules/stockin-manager/models" segun archivo "dev-plan.md"
+- [ ] Implementar ProductService
+- [ ] Crear componentes CRUD: Falta crear boton de crear categoria y crear almacen.
+- [ ] Implementar búsqueda y filtros
+- [ ] Agregar gestión de categorías
 - [ ] Implementar control de stock
+- [ ] Implementar vista de lista con selección múltiple
+- [ ] Agregar columnas de costo (solo ve admin y root) y negocio (solo ve root)
 
 ### 6. Módulo de Órdenes
 - [ ] Crear modelo de órdenes
