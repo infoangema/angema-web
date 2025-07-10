@@ -1,15 +1,37 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Función básica de autenticación
+    // Funciones helper
     function isAuthenticated() {
       return request.auth != null;
     }
 
-    // Permitir todas las operaciones si el usuario está autenticado
-    match /{document=**} {
-      allow read: if isAuthenticated();
-      allow write: if isAuthenticated();
+    function getUserRole() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.roleId;
+    }
+
+    function belongsToUserBusiness(businessId) {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.businessId == businessId;
+    }
+
+    function hasPermissionInRole(permission) {
+      let userRole = getUserRole();
+      let permissions = get(/databases/$(database)/documents/roles/$(userRole)).data.permissions;
+      return permissions[permission] == true;
+    }
+
+    // Reglas para productos
+    match /products/{productId} {
+      allow read: if isAuthenticated() && belongsToUserBusiness(resource.data.businessId);
+      allow create: if isAuthenticated() 
+        && hasPermissionInRole('manage_inventory')
+        && belongsToUserBusiness(request.resource.data.businessId);
+      allow update: if isAuthenticated() 
+        && hasPermissionInRole('manage_inventory')
+        && belongsToUserBusiness(resource.data.businessId);
+      allow delete: if isAuthenticated() 
+        && hasPermissionInRole('manage_inventory')
+        && belongsToUserBusiness(resource.data.businessId);
     }
   }
 }
