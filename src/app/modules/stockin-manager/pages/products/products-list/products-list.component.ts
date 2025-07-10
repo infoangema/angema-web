@@ -87,6 +87,9 @@ export class ProductsListComponent implements OnInit, OnDestroy {
     }
 
     try {
+      // Debug: Check business ID consistency first
+      await this.productService.debugBusinessIdConsistency();
+      
       const result = await this.productService.getProductsByBusiness(
         this.filters,
         this.pageSize,
@@ -163,7 +166,8 @@ export class ProductsListComponent implements OnInit, OnDestroy {
 
   // Acciones de productos
   createProduct(): void {
-    this.router.navigate(['app', 'products', 'create']);
+    // This method is called by the parent component but the modal is handled there
+    // We can remove this method or keep it for compatibility
   }
 
   editProduct(product: SKU): void {
