@@ -3,6 +3,7 @@ import { Firestore, collection, doc, query, where, orderBy, getDocs, addDoc, upd
 import { Observable, BehaviorSubject } from 'rxjs';
 import { Warehouse, WarehouseLocation } from '../models/warehouse.model';
 import { BusinessService } from '../../../core/services/business.service';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,13 +15,17 @@ export class WarehouseService {
 
   constructor(
     private firestore: Firestore,
-    private businessService: BusinessService
+    private businessService: BusinessService,
+    private authService: AuthService
   ) {}
 
   // CRUD básico
   async createWarehouse(warehouse: Omit<Warehouse, 'id'>): Promise<string> {
     const businessId = await this.businessService.getCurrentBusinessId();
-    const warehouseWithBusiness = { ...warehouse, businessId };
+    if (!businessId && !this.authService.isRoot()) {
+      throw new Error('No business ID available for warehouse creation');
+    }
+    const warehouseWithBusiness = { ...warehouse, businessId: businessId || '' };
     const docRef = await addDoc(collection(this.firestore, this.COLLECTION_NAME), warehouseWithBusiness);
     return docRef.id;
   }
@@ -37,13 +42,30 @@ export class WarehouseService {
 
   // Consultas
   async getWarehouses(): Promise<Warehouse[]> {
+    const isRoot = this.authService.isRoot();
     const businessId = await this.businessService.getCurrentBusinessId();
-    const q = query(
-      collection(this.firestore, this.COLLECTION_NAME),
-      where('businessId', '==', businessId),
-      where('isActive', '==', true),
-      orderBy('name')
-    );
+    
+    let q;
+    if (isRoot) {
+      // Root users see all warehouses from all businesses
+      q = query(
+        collection(this.firestore, this.COLLECTION_NAME),
+        where('isActive', '==', true),
+        orderBy('name')
+      );
+    } else if (businessId) {
+      // Regular users see only their business warehouses
+      q = query(
+        collection(this.firestore, this.COLLECTION_NAME),
+        where('businessId', '==', businessId),
+        where('isActive', '==', true),
+        orderBy('name')
+      );
+    } else {
+      // No business ID and not root - return empty array
+      this.warehousesSubject.next([]);
+      return [];
+    }
 
     const snapshot = await getDocs(q);
     const warehouses = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }) as Warehouse);

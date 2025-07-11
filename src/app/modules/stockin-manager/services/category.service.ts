@@ -3,6 +3,7 @@ import { Firestore, collection, doc, query, where, orderBy, getDocs, addDoc, upd
 import { Observable, BehaviorSubject } from 'rxjs';
 import { Category, CategoryHierarchy } from '../models/category.model';
 import { BusinessService } from '../../../core/services/business.service';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,13 +15,17 @@ export class CategoryService {
 
   constructor(
     private firestore: Firestore,
-    private businessService: BusinessService
+    private businessService: BusinessService,
+    private authService: AuthService
   ) {}
 
   // CRUD básico
   async createCategory(category: Omit<Category, 'id'>): Promise<string> {
     const businessId = await this.businessService.getCurrentBusinessId();
-    const categoryWithBusiness = { ...category, businessId };
+    if (!businessId && !this.authService.isRoot()) {
+      throw new Error('No business ID available for category creation');
+    }
+    const categoryWithBusiness = { ...category, businessId: businessId || '' };
     const docRef = await addDoc(collection(this.firestore, this.COLLECTION_NAME), categoryWithBusiness);
     return docRef.id;
   }
@@ -37,13 +42,30 @@ export class CategoryService {
 
   // Consultas
   async getCategories(): Promise<Category[]> {
+    const isRoot = this.authService.isRoot();
     const businessId = await this.businessService.getCurrentBusinessId();
-    const q = query(
-      collection(this.firestore, this.COLLECTION_NAME),
-      where('businessId', '==', businessId),
-      where('isActive', '==', true),
-      orderBy('name')
-    );
+    
+    let q;
+    if (isRoot) {
+      // Root users see all categories from all businesses
+      q = query(
+        collection(this.firestore, this.COLLECTION_NAME),
+        where('isActive', '==', true),
+        orderBy('name')
+      );
+    } else if (businessId) {
+      // Regular users see only their business categories
+      q = query(
+        collection(this.firestore, this.COLLECTION_NAME),
+        where('businessId', '==', businessId),
+        where('isActive', '==', true),
+        orderBy('name')
+      );
+    } else {
+      // No business ID and not root - return empty array
+      this.categoriesSubject.next([]);
+      return [];
+    }
 
     const snapshot = await getDocs(q);
     const categories = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }) as Category);

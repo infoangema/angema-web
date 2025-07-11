@@ -12,6 +12,9 @@ import { Warehouse } from '../../../models/warehouse.model';
 import { ProductService } from '../../../services/product.service';
 import { CategoryService } from '../../../services/category.service';
 import { WarehouseService } from '../../../services/warehouse.service';
+import { AuthService } from '../../../../../core/services/auth.service';
+import { BusinessService } from '../../../../../core/services/business.service';
+import { Business } from '../../../../../core/models/business.model';
 
 @Component({
   selector: 'app-products-list',
@@ -23,6 +26,17 @@ export class ProductsListComponent implements OnInit, OnDestroy {
   products: SKU[] = [];
   categories: Category[] = [];
   warehouses: Warehouse[] = [];
+  businesses: Business[] = [];
+  
+  // Propiedades para control de visibilidad
+  get isRoot(): boolean {
+    return this.authService.isRoot();
+  }
+  
+  get canViewCost(): boolean {
+    const currentUser = this.authService.getCurrentUserProfile();
+    return currentUser?.roleId === 'root' || currentUser?.roleId === 'admin';
+  }
   
   // Filtros
   filters: SKUFilters = {
@@ -50,6 +64,8 @@ export class ProductsListComponent implements OnInit, OnDestroy {
     private productService: ProductService,
     private categoryService: CategoryService,
     private warehouseService: WarehouseService,
+    private authService: AuthService,
+    private businessService: BusinessService,
     private router: Router
   ) {}
 
@@ -72,6 +88,13 @@ export class ProductsListComponent implements OnInit, OnDestroy {
     this.warehouseService.watchWarehouses()
       .pipe(takeUntil(this.destroy$))
       .subscribe(warehouses => this.warehouses = warehouses);
+
+    // Cargar negocios solo si es usuario root
+    if (this.isRoot) {
+      this.businessService.getBusinesses()
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(businesses => this.businesses = businesses);
+    }
 
     // Cargar productos
     await this.loadProducts();
@@ -162,6 +185,11 @@ export class ProductsListComponent implements OnInit, OnDestroy {
   getWarehouseName(warehouseId: string): string {
     const warehouse = this.warehouses.find(w => w.id === warehouseId);
     return warehouse?.name || 'No asignado';
+  }
+  
+  getBusinessName(businessId: string): string {
+    const business = this.businesses.find(b => b.id === businessId);
+    return business?.name || 'No asignado';
   }
 
   // Acciones de productos

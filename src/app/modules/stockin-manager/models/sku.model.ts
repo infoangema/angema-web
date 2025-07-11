@@ -47,5 +47,5 @@ export interface ProductsResponse {
   hasMore: boolean;
 }
 
-export type SortField = 'name' | 'stock.current' | 'pricing.price';
+export type SortField = 'name' | 'code' | 'stock.current' | 'pricing.price' | 'pricing.cost';
 export type SortDirection = 'asc' | 'desc'; 

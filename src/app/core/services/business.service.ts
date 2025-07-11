@@ -226,12 +226,16 @@ export class BusinessService {
 
   /**
    * Obtener el ID del negocio del usuario actual
+   * Retorna null para usuarios Root que no tienen businessId
    */
-  async getCurrentBusinessId(): Promise<string> {
+  async getCurrentBusinessId(): Promise<string | null> {
     const profile = await firstValueFrom(this.authService.currentUser$);
-    if (!profile?.businessId) {
+    
+    // Permitir que usuarios Root no tengan businessId
+    if (!profile?.businessId && !this.authService.isRoot()) {
       throw new Error('No hay un negocio asociado al usuario actual');
     }
-    return profile.businessId;
+    
+    return profile?.businessId || null;
   }
 } 

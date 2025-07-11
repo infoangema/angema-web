@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { DatabaseService } from '../../../core/services/database.service';
 import { BusinessService } from '../../../core/services/business.service';
+import { AuthService } from '../../../core/services/auth.service';
 import { SKU, SKUFilters, ProductsResponse, SortField, SortDirection } from '../models/sku.model';
 import { DocumentSnapshot } from '@angular/fire/firestore';
 import { where } from '@angular/fire/firestore';
@@ -11,7 +12,8 @@ import { where } from '@angular/fire/firestore';
 export class ProductService {
   constructor(
     private databaseService: DatabaseService,
-    private businessService: BusinessService
+    private businessService: BusinessService,
+    private authService: AuthService
   ) {}
 
   async getProductsByBusiness(
@@ -22,22 +24,25 @@ export class ProductService {
     sortDirection: SortDirection = 'asc'
   ): Promise<ProductsResponse> {
     try {
+      const isRoot = this.authService.isRoot();
       const businessId = await this.businessService.getCurrentBusinessId();
-      console.log('=== BUSINESS ID DEBUG ===');
+      
+      console.log('=== PRODUCT SERVICE DEBUG ===');
+      console.log('Is Root user:', isRoot);
       console.log('Current businessId from service:', businessId);
       console.log('BusinessId type:', typeof businessId);
       console.log('BusinessId length:', businessId?.length);
       console.log('Filters applied:', filters);
 
-      // Additional debug: Check if business ID is valid
-      if (!businessId) {
-        console.error('No business ID found! User may not be properly authenticated.');
+      const whereConditions = [];
+      
+      // Only add business filter for non-Root users
+      if (!isRoot && businessId) {
+        whereConditions.push({ field: 'businessId', operator: '==', value: businessId });
+      } else if (!isRoot && !businessId) {
+        console.error('No business ID found for non-Root user!');
         return { items: [], lastDoc: null, hasMore: false };
       }
-
-      const whereConditions = [
-        { field: 'businessId', operator: '==', value: businessId }
-      ];
 
       // Debug: Let's also try a direct query without filters to see what happens
       console.log('Testing direct query without business filter...');
@@ -82,12 +87,17 @@ export class ProductService {
         console.log('Simple query error:', error);
       }
 
-      // Use simple approach: get products by business ID only, then filter client-side
-      const result = await this.databaseService.query<SKU>('products', {
-        where: [{ field: 'businessId', operator: '==', value: businessId }],
+      // Query products with or without business filter based on user role
+      const queryOptions: any = {
         pageSize,
         startAfter: lastDoc || undefined
-      });
+      };
+      
+      if (whereConditions.length > 0) {
+        queryOptions.where = whereConditions;
+      }
+      
+      const result = await this.databaseService.query<SKU>('products', queryOptions);
 
       console.log('Query result:', result);
       console.log('Found products:', result.items.length);
@@ -130,6 +140,12 @@ export class ProductService {
           if (sortField === 'stock.current') {
             aValue = a.stock?.current || 0;
             bValue = b.stock?.current || 0;
+          } else if (sortField === 'pricing.price') {
+            aValue = a.pricing?.price || 0;
+            bValue = b.pricing?.price || 0;
+          } else if (sortField === 'pricing.cost') {
+            aValue = a.pricing?.cost || 0;
+            bValue = b.pricing?.cost || 0;
           } else {
             aValue = (a as any)[sortField];
             bValue = (b as any)[sortField];
@@ -201,6 +217,9 @@ export class ProductService {
     try {
       console.log('=== BUSINESS ID CONSISTENCY CHECK ===');
 
+      const isRoot = this.authService.isRoot();
+      console.log('Is Root user:', isRoot);
+
       // Get current business ID
       const currentBusinessId = await this.businessService.getCurrentBusinessId();
       console.log('Current business ID:', currentBusinessId);
@@ -208,18 +227,32 @@ export class ProductService {
       // Get all products
       const allProducts = await this.getAllProducts();
 
-      // Check how many products match current business ID
-      const matchingProducts = allProducts.filter(p => p.businessId === currentBusinessId);
-      const differentBusinessIds = allProducts.filter(p => p.businessId !== currentBusinessId);
-
-      console.log(`Products with current business ID (${currentBusinessId}):`, matchingProducts.length);
-      console.log(`Products with different business IDs:`, differentBusinessIds.length);
-
-      if (differentBusinessIds.length > 0) {
-        console.log('Products with different business IDs:');
-        differentBusinessIds.forEach(p => {
-          console.log(`- Product "${p.name}" has businessId: "${p.businessId}"`);
+      if (isRoot) {
+        console.log('Root user - showing all products from all businesses');
+        const businessGroups = allProducts.reduce((groups, product) => {
+          const businessId = product.businessId || 'no-business';
+          if (!groups[businessId]) groups[businessId] = [];
+          groups[businessId].push(product);
+          return groups;
+        }, {} as Record<string, SKU[]>);
+        
+        Object.entries(businessGroups).forEach(([businessId, products]) => {
+          console.log(`Business ${businessId}: ${products.length} products`);
         });
+      } else if (currentBusinessId) {
+        // Check how many products match current business ID
+        const matchingProducts = allProducts.filter(p => p.businessId === currentBusinessId);
+        const differentBusinessIds = allProducts.filter(p => p.businessId !== currentBusinessId);
+
+        console.log(`Products with current business ID (${currentBusinessId}):`, matchingProducts.length);
+        console.log(`Products with different business IDs:`, differentBusinessIds.length);
+
+        if (differentBusinessIds.length > 0) {
+          console.log('Products with different business IDs:');
+          differentBusinessIds.forEach(p => {
+            console.log(`- Product "${p.name}" has businessId: "${p.businessId}"`);
+          });
+        }
       }
     } catch (error) {
       console.error('Error in business ID consistency check:', error);
