@@ -4,11 +4,13 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../../core/services/auth.service';
 import { NotificationService } from '../../../../core/services/notification.service';
+import { RootBusinessSelectorService } from '../../services/root-business-selector.service';
+import { BusinessSelectorModalComponent } from '../../components/business-selector-modal/business-selector-modal.component';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, BusinessSelectorModalComponent],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
@@ -19,12 +21,14 @@ export class LoginComponent {
   loadingForgotPassword = false;
   showPassword = false;
   showForgotPassword = false;
+  showBusinessSelector = false;
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private rootBusinessSelector: RootBusinessSelectorService
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -44,13 +48,50 @@ export class LoginComponent {
       const { email, password } = this.loginForm.value;
       await this.authService.login(email, password);
       this.notificationService.success('Inicio de sesión exitoso');
-      await this.router.navigate(['/app/dashboard']);
+      
+      // Check if user is root and needs business selection
+      if (this.authService.isRoot()) {
+        await this.handleRootUserLogin();
+      } else {
+        await this.router.navigate(['/app/dashboard']);
+      }
     } catch (error: any) {
       console.error('Error en login:', error);
       this.notificationService.error('Error al iniciar sesión: ' + (error.message || 'Error desconocido'));
     } finally {
       this.loading = false;
     }
+  }
+
+  private async handleRootUserLogin(): Promise<void> {
+    try {
+      // Check if root user already has a business selection
+      const hasValidSelection = this.rootBusinessSelector.hasValidSelection();
+      
+      console.log('=== ROOT USER LOGIN ===');
+      console.log('Has valid selection:', hasValidSelection);
+      console.log('Current selection:', this.rootBusinessSelector.getCurrentSelection());
+      
+      if (!hasValidSelection) {
+        // Show business selector modal
+        console.log('Showing business selector modal...');
+        this.showBusinessSelector = true;
+      } else {
+        // Navigate directly to dashboard
+        console.log('Navigating to dashboard with existing selection...');
+        await this.router.navigate(['/app/dashboard']);
+      }
+    } catch (error) {
+      console.error('Error handling root user login:', error);
+      // Navigate to dashboard anyway
+      await this.router.navigate(['/app/dashboard']);
+    }
+  }
+
+  onBusinessSelectorClosed(): void {
+    this.showBusinessSelector = false;
+    // Navigate to dashboard after business selection
+    this.router.navigate(['/app/dashboard']);
   }
 
   async sendPasswordReset() {

@@ -4,6 +4,9 @@ import { RouterModule, Router } from '@angular/router';
 import { AuthService } from '../../../../core/services/auth.service';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { ThemeService } from '../../../../core/services/theme.service';
+import { ModalService } from '../../services/modal.service';
+import { BusinessSelectorModalComponent } from '../business-selector-modal/business-selector-modal.component';
+import { RootBusinessSelectorService } from '../../services/root-business-selector.service';
 
 @Component({
   selector: 'stockin-navbar',
@@ -32,6 +35,21 @@ import { ThemeService } from '../../../../core/services/theme.service';
       </nav>
     </div>
     <div class="flex items-center gap-6">
+      <!-- Business Selector for Root Users -->
+      <div *ngIf="isRoot()" class="relative">
+        <button 
+          (click)="openBusinessSelector()"
+          class="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-md transition-colors"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-4m-5 0H9m0 0H5m0 0H3m13 0v-3c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v3m8 0V9c0-1.1-.9-2-2-2H9c-1.1 0-2 .9-2 2v12"></path>
+          </svg>
+          <span class="hidden sm:inline">{{ getBusinessSelectorText() }}</span>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </button>
+      </div>
       <label class="relative flex items-center">
         <div class="absolute left-3 text-gray-400 dark:text-gray-500">
           <svg fill="currentColor" height="20px" viewBox="0 0 256 256" width="20px" xmlns="http://www.w3.org/2000/svg">
@@ -112,7 +130,9 @@ export class StockinNavbarComponent {
     private authService: AuthService,
     private notificationService: NotificationService,
     private themeService: ThemeService,
-    private router: Router
+    private router: Router,
+    private modalService: ModalService,
+    private rootBusinessSelector: RootBusinessSelectorService
   ) {
     this.isDarkMode$ = this.themeService.darkMode$;
     // Suscribirse a cambios en el usuario
@@ -137,6 +157,11 @@ export class StockinNavbarComponent {
 
   async logout() {
     try {
+      // Clear root business selection on logout
+      if (this.authService.isRoot()) {
+        this.rootBusinessSelector.clearSelection();
+      }
+      
       await this.authService.logout();
       this.notificationService.success('Sesión cerrada correctamente');
       this.showUserMenu = false;
@@ -152,5 +177,30 @@ export class StockinNavbarComponent {
 
   isRoot(): boolean {
     return this.isRootUser;
+  }
+
+  getBusinessSelectorText(): string {
+    if (!this.isRoot()) return '';
+    
+    const selection = this.rootBusinessSelector.getCurrentSelection();
+    if (selection.showAll) {
+      return 'Todos los negocios';
+    } else if (selection.businessId) {
+      return 'Negocio seleccionado';
+    } else {
+      return 'Seleccionar negocio';
+    }
+  }
+
+  async openBusinessSelector(): Promise<void> {
+    if (!this.isRoot()) return;
+    
+    try {
+      await this.modalService.open(BusinessSelectorModalComponent);
+      // Optionally refresh current page data after business selection change
+      console.log('Business selector closed');
+    } catch (error) {
+      console.error('Error opening business selector:', error);
+    }
   }
 } 

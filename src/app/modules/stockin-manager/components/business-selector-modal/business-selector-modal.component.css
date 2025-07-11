@@ -1,0 +1,17 @@
+/* Business Selector Modal Styles */
+.business-card-selected {
+  @apply dark:bg-blue-900/20;
+}
+
+.business-selector-overlay {
+  backdrop-filter: blur(2px);
+}
+
+.business-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.radio-button-selected {
+  transform: scale(1.1);
+}

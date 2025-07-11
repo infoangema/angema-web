@@ -8,7 +8,7 @@ NOTAS IMPORTANTE:
 - Por cada tarea realizada, vuelve a leer este archivo y actulizarlo, marcando los puntos realizados.
 - Los nuevos componentes de angular que se creen deben tener su propio archivo de html y css por separados.
 - siempre deben ser standalone.
-
+- reemplazar el uso de "ngFor" ya que esta deprecado. "ngFor is deprecated, 20.0 Use the `@for` block instead. Intent to remove in v22"
 
 ## Estructura de Carpetas
 
@@ -80,6 +80,8 @@ src/
 │   │   │
 │   │   └── stockin-manager/   # Módulo principal StockIn
 │   │       ├── components/    # Componentes del módulo
+│   │       │   ├── business-selector-modal/  # Modal selector de negocio
+│   │       │   │   └── business-selector-modal.component.ts
 │   │       │   └── shared/    # Componentes compartidos
 │   │       │       └── navbar.component.ts
 │   │       │
@@ -104,7 +106,9 @@ src/
 │   │       │
 │   │       ├── services/      # Servicios específicos del módulo
 │   │       │   ├── category.service.ts
+│   │       │   ├── modal.service.ts
 │   │       │   ├── product.service.ts
+│   │       │   ├── root-business-selector.service.ts
 │   │       │   └── warehouse.service.ts
 │   │       │
 │   │       └── stockin-manager.module.ts
@@ -196,6 +200,8 @@ src/
 - [ ] Implementar control de stock
 - [ ] Implementar vista de lista con selección múltiple
 - [x] Agregar columnas de costo (solo ve admin y root) y negocio (solo ve root)
+- [x] Visualizar productos por negocio para root con selector modal
+- [x] Resolver problema de usuarios root al acceder páginas de categorías y almacenes
 
 ### 6. Módulo de Órdenes
 - [ ] Crear modelo de órdenes

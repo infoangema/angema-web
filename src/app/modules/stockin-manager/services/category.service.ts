@@ -4,6 +4,7 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { Category, CategoryHierarchy } from '../models/category.model';
 import { BusinessService } from '../../../core/services/business.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { RootBusinessSelectorService } from './root-business-selector.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +17,8 @@ export class CategoryService {
   constructor(
     private firestore: Firestore,
     private businessService: BusinessService,
-    private authService: AuthService
+    private authService: AuthService,
+    private rootBusinessSelector: RootBusinessSelectorService
   ) {}
 
   // CRUD básico
@@ -43,21 +45,42 @@ export class CategoryService {
   // Consultas
   async getCategories(): Promise<Category[]> {
     const isRoot = this.authService.isRoot();
-    const businessId = await this.businessService.getCurrentBusinessId();
+    let businessId: string | null = null;
+
+    if (isRoot) {
+      // Para usuarios root, usar la selección de negocio
+      businessId = this.rootBusinessSelector.getEffectiveBusinessId();
+      console.log('=== ROOT USER CATEGORIES QUERY ===');
+      console.log('Root business selection:', this.rootBusinessSelector.getCurrentSelection());
+      console.log('Effective business ID:', businessId);
+    } else {
+      // Para usuarios regulares, usar su businessId asignado
+      businessId = await this.businessService.getCurrentBusinessId();
+      console.log('=== REGULAR USER CATEGORIES QUERY ===');
+      console.log('User business ID:', businessId);
+    }
     
     let q;
-    if (isRoot) {
-      // Root users see all categories from all businesses
-      q = query(
-        collection(this.firestore, this.COLLECTION_NAME),
-        where('isActive', '==', true),
-        orderBy('name')
-      );
-    } else if (businessId) {
-      // Regular users see only their business categories
+    if (!isRoot && businessId) {
+      // Regular users: filter by their business
       q = query(
         collection(this.firestore, this.COLLECTION_NAME),
         where('businessId', '==', businessId),
+        where('isActive', '==', true),
+        orderBy('name')
+      );
+    } else if (isRoot && businessId) {
+      // Root users with specific business selected
+      q = query(
+        collection(this.firestore, this.COLLECTION_NAME),
+        where('businessId', '==', businessId),
+        where('isActive', '==', true),
+        orderBy('name')
+      );
+    } else if (isRoot && !businessId) {
+      // Root users showing all businesses
+      q = query(
+        collection(this.firestore, this.COLLECTION_NAME),
         where('isActive', '==', true),
         orderBy('name')
       );

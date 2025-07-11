@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { DatabaseService } from '../../../core/services/database.service';
 import { BusinessService } from '../../../core/services/business.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { RootBusinessSelectorService } from './root-business-selector.service';
 import { SKU, SKUFilters, ProductsResponse, SortField, SortDirection } from '../models/sku.model';
 import { DocumentSnapshot } from '@angular/fire/firestore';
 import { where } from '@angular/fire/firestore';
@@ -13,7 +14,8 @@ export class ProductService {
   constructor(
     private databaseService: DatabaseService,
     private businessService: BusinessService,
-    private authService: AuthService
+    private authService: AuthService,
+    private rootBusinessSelector: RootBusinessSelectorService
   ) {}
 
   async getProductsByBusiness(
@@ -25,24 +27,42 @@ export class ProductService {
   ): Promise<ProductsResponse> {
     try {
       const isRoot = this.authService.isRoot();
-      const businessId = await this.businessService.getCurrentBusinessId();
+      let businessId: string | null = null;
+
+      if (isRoot) {
+        // Para usuarios root, usar la selección de negocio
+        businessId = this.rootBusinessSelector.getEffectiveBusinessId();
+        console.log('=== ROOT USER PRODUCT QUERY ===');
+        console.log('Root business selection:', this.rootBusinessSelector.getCurrentSelection());
+        console.log('Effective business ID:', businessId);
+        console.log('Should show all businesses:', this.rootBusinessSelector.shouldShowAllBusinesses());
+      } else {
+        // Para usuarios regulares, usar su businessId asignado
+        businessId = await this.businessService.getCurrentBusinessId();
+        console.log('=== REGULAR USER PRODUCT QUERY ===');
+        console.log('User business ID:', businessId);
+      }
       
       console.log('=== PRODUCT SERVICE DEBUG ===');
       console.log('Is Root user:', isRoot);
-      console.log('Current businessId from service:', businessId);
-      console.log('BusinessId type:', typeof businessId);
-      console.log('BusinessId length:', businessId?.length);
+      console.log('Business ID for query:', businessId);
       console.log('Filters applied:', filters);
 
       const whereConditions = [];
       
-      // Only add business filter for non-Root users
-      if (!isRoot && businessId) {
+      // Add business filter only when needed
+      if (!isRoot) {
+        // Regular users: always filter by their business
+        if (!businessId) {
+          console.error('No business ID found for non-Root user!');
+          return { items: [], lastDoc: null, hasMore: false };
+        }
         whereConditions.push({ field: 'businessId', operator: '==', value: businessId });
-      } else if (!isRoot && !businessId) {
-        console.error('No business ID found for non-Root user!');
-        return { items: [], lastDoc: null, hasMore: false };
+      } else if (isRoot && businessId) {
+        // Root users: filter by selected business only if one is selected
+        whereConditions.push({ field: 'businessId', operator: '==', value: businessId });
       }
+      // If root and businessId is null, no business filter is added (show all)
 
       // Debug: Let's also try a direct query without filters to see what happens
       console.log('Testing direct query without business filter...');

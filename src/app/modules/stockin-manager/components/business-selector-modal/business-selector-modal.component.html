@@ -1,0 +1,77 @@
+<div class="fixed inset-0 bg-gray-900 bg-opacity-50 z-50 flex items-center justify-center p-4">
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-md">
+    <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-white">
+        Seleccionar Negocio
+      </h2>
+      <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+        Como usuario Root, selecciona el negocio con el que deseas trabajar
+      </p>
+    </div>
+
+    <div class="p-6">
+      <div class="space-y-3 max-h-96 overflow-y-auto">
+        @if (businesses$ | async; as businesses) {
+          @for (business of businesses; track business.id) {
+            <div 
+              class="border border-gray-200 dark:border-gray-700 rounded-lg p-4 cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition-colors"
+              [class.border-blue-500]="selectedBusinessId === business.id"
+              [class.bg-blue-50]="selectedBusinessId === business.id"
+              [ngClass]="selectedBusinessId === business.id ? 'dark:bg-blue-900/20' : ''"
+              (click)="selectBusiness(business.id!)">
+              <div class="flex items-center justify-between">
+                <div class="flex-1">
+                  <h3 class="font-medium text-gray-900 dark:text-white">
+                    {{ business.name }}
+                  </h3>
+                  <p class="text-sm text-gray-600 dark:text-gray-400">
+                    {{ business.email }}
+                  </p>
+                  <p class="text-xs text-gray-500 dark:text-gray-500 mt-1">
+                    Plan: {{ business.plan | titlecase }}
+                  </p>
+                </div>
+                <div class="ml-3">
+                  <div 
+                    class="w-4 h-4 rounded-full border-2 flex items-center justify-center"
+                    [class.border-blue-500]="selectedBusinessId === business.id"
+                    [class.bg-blue-500]="selectedBusinessId === business.id"
+                    [class.border-gray-300]="selectedBusinessId !== business.id">
+                    @if (selectedBusinessId === business.id) {
+                      <div class="w-2 h-2 bg-white rounded-full"></div>
+                    }
+                  </div>
+                </div>
+              </div>
+            </div>
+          } @empty {
+            <div class="text-center py-8 text-gray-500 dark:text-gray-400">
+              No hay negocios disponibles
+            </div>
+          }
+        }
+      </div>
+    </div>
+
+    <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 flex justify-between">
+      <button
+        (click)="clearSelection()"
+        class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-md transition-colors">
+        Ver Todos
+      </button>
+      <div class="space-x-3">
+        <button
+          (click)="closeModal()"
+          class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-md transition-colors">
+          Cancelar
+        </button>
+        <button
+          (click)="confirmSelection()"
+          [disabled]="!selectedBusinessId && !showAllSelected"
+          class="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed rounded-md transition-colors">
+          Confirmar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

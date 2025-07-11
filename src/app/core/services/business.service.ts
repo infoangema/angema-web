@@ -226,16 +226,46 @@ export class BusinessService {
 
   /**
    * Obtener el ID del negocio del usuario actual
-   * Retorna null para usuarios Root que no tienen businessId
+   * Para usuarios Root, considera su selección de negocio
+   * Para usuarios regulares, retorna su businessId asignado
    */
   async getCurrentBusinessId(): Promise<string | null> {
     const profile = await firstValueFrom(this.authService.currentUser$);
     
-    // Permitir que usuarios Root no tengan businessId
-    if (!profile?.businessId && !this.authService.isRoot()) {
+    if (this.authService.isRoot()) {
+      // Para usuarios root, usar el servicio de selección de negocio
+      try {
+        const { RootBusinessSelectorService } = await import('../../modules/stockin-manager/services/root-business-selector.service');
+        const rootSelector = new RootBusinessSelectorService(this.authService, 
+          // Inyectar SessionStorageService dinámicamente
+          await import('./session-storage.service').then(m => new m.SessionStorageService())
+        );
+        return rootSelector.getEffectiveBusinessId();
+      } catch (error) {
+        console.warn('Error accessing root business selector:', error);
+        return null;
+      }
+    }
+    
+    // Para usuarios regulares
+    if (!profile?.businessId) {
       throw new Error('No hay un negocio asociado al usuario actual');
     }
     
-    return profile?.businessId || null;
+    return profile.businessId;
+  }
+
+  /**
+   * Obtener el ID del negocio para usuarios root basado en su selección
+   * Esta función está optimizada para ser usada en los servicios del módulo stockin-manager
+   */
+  async getRootEffectiveBusinessId(): Promise<string | null> {
+    if (!this.authService.isRoot()) {
+      return this.getCurrentBusinessId();
+    }
+
+    // Para usuarios root, retornar null significa "mostrar todos los negocios"
+    // El businessId específico significa "filtrar por ese negocio"
+    return null; // Valor por defecto para root users
   }
 } 
