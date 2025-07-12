@@ -133,26 +133,38 @@
                 
                 <div>
                   <label class="block text-sm font-medium text-gray-700">Color</label>
-                  <input
-                    type="text"
+                  <select
                     formControlName="color"
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    <option value="">Seleccionar color</option>
+                    @for (color of colors; track color.id) {
+                      <option [value]="color.code">{{color.code}} - {{color.name}}</option>
+                    }
+                  </select>
                 </div>
 
                 <div>
                   <label class="block text-sm font-medium text-gray-700">Tamaño</label>
-                  <input
-                    type="text"
+                  <select
                     formControlName="size"
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    <option value="">Seleccionar tamaño</option>
+                    @for (size of sizes; track size.id) {
+                      <option [value]="size.code">{{size.code}} - {{size.name}}</option>
+                    }
+                  </select>
                 </div>
 
                 <div>
                   <label class="block text-sm font-medium text-gray-700">Material</label>
-                  <input
-                    type="text"
+                  <select
                     formControlName="material"
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    <option value="">Seleccionar material</option>
+                    @for (material of materials; track material.id) {
+                      <option [value]="material.code">{{material.code}} - {{material.name}}</option>
+                    }
+                  </select>
                 </div>
 
               </div>

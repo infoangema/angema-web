@@ -28,6 +28,7 @@ import { RootBusinessSelectorService } from '../../services/root-business-select
         <a class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 text-sm font-medium leading-normal transition-colors" routerLink="/app/products">Productos</a>
         <a class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 text-sm font-medium leading-normal transition-colors" routerLink="/app/categories">Categorías</a>
         <a class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 text-sm font-medium leading-normal transition-colors" routerLink="/app/warehouses">Almacenes</a>
+        <a *ngIf="canManageAttributes()" class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 text-sm font-medium leading-normal transition-colors" routerLink="/app/attributes">Atributos</a>
         <a class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 text-sm font-medium leading-normal transition-colors" routerLink="/app/orders">Pedidos</a>
         <a class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 text-sm font-medium leading-normal transition-colors" routerLink="/app/customers">Clientes</a>
         <a class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 text-sm font-medium leading-normal transition-colors" routerLink="/app/reports">Reportes</a>
@@ -177,6 +178,11 @@ export class StockinNavbarComponent {
 
   isRoot(): boolean {
     return this.isRootUser;
+  }
+
+  canManageAttributes(): boolean {
+    const currentUser = this.authService.getCurrentUserProfile();
+    return currentUser?.roleId === 'root' || currentUser?.roleId === 'admin';
   }
 
   getBusinessSelectorText(): string {

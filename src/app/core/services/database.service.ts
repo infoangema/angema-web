@@ -15,6 +15,8 @@ import {
   onSnapshot,
   serverTimestamp,
   QueryConstraint,
+  QueryFieldFilterConstraint,
+  QueryOrderByConstraint,
   DocumentData,
   CollectionReference,
   DocumentReference,
@@ -174,15 +176,18 @@ export class DatabaseService {
     field: string, 
     operator: any, 
     value: any,
-    orderByField: string = 'createdAt',
+    orderByField?: string,
     orderDirection: 'asc' | 'desc' = 'desc'
   ): Observable<T[]> {
     const collectionRef = collection(this.firebaseService.firestore, collectionName);
-    const q = query(
-      collectionRef, 
-      where(field, operator, value),
-      orderBy(orderByField, orderDirection)
-    );
+    
+    // Solo agregar orderBy si se especifica para evitar índices complejos
+    const queryConstraints: QueryConstraint[] = [where(field, operator, value)];
+    if (orderByField) {
+      queryConstraints.push(orderBy(orderByField, orderDirection));
+    }
+    
+    const q = query(collectionRef, ...queryConstraints);
     
     return new Observable(observer => {
       const unsubscribe = onSnapshot(q, (snapshot) => {

@@ -95,11 +95,16 @@ src/
 │   │       ├── config/        # Configuraciones del módulo (vacío)
 │   │       │
 │   │       ├── models/        # Modelos del módulo
+│   │       │   ├── attribute.model.ts
 │   │       │   ├── category.model.ts
 │   │       │   ├── sku.model.ts
 │   │       │   └── warehouse.model.ts
 │   │       │
 │   │       ├── pages/         # Páginas del módulo
+│   │       │   ├── attributes/
+│   │       │   │   ├── create-attribute/
+│   │       │   │   ├── edit-attribute/
+│   │       │   │   └── attributes.page.ts
 │   │       │   ├── complete-profile/
 │   │       │   ├── complete-registration/
 │   │       │   ├── customers/
@@ -112,6 +117,7 @@ src/
 │   │       │   └── root-admin/
 │   │       │
 │   │       ├── services/      # Servicios específicos del módulo
+│   │       │   ├── attribute.service.ts
 │   │       │   ├── category.service.ts
 │   │       │   ├── modal.service.ts
 │   │       │   ├── product.service.ts
@@ -339,6 +345,24 @@ src/
 - `src/app/core/services/database.service.ts` - Type assertions para acceso a `id`
 
 **Resultado**: Build exitoso sin errores de TypeScript.
+
+#### Error: CreateProductModalComponent no puede guardar productos (Enero 2025)
+**Problema**: Después de los cambios en DatabaseService, el componente de crear productos dejó de funcionar:
+- Usaba sintaxis deprecada `*ngFor` en lugar de `@for` (Angular 17+)
+- Intentaba establecer `createdAt` y `updatedAt` manualmente cuando DatabaseService los agrega automáticamente
+
+**Causa**: 
+1. El modal usaba `*ngFor` que fue deprecado en Angular 17+
+2. Enviaba timestamps manuales conflictivos con los automáticos del DatabaseService
+
+**Solución aplicada**:
+1. **Actualizada sintaxis**: Convertidos todos los `*ngFor` a `@for` con tracking expressions
+2. **Removidos timestamps manuales**: Eliminados `createdAt` y `updatedAt` del objeto producto ya que DatabaseService los agrega automáticamente
+
+**Archivos modificados**:
+- `src/app/modules/stockin-manager/pages/products/create-product/create-product.modal.ts` - Sintaxis Angular 17+ y timestamps
+
+**Resultado**: Creación de productos funciona correctamente sin errores.
 
 #### Proceso de documentación de cambios (Enero 2025)
 **Implementado**: Sistema de gestión de cambios y versionado

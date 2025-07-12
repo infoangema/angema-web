@@ -7,6 +7,7 @@ import { SKU } from '../../../models/sku.model';
 import { Category } from '../../../models/category.model';
 import { Warehouse } from '../../../models/warehouse.model';
 import { Business } from '../../../../../core/models/business.model';
+import { Attribute } from '../../../models/attribute.model';
 
 import { ProductService } from '../../../services/product.service';
 import { CategoryService } from '../../../services/category.service';
@@ -14,6 +15,7 @@ import { WarehouseService } from '../../../services/warehouse.service';
 import { BusinessService } from '../../../../../core/services/business.service';
 import { AuthService } from '../../../../../core/services/auth.service';
 import { NotificationService } from '../../../../../core/services/notification.service';
+import { AttributeService } from '../../../services/attribute.service';
 
 @Component({
   selector: 'app-edit-product-modal',
@@ -33,6 +35,9 @@ export class EditProductModalComponent implements OnInit, OnDestroy, OnChanges {
   categories: Category[] = [];
   warehouses: Warehouse[] = [];
   businesses: Business[] = [];
+  colors: Attribute[] = [];
+  sizes: Attribute[] = [];
+  materials: Attribute[] = [];
   loading = false;
 
   activeTab = 'details';
@@ -66,7 +71,8 @@ export class EditProductModalComponent implements OnInit, OnDestroy, OnChanges {
     private warehouseService: WarehouseService,
     private businessService: BusinessService,
     private authService: AuthService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private attributeService: AttributeService
   ) {
     this.initializeForm();
   }
@@ -128,6 +134,9 @@ export class EditProductModalComponent implements OnInit, OnDestroy, OnChanges {
     this.warehouseService.watchWarehouses()
       .pipe(takeUntil(this.destroy$))
       .subscribe(warehouses => this.warehouses = warehouses);
+
+    // Cargar atributos dinámicos
+    this.loadAttributes();
 
     // Cargar negocios solo si es root
     if (this.isRoot) {
@@ -285,6 +294,23 @@ export class EditProductModalComponent implements OnInit, OnDestroy, OnChanges {
         this.notificationService.error('Error al eliminar el producto');
       }
     }
+  }
+
+  private loadAttributes(): void {
+    // Cargar colores
+    this.attributeService.getAttributesByType('color')
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(colors => this.colors = colors);
+
+    // Cargar tamaños
+    this.attributeService.getAttributesByType('size')
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(sizes => this.sizes = sizes);
+
+    // Cargar materiales
+    this.attributeService.getAttributesByType('material')
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(materials => this.materials = materials);
   }
 
   closeModal(): void {

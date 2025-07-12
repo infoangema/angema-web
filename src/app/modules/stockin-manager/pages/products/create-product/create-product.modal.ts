@@ -12,8 +12,12 @@ import { Warehouse, WarehouseSector } from '../../../models/warehouse.model';
 import { ProductService } from '../../../services/product.service';
 import { CategoryService } from '../../../services/category.service';
 import { WarehouseService } from '../../../services/warehouse.service';
+import { AttributeService } from '../../../services/attribute.service';
 import { BusinessService } from '../../../../../core/services/business.service';
 import { NotificationService } from '../../../../../core/services/notification.service';
+import { AuthService } from '../../../../../core/services/auth.service';
+import { RootBusinessSelectorService } from '../../../services/root-business-selector.service';
+import { Attribute } from '../../../models/attribute.model';
 
 @Component({
   selector: 'app-create-product-modal',
@@ -43,39 +47,59 @@ import { NotificationService } from '../../../../../core/services/notification.s
 
                     <!-- Información básica -->
                     <div>
-                      <label class="block text-sm font-medium text-gray-700 dark:text-gray-200">Nombre</label>
+                      <label class="block text-sm font-medium text-gray-700 dark:text-gray-200">Nombre *</label>
                       <input type="text" formControlName="name"
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600">
+                        [class]="'mt-1 block w-full rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 ' + 
+                        (productForm.get('name')?.invalid && showValidationErrors ? 'border-red-500 dark:border-red-400' : 'border-gray-300 dark:border-gray-600')">
+                      @if (productForm.get('name')?.invalid && showValidationErrors) {
+                        <p class="mt-1 text-sm text-red-600">Este campo es obligatorio (mínimo 3 caracteres)</p>
+                      }
                     </div>
 
                     <div>
-                      <label class="block text-sm font-medium text-gray-700 dark:text-gray-200">Descripción</label>
+                      <label class="block text-sm font-medium text-gray-700 dark:text-gray-200">Descripción *</label>
                       <textarea formControlName="description" rows="3"
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600"></textarea>
+                        [class]="'mt-1 block w-full rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 ' + 
+                        (productForm.get('description')?.invalid && showValidationErrors ? 'border-red-500 dark:border-red-400' : 'border-gray-300 dark:border-gray-600')"></textarea>
+                      @if (productForm.get('description')?.invalid && showValidationErrors) {
+                        <p class="mt-1 text-sm text-red-600">La descripción es obligatoria</p>
+                      }
                     </div>
 
                     <!-- Categoría y Almacén -->
                     <div class="grid grid-cols-2 gap-4">
                       <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200">Categoría</label>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200">Categoría *</label>
                         <select formControlName="category"
-                          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600">
+                          [class]="'mt-1 block w-full rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 ' + 
+                          (productForm.get('category')?.invalid && showValidationErrors ? 'border-red-500 dark:border-red-400' : 'border-gray-300 dark:border-gray-600')">
                           <option value="">Selecciona una categoría</option>
-                          <option *ngFor="let category of categories" [value]="category.id">
-                            {{category.name}}
-                          </option>
+                          @for (category of categories; track category.id) {
+                            <option [value]="category.id">
+                              {{category.name}}
+                            </option>
+                          }
                         </select>
+                        @if (productForm.get('category')?.invalid && showValidationErrors) {
+                          <p class="mt-1 text-sm text-red-600">Debe seleccionar una categoría</p>
+                        }
                       </div>
 
                       <div formGroupName="location">
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200">Almacén</label>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200">Almacén *</label>
                         <select formControlName="warehouseId" (change)="onWarehouseChange($event)"
-                          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600">
+                          [class]="'mt-1 block w-full rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 ' + 
+                          (productForm.get('location.warehouseId')?.invalid && showValidationErrors ? 'border-red-500 dark:border-red-400' : 'border-gray-300 dark:border-gray-600')">
                           <option value="">Selecciona un almacén</option>
-                          <option *ngFor="let warehouse of warehouses" [value]="warehouse.id">
-                            {{warehouse.name}}
-                          </option>
+                          @for (warehouse of warehouses; track warehouse.id) {
+                            <option [value]="warehouse.id">
+                              {{warehouse.name}}
+                            </option>
+                          }
                         </select>
+                        @if (productForm.get('location.warehouseId')?.invalid && showValidationErrors) {
+                          <p class="mt-1 text-sm text-red-600">Debe seleccionar un almacén</p>
+                        }
                       </div>
                     </div>
 
@@ -86,9 +110,11 @@ import { NotificationService } from '../../../../../core/services/notification.s
                         <select formControlName="sector" (change)="onSectorChange($event)"
                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600">
                           <option value="">Selecciona un sector</option>
-                          <option *ngFor="let sector of availableSectors" [value]="sector.id">
-                            {{sector.name}}
-                          </option>
+                          @for (sector of availableSectors; track sector.id) {
+                            <option [value]="sector.id">
+                              {{sector.name}}
+                            </option>
+                          }
                         </select>
                       </div>
                       <div>
@@ -96,51 +122,68 @@ import { NotificationService } from '../../../../../core/services/notification.s
                         <select formControlName="position"
                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600">
                           <option value="">Selecciona una posición</option>
-                          <option *ngFor="let position of availablePositions" [value]="position">
-                            {{position}}
-                          </option>
+                          @for (position of availablePositions; track position) {
+                            <option [value]="position">
+                              {{position}}
+                            </option>
+                          }
                         </select>
                       </div>
                     </div>
 
                     <!-- Atributos -->
-                    <div formGroupName="attributes" class="grid grid-cols-3 gap-4">
+                    <div formGroupName="attributes" class="grid grid-cols-4 gap-4">
                       <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200">Color</label>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200">Color *</label>
                         <select formControlName="color"
-                          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600">
+                          [class]="'mt-1 block w-full rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 ' + 
+                          (productForm.get('attributes.color')?.invalid && showValidationErrors ? 'border-red-500 dark:border-red-400' : 'border-gray-300 dark:border-gray-600')">
                           <option value="">Seleccionar</option>
-                          <option value="BLA">Blanco</option>
-                          <option value="NEG">Negro</option>
-                          <option value="ROJ">Rojo</option>
-                          <option value="AZU">Azul</option>
-                          <!-- Agregar más colores según necesidad -->
+                          @for (color of colors; track color.id) {
+                            <option [value]="color.code">{{color.code}} - {{color.name}}</option>
+                          }
                         </select>
+                        @if (productForm.get('attributes.color')?.invalid && showValidationErrors) {
+                          <p class="mt-1 text-sm text-red-600">Debe seleccionar un color</p>
+                        }
                       </div>
                       <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200">Tamaño</label>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200">Tamaño *</label>
                         <select formControlName="size"
-                          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600">
+                          [class]="'mt-1 block w-full rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 ' + 
+                          (productForm.get('attributes.size')?.invalid && showValidationErrors ? 'border-red-500 dark:border-red-400' : 'border-gray-300 dark:border-gray-600')">
                           <option value="">Seleccionar</option>
-                          <option value="XS">XS</option>
-                          <option value="S">S</option>
-                          <option value="M">M</option>
-                          <option value="L">L</option>
-                          <option value="XL">XL</option>
-                          <!-- Agregar más tamaños según necesidad -->
+                          @for (size of sizes; track size.id) {
+                            <option [value]="size.code">{{size.code}} - {{size.name}}</option>
+                          }
                         </select>
+                        @if (productForm.get('attributes.size')?.invalid && showValidationErrors) {
+                          <p class="mt-1 text-sm text-red-600">Debe seleccionar un tamaño</p>
+                        }
                       </div>
                       <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200">Material</label>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200">Material *</label>
                         <select formControlName="material"
-                          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600">
+                          [class]="'mt-1 block w-full rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 ' + 
+                          (productForm.get('attributes.material')?.invalid && showValidationErrors ? 'border-red-500 dark:border-red-400' : 'border-gray-300 dark:border-gray-600')">
                           <option value="">Seleccionar</option>
-                          <option value="ALG">Algodón</option>
-                          <option value="POL">Poliéster</option>
-                          <option value="LAN">Lana</option>
-                          <option value="NIL">Nylon</option>
-                          <!-- Agregar más materiales según necesidad -->
+                          @for (material of materials; track material.id) {
+                            <option [value]="material.code">{{material.code}} - {{material.name}}</option>
+                          }
                         </select>
+                        @if (productForm.get('attributes.material')?.invalid && showValidationErrors) {
+                          <p class="mt-1 text-sm text-red-600">Debe seleccionar un material</p>
+                        }
+                      </div>
+                      <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200">Gramos *</label>
+                        <input type="number" formControlName="grams" min="1" step="1"
+                          [class]="'mt-1 block w-full rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 ' + 
+                          (productForm.get('attributes.grams')?.invalid && showValidationErrors ? 'border-red-500 dark:border-red-400' : 'border-gray-300 dark:border-gray-600')"
+                          placeholder="ej: 250">
+                        @if (productForm.get('attributes.grams')?.invalid && showValidationErrors) {
+                          <p class="mt-1 text-sm text-red-600">Debe ingresar los gramos</p>
+                        }
                       </div>
                     </div>
 
@@ -194,11 +237,65 @@ import { NotificationService } from '../../../../../core/services/notification.s
             </div>
           </div>
           <div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+<!--            Error: no funciona y tampoco muestra log al guardar producto. -->
             <button type="button" (click)="onSubmit()"
-              [disabled]="productForm.invalid || loading"
-              class="inline-flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 sm:ml-3 sm:w-auto">
+              [disabled]="loading"
+              class="inline-flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 sm:ml-3 sm:w-auto disabled:opacity-50">
               {{ loading ? 'Guardando...' : 'Guardar' }}
             </button>
+            
+            <!-- Validation messages -->
+            @if (!productForm.valid && showValidationErrors) {
+              <div class="w-full mt-3 p-3 bg-red-50 border border-red-200 rounded-md">
+                <h4 class="text-sm font-medium text-red-800 mb-2">Por favor, corrige los siguientes errores:</h4>
+                <ul class="text-xs text-red-700 space-y-1">
+                  @if (productForm.get('name')?.invalid) {
+                    <li>• El nombre del producto es obligatorio (mínimo 3 caracteres)</li>
+                  }
+                  @if (productForm.get('description')?.invalid) {
+                    <li>• La descripción es obligatoria</li>
+                  }
+                  @if (productForm.get('category')?.invalid) {
+                    <li>• Debe seleccionar una categoría</li>
+                  }
+                  @if (productForm.get('location.warehouseId')?.invalid) {
+                    <li>• Debe seleccionar un almacén</li>
+                  }
+                  @if (productForm.get('location.sector')?.invalid) {
+                    <li>• Debe seleccionar un sector</li>
+                  }
+                  @if (productForm.get('attributes.color')?.invalid) {
+                    <li>• Debe seleccionar un color</li>
+                  }
+                  @if (productForm.get('attributes.size')?.invalid) {
+                    <li>• Debe seleccionar un tamaño</li>
+                  }
+                  @if (productForm.get('attributes.material')?.invalid) {
+                    <li>• Debe seleccionar un material</li>
+                  }
+                  @if (productForm.get('attributes.grams')?.invalid) {
+                    <li>• Debe ingresar los gramos</li>
+                  }
+                  @if (productForm.get('stock.current')?.invalid) {
+                    <li>• El stock inicial debe ser un número válido (0 o mayor)</li>
+                  }
+                  @if (productForm.get('stock.minimum')?.invalid) {
+                    <li>• El stock mínimo debe ser un número válido (0 o mayor)</li>
+                  }
+                  @if (productForm.get('pricing.cost')?.invalid) {
+                    <li>• El costo debe ser un número válido (0 o mayor)</li>
+                  }
+                  @if (productForm.get('pricing.price')?.invalid) {
+                    <li>• El precio de venta debe ser un número válido (0 o mayor)</li>
+                  }
+                </ul>
+              </div>
+            }
+            
+            <!-- Debug info -->
+            <div class="w-full mt-2 text-xs text-gray-500">
+              Debug: Form valid: {{productForm.valid}} | Loading: {{loading}} | Show errors: {{showValidationErrors}}
+            </div>
             <button type="button" (click)="onCancel()"
               class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">
               Cancelar
@@ -216,7 +313,14 @@ export class CreateProductModalComponent implements OnInit, OnDestroy {
   warehouses: Warehouse[] = [];
   availableSectors: WarehouseSector[] = [];
   availablePositions: string[] = [];
+  
+  // Dynamic attributes
+  colors: Attribute[] = [];
+  sizes: Attribute[] = [];
+  materials: Attribute[] = [];
+  
   loading = false;
+  showValidationErrors = false;
   private subscriptions: Subscription[] = [];
   private lastGeneratedCounter = 0;
 
@@ -225,23 +329,27 @@ export class CreateProductModalComponent implements OnInit, OnDestroy {
     private productService: ProductService,
     private categoryService: CategoryService,
     private warehouseService: WarehouseService,
+    private attributeService: AttributeService,
     private businessService: BusinessService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private authService: AuthService,
+    private rootBusinessSelector: RootBusinessSelectorService
   ) {
     this.productForm = this.fb.group({
       code: [{value: '', disabled: true}],
       name: ['', [Validators.required, Validators.minLength(3)]],
-      description: [''],
+      description: ['', Validators.required],
       category: ['', Validators.required],
       attributes: this.fb.group({
-        color: [''],
-        size: [''],
-        material: ['']
+        color: ['', Validators.required],
+        size: ['', Validators.required],
+        material: ['', Validators.required],
+        grams: ['', Validators.required]
       }),
       location: this.fb.group({
         warehouseId: ['', Validators.required],
         sector: ['', Validators.required],
-        position: ['', Validators.required]
+        position: [''] // No es obligatorio
       }),
       stock: this.fb.group({
         current: [0, [Validators.required, Validators.min(0)]],
@@ -261,6 +369,7 @@ export class CreateProductModalComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.loadCategories();
     this.loadWarehouses();
+    this.loadAttributes();
   }
 
   ngOnDestroy(): void {
@@ -279,6 +388,23 @@ export class CreateProductModalComponent implements OnInit, OnDestroy {
     this.subscriptions.push(sub);
   }
 
+  private loadAttributes(): void {
+    // Load colors
+    const colorsSub = this.attributeService.getAttributesByType('color')
+      .subscribe(colors => this.colors = colors);
+    this.subscriptions.push(colorsSub);
+
+    // Load sizes
+    const sizesSub = this.attributeService.getAttributesByType('size')
+      .subscribe(sizes => this.sizes = sizes);
+    this.subscriptions.push(sizesSub);
+
+    // Load materials
+    const materialsSub = this.attributeService.getAttributesByType('material')
+      .subscribe(materials => this.materials = materials);
+    this.subscriptions.push(materialsSub);
+  }
+
   private setupSkuGeneration(): void {
     const locationForm = this.productForm.get('location');
     const attributesForm = this.productForm.get('attributes');
@@ -289,12 +415,13 @@ export class CreateProductModalComponent implements OnInit, OnDestroy {
         locationForm.get('warehouseId')!.valueChanges,
         categoryControl.valueChanges,
         attributesForm.get('color')!.valueChanges,
-        attributesForm.get('size')!.valueChanges
+        attributesForm.get('size')!.valueChanges,
+        attributesForm.get('grams')!.valueChanges
       ]).pipe(
         distinctUntilChanged(),
-        map(([warehouseId, categoryId, color, size]) => {
-          if (warehouseId && categoryId && color && size) {
-            return this.generateSku(warehouseId, categoryId, color, size);
+        map(([warehouseId, categoryId, color, size, grams]) => {
+          if (warehouseId && categoryId && color && size && grams) {
+            return this.generateSku(warehouseId, categoryId, color, size, grams);
           }
           return '';
         })
@@ -308,7 +435,7 @@ export class CreateProductModalComponent implements OnInit, OnDestroy {
     }
   }
 
-  private generateSku(warehouseId: string, categoryId: string, color: string, size: string): string {
+  private generateSku(warehouseId: string, categoryId: string, color: string, size: string, grams: string): string {
     const warehouse = this.warehouses.find(w => w.id === warehouseId);
     const category = this.categories.find(c => c.id === categoryId);
 
@@ -316,7 +443,7 @@ export class CreateProductModalComponent implements OnInit, OnDestroy {
       return '';
     }
 
-    const prefix = `${warehouse.code}-${this.getCategoryCode(category.name)}-${color}-${size}`;
+    const prefix = `${warehouse.code}-${this.getCategoryCode(category.name)}-${color}-${size}-${grams}G`;
     this.lastGeneratedCounter++;
     const counter = this.lastGeneratedCounter.toString().padStart(4, '0');
 
@@ -375,18 +502,70 @@ export class CreateProductModalComponent implements OnInit, OnDestroy {
   }
 
   async onSubmit(): Promise<void> {
-    if (this.productForm.invalid || this.loading) return;
+    console.log('BUTTON CLICKED - onSubmit called');
+    console.log('Form valid:', this.productForm.valid);
+    console.log('Form errors:', this.productForm.errors);
+    console.log('Loading state:', this.loading);
+    
+    // Check individual form controls
+    Object.keys(this.productForm.controls).forEach(key => {
+      const control = this.productForm.get(key);
+      if (control?.invalid) {
+        console.log(`Invalid control: ${key}`, control.errors);
+      }
+    });
+    
+    // Check nested form groups
+    ['location', 'stock', 'pricing', 'attributes'].forEach(groupName => {
+      const group = this.productForm.get(groupName) as FormGroup;
+      if (group?.invalid) {
+        console.log(`Invalid group: ${groupName}`);
+        Object.keys(group.controls).forEach(controlName => {
+          const control = group.get(controlName);
+          if (control?.invalid) {
+            console.log(`  - Invalid control: ${groupName}.${controlName}`, control.errors);
+          }
+        });
+      }
+    });
+    
+    if (this.productForm.invalid) {
+      console.log('Form is invalid - showing validation errors');
+      this.showValidationErrors = true;
+      return;
+    }
+    
+    if (this.loading) {
+      console.log('Already loading - exiting');
+      return;
+    }
 
     this.loading = true;
     try {
+      console.log('CreateProductModal.onSubmit - Starting product creation');
+
       const formValue = this.productForm.getRawValue();
-      const businessId = await this.businessService.getCurrentBusinessId();
+      console.log('Form values:', formValue);
+
+      const isRoot = this.authService.isRoot();
+      console.log('User is root:', isRoot);
+
+      let businessId: string | null = null;
+
+      if (isRoot) {
+        businessId = this.rootBusinessSelector.getEffectiveBusinessId();
+        console.log('Root user - effective business ID:', businessId);
+      } else {
+        businessId = await this.businessService.getCurrentBusinessId();
+        console.log('Admin user - current business ID:', businessId);
+      }
 
       if (!businessId) {
+        console.error('No business ID found');
         throw new Error('No se encontró el ID del negocio');
       }
 
-      const product: Omit<SKU, 'id'> = {
+      const product: Omit<SKU, 'id' | 'createdAt' | 'updatedAt'> = {
         businessId,
         code: formValue.code,
         name: formValue.name,
@@ -395,7 +574,8 @@ export class CreateProductModalComponent implements OnInit, OnDestroy {
         attributes: {
           color: formValue.attributes.color || '',
           size: formValue.attributes.size || '',
-          material: formValue.attributes.material || ''
+          material: formValue.attributes.material || '',
+          grams: formValue.attributes.grams || ''
         },
         location: {
           warehouseId: formValue.location.warehouseId,
@@ -411,12 +591,14 @@ export class CreateProductModalComponent implements OnInit, OnDestroy {
           cost: Number(formValue.pricing.cost) || 0,
           price: Number(formValue.pricing.price) || 0
         },
-        isActive: true,
-        createdAt: new Date(),
-        updatedAt: new Date()
+        isActive: true
       };
 
-      await this.productService.createProduct(product);
+      console.log('Product object to create:', product);
+
+      const productId = await this.productService.createProduct(product);
+      console.log('Product created successfully with ID:', productId);
+
       this.notificationService.success('Producto creado exitosamente');
       this.closeModal();
     } catch (error) {

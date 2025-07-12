@@ -11,6 +11,7 @@ export interface SKU {
     color?: string;
     size?: string;
     material?: string;
+    grams?: string;
     [key: string]: any;
   };
   location: {

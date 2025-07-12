@@ -5,6 +5,49 @@ Todos los cambios importantes de este proyecto serán documentados en este archi
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 y este proyecto adhiere al [Versionado Semántico](https://semver.org/spec/v2.0.0.html).
 
+## [v.0.6.5] - 2025-07-12
+
+### ✨ Agregado
+- **Sistema de Gestión de Atributos Dinámicos**: Implementado sistema completo de atributos dinámicos para productos
+  - Agregada colección "attributes" en Firestore con aislamiento por negocio
+  - Creada página de gestión de atributos con operaciones CRUD completas (`/app/attributes`)
+  - Soporte para colores, tamaños y materiales con opciones predefinidas
+  - Acceso basado en permisos (solo usuarios root y admin)
+
+### 🔧 Cambiado
+- **Mejora en Creación de Productos**: Actualizado modal de creación para usar atributos dinámicos
+  - Reemplazados dropdowns hardcodeados con carga dinámica de atributos
+  - Agregado campo "grams" en inglés a los atributos del producto
+  - Mejorada generación de SKU para incluir campo grams
+  
+- **Mejora en Edición de Productos**: Actualizado modal de edición para usar atributos dinámicos
+  - Convertidos inputs de texto a dropdowns dinámicos para color, tamaño y material
+  - Flujo de trabajo consistente entre creación y edición de atributos
+
+### 🐛 Corregido
+- **Lógica de Visibilidad de Atributos**: Corregido filtrado de atributos en página de gestión
+  - Los atributos inactivos ahora permanecen visibles en la interfaz de gestión
+  - Solo los atributos activos aparecen en los selectores de creación/edición de productos
+  - Agregadas opciones de filtro "Todos/Activos/Inactivos" en gestión de atributos
+
+### 🏗️ Técnico
+- **AttributeService**: Implementado servicio completo con operaciones CRUD conscientes del negocio
+- **Optimización Firestore**: Optimizadas consultas para evitar índices complejos usando filtrado del lado del cliente
+- **Actualizaciones en Tiempo Real**: Agregado flujo de datos reactivo para actualizaciones inmediatas de UI
+- **Seguridad de Tipos**: Mejoradas interfaces TypeScript para atributos y filtros
+
+### 📚 Documentación
+- **FIRESTORE_SETUP.md**: Agregada guía comprensiva de configuración de Firestore
+- **Modelos de Atributos**: Documentadas estructuras de datos y relaciones
+- **Reglas de Seguridad**: Proporcionadas directrices de aislamiento de datos por negocio
+
+### 🔐 Seguridad
+- **Aislamiento por Negocio**: Los atributos están apropiadamente aislados por ID de negocio
+- **Acceso Basado en Roles**: Funciones de gestión restringidas a usuarios root/admin
+- **Validación de Datos**: Implementada validación de unicidad de códigos por negocio y tipo
+
+---
+
 ## [v.0.5.4] - 2025-07-12
 
 ### Corregido

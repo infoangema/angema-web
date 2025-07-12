@@ -95,7 +95,7 @@ export class ProductService {
     }
   }
 
-  async createProduct(product: Omit<SKU, 'id'>): Promise<string> {
+  async createProduct(product: Omit<SKU, 'id' | 'createdAt' | 'updatedAt'>): Promise<string> {
     return this.databaseService.create('products', product);
   }
 
