@@ -20,9 +20,11 @@
         (ngModelChange)="onFiltersChange()"
         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600">
         <option [ngValue]="null">Todas las categorías</option>
-        <option *ngFor="let category of categories" [value]="category.id">
-          {{category.name}}
-        </option>
+        @for (category of categories; track category.id) {
+          <option [value]="category.id">
+            {{category.name}}
+          </option>
+        }
       </select>
     </div>
 
@@ -34,9 +36,11 @@
         (ngModelChange)="onFiltersChange()"
         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600">
         <option [ngValue]="null">Todos los almacenes</option>
-        <option *ngFor="let warehouse of warehouses" [value]="warehouse.id">
-          {{warehouse.name}}
-        </option>
+        @for (warehouse of warehouses; track warehouse.id) {
+          <option [value]="warehouse.id">
+            {{warehouse.name}}
+          </option>
+        }
       </select>
     </div>
 
@@ -67,17 +71,21 @@
           Producto
           <span class="ml-1">{{ getSortIcon('name') }}</span>
         </th>
-        <th *ngIf="isRoot" scope="col" class="px-6 py-3">
-          Negocio
-        </th>
+        @if (isRoot) {
+          <th scope="col" class="px-6 py-3">
+            Negocio
+          </th>
+        }
         <th scope="col" class="px-6 py-3 cursor-pointer" (click)="sortBy('stock.current')">
           Stock
           <span class="ml-1">{{ getSortIcon('stock.current') }}</span>
         </th>
-        <th *ngIf="canViewCost" scope="col" class="px-6 py-3 cursor-pointer" (click)="sortBy('pricing.cost')">
-          Costo
-          <span class="ml-1">{{ getSortIcon('pricing.cost') }}</span>
-        </th>
+        @if (canViewCost) {
+          <th scope="col" class="px-6 py-3 cursor-pointer" (click)="sortBy('pricing.cost')">
+            Costo
+            <span class="ml-1">{{ getSortIcon('pricing.cost') }}</span>
+          </th>
+        }
         <th scope="col" class="px-6 py-3 cursor-pointer" (click)="sortBy('pricing.price')">
           Precio
           <span class="ml-1">{{ getSortIcon('pricing.price') }}</span>
@@ -87,9 +95,8 @@
       </tr>
     </thead>
     <tbody>
-<!--    todo: modificar: ngFor is deprecated, 20.0 Use the `@for` block instead. Intent to remove in v22-->
-      <tr *ngFor="let product of products"
-          class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+      @for (product of products; track product.id) {
+        <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
         <td class="px-6 py-4 font-mono text-sm">
           <div class="font-semibold text-gray-900 dark:text-white">{{product.code}}</div>
         </td>
@@ -97,11 +104,13 @@
           <div>{{product.name}}</div>
           <div class="text-sm text-gray-500">{{product.description}}</div>
         </td>
-        <td *ngIf="isRoot" class="px-6 py-4">
-          <div class="text-sm font-medium text-gray-900 dark:text-white">
-            {{getBusinessName(product.businessId)}}
-          </div>
-        </td>
+        @if (isRoot) {
+          <td class="px-6 py-4">
+            <div class="text-sm font-medium text-gray-900 dark:text-white">
+              {{getBusinessName(product.businessId)}}
+            </div>
+          </td>
+        }
         <td class="px-6 py-4">
           <div class="flex items-center">
             <span [class]="product.stock.current <= product.stock.minimum ? 'text-red-500' : ''">
@@ -110,11 +119,13 @@
             <span class="text-gray-500 ml-2">(Min: {{product.stock.minimum}})</span>
           </div>
         </td>
-        <td *ngIf="canViewCost" class="px-6 py-4">
-          <div class="text-sm font-medium text-gray-900 dark:text-white">
-            {{product.pricing.cost | currency}}
-          </div>
-        </td>
+        @if (canViewCost) {
+          <td class="px-6 py-4">
+            <div class="text-sm font-medium text-gray-900 dark:text-white">
+              {{product.pricing.cost | currency}}
+            </div>
+          </td>
+        }
         <td class="px-6 py-4">
           {{product.pricing.price | currency}}
         </td>
@@ -129,12 +140,15 @@
                   class="font-medium text-blue-600 dark:text-blue-500 hover:underline mr-3">
             Editar
           </button>
-          <button (click)="deleteProduct(product)"
-                  class="font-medium text-red-600 dark:text-red-500 hover:underline">
-            Eliminar
-          </button>
+          @if (canManageProduct) {
+            <button (click)="deleteProduct(product)"
+                    class="font-medium text-red-600 dark:text-red-500 hover:underline">
+              Eliminar
+            </button>
+          }
         </td>
-      </tr>
+        </tr>
+      }
     </tbody>
   </table>
 </div>
@@ -165,3 +179,12 @@
     </button>
   </div>
 </div>
+
+<!-- Edit Product Modal -->
+<app-edit-product-modal
+  [product]="selectedProduct"
+  [isVisible]="isEditModalVisible"
+  (productUpdated)="onProductUpdated()"
+  (productDeleted)="onProductDeleted()"
+  (modalClosed)="closeEditModal()">
+</app-edit-product-modal>

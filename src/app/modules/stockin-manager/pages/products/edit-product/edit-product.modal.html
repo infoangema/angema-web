@@ -1,0 +1,390 @@
+<!-- Modal Backdrop -->
+<div *ngIf="isVisible" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-50">
+  <div class="relative w-full max-w-4xl max-h-[90vh] bg-white rounded-lg shadow-lg overflow-y-auto">
+    
+    <!-- Modal Header -->
+    <div class="sticky top-0 z-10 flex items-center justify-between p-6 border-b border-gray-200 bg-white">
+      <div>
+        <h1 class="text-2xl font-bold text-gray-800">Editar Producto</h1>
+        <p class="text-sm text-gray-600">SKU: {{product?.code}}</p>
+      </div>
+      <button 
+        (click)="closeModal()"
+        class="text-gray-400 hover:text-gray-600 focus:outline-none"
+        type="button">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="p-6" *ngIf="product && productForm">
+      
+      <!-- Tabs Navigation -->
+      <div class="mb-6 border-b border-gray-200">
+        <nav class="-mb-px flex space-x-6" aria-label="Tabs">
+          @for (tab of tabs; track tab.id) {
+            <button
+              (click)="activeTab = tab.id"
+              [class]="getTabClasses(tab.id)"
+              type="button">
+              {{tab.label}}
+            </button>
+          }
+        </nav>
+      </div>
+
+      <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+        
+        <!-- Tab: Detalles -->
+        @if (activeTab === 'details') {
+          <div class="space-y-6">
+            <section>
+              <h2 class="text-xl font-semibold text-gray-800 mb-4">Información General</h2>
+              <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2">
+                
+                <!-- Código SKU -->
+                <div>
+                  <label class="block text-sm font-medium text-gray-700">Código SKU</label>
+                  <input
+                    type="text"
+                    formControlName="code"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    readonly>
+                </div>
+
+                <!-- Nombre -->
+                <div>
+                  <label class="block text-sm font-medium text-gray-700">Nombre *</label>
+                  <input
+                    type="text"
+                    formControlName="name"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    [class.border-red-500]="productForm.get('name')?.invalid && productForm.get('name')?.touched">
+                  @if (productForm.get('name')?.invalid && productForm.get('name')?.touched) {
+                    <div class="mt-1 text-sm text-red-600">
+                      El nombre es requerido
+                    </div>
+                  }
+                </div>
+
+                <!-- Categoría -->
+                <div>
+                  <label class="block text-sm font-medium text-gray-700">Categoría *</label>
+                  <select
+                    formControlName="category"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    [class.border-red-500]="productForm.get('category')?.invalid && productForm.get('category')?.touched">
+                    <option value="">Seleccionar categoría</option>
+                    @for (category of categories; track category.id) {
+                      <option [value]="category.id">
+                        {{category.name}}
+                      </option>
+                    }
+                  </select>
+                  @if (productForm.get('category')?.invalid && productForm.get('category')?.touched) {
+                    <div class="mt-1 text-sm text-red-600">
+                      La categoría es requerida
+                    </div>
+                  }
+                </div>
+
+                <!-- Negocio (solo para usuarios root) -->
+                @if (isRoot) {
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700">Negocio *</label>
+                    <select
+                      formControlName="businessId"
+                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                      [class.border-red-500]="productForm.get('businessId')?.invalid && productForm.get('businessId')?.touched">
+                      <option value="">Seleccionar negocio</option>
+                      @for (business of businesses; track business.id) {
+                        <option [value]="business.id">
+                          {{business.name}}
+                        </option>
+                      }
+                    </select>
+                    @if (productForm.get('businessId')?.invalid && productForm.get('businessId')?.touched) {
+                      <div class="mt-1 text-sm text-red-600">
+                        El negocio es requerido
+                      </div>
+                    }
+                  </div>
+                }
+
+                <!-- Descripción -->
+                <div class="sm:col-span-2">
+                  <label class="block text-sm font-medium text-gray-700">Descripción</label>
+                  <textarea
+                    formControlName="description"
+                    rows="3"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                  </textarea>
+                </div>
+
+              </div>
+            </section>
+
+            <!-- Atributos -->
+            <section>
+              <h2 class="text-xl font-semibold text-gray-800 mb-4">Atributos</h2>
+              <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-3">
+                
+                <div>
+                  <label class="block text-sm font-medium text-gray-700">Color</label>
+                  <input
+                    type="text"
+                    formControlName="color"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                </div>
+
+                <div>
+                  <label class="block text-sm font-medium text-gray-700">Tamaño</label>
+                  <input
+                    type="text"
+                    formControlName="size"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                </div>
+
+                <div>
+                  <label class="block text-sm font-medium text-gray-700">Material</label>
+                  <input
+                    type="text"
+                    formControlName="material"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                </div>
+
+              </div>
+            </section>
+          </div>
+        }
+
+        <!-- Tab: Stock -->
+        @if (activeTab === 'stock') {
+          <div class="space-y-6">
+            <section>
+              <h2 class="text-xl font-semibold text-gray-800 mb-4">Niveles de Stock</h2>
+              <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-3">
+                
+                <div>
+                  <label class="block text-sm font-medium text-gray-700">Stock Actual *</label>
+                  <input
+                    type="number"
+                    formControlName="currentStock"
+                    min="0"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    [class.border-red-500]="productForm.get('currentStock')?.invalid && productForm.get('currentStock')?.touched">
+                  @if (productForm.get('currentStock')?.invalid && productForm.get('currentStock')?.touched) {
+                    <div class="mt-1 text-sm text-red-600">
+                      El stock actual es requerido
+                    </div>
+                  }
+                </div>
+
+                <div>
+                  <label class="block text-sm font-medium text-gray-700">Stock Mínimo *</label>
+                  <input
+                    type="number"
+                    formControlName="minimumStock"
+                    min="0"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    [class.border-red-500]="productForm.get('minimumStock')?.invalid && productForm.get('minimumStock')?.touched">
+                  @if (productForm.get('minimumStock')?.invalid && productForm.get('minimumStock')?.touched) {
+                    <div class="mt-1 text-sm text-red-600">
+                      El stock mínimo es requerido
+                    </div>
+                  }
+                </div>
+
+                <div>
+                  <label class="block text-sm font-medium text-gray-700">Stock Reservado</label>
+                  <input
+                    type="number"
+                    formControlName="reservedStock"
+                    min="0"
+                    readonly
+                    class="mt-1 block w-full rounded-md border-gray-300 bg-gray-50 shadow-sm">
+                </div>
+
+              </div>
+            </section>
+
+            <!-- Ubicación -->
+            <section>
+              <h2 class="text-xl font-semibold text-gray-800 mb-4">Ubicación</h2>
+              <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-3">
+                
+                <div>
+                  <label class="block text-sm font-medium text-gray-700">Almacén *</label>
+                  <select
+                    formControlName="warehouseId"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    [class.border-red-500]="productForm.get('warehouseId')?.invalid && productForm.get('warehouseId')?.touched">
+                    <option value="">Seleccionar almacén</option>
+                    @for (warehouse of warehouses; track warehouse.id) {
+                      <option [value]="warehouse.id">
+                        {{warehouse.name}}
+                      </option>
+                    }
+                  </select>
+                  @if (productForm.get('warehouseId')?.invalid && productForm.get('warehouseId')?.touched) {
+                    <div class="mt-1 text-sm text-red-600">
+                      El almacén es requerido
+                    </div>
+                  }
+                </div>
+
+                <div>
+                  <label class="block text-sm font-medium text-gray-700">Sector</label>
+                  <input
+                    type="text"
+                    formControlName="sector"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                </div>
+
+                <div>
+                  <label class="block text-sm font-medium text-gray-700">Posición</label>
+                  <input
+                    type="text"
+                    formControlName="position"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                </div>
+
+              </div>
+            </section>
+          </div>
+        }
+
+        <!-- Tab: Precios -->
+        @if (activeTab === 'pricing') {
+          <div class="space-y-6">
+            <section>
+              <h2 class="text-xl font-semibold text-gray-800 mb-4">Precios</h2>
+              <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2">
+                
+                @if (canViewCost) {
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700">Precio de Costo *</label>
+                    <input
+                      type="number"
+                      formControlName="cost"
+                      min="0"
+                      step="0.01"
+                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                      [class.border-red-500]="productForm.get('cost')?.invalid && productForm.get('cost')?.touched">
+                    @if (productForm.get('cost')?.invalid && productForm.get('cost')?.touched) {
+                      <div class="mt-1 text-sm text-red-600">
+                        El precio de costo es requerido
+                      </div>
+                    }
+                  </div>
+                }
+
+                <div>
+                  <label class="block text-sm font-medium text-gray-700">Precio de Venta *</label>
+                  <input
+                    type="number"
+                    formControlName="price"
+                    min="0"
+                    step="0.01"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    [class.border-red-500]="productForm.get('price')?.invalid && productForm.get('price')?.touched">
+                  @if (productForm.get('price')?.invalid && productForm.get('price')?.touched) {
+                    <div class="mt-1 text-sm text-red-600">
+                      El precio de venta es requerido
+                    </div>
+                  }
+                </div>
+
+                <!-- Margen de ganancia (calculado) -->
+                @if (canViewCost) {
+                  <div class="sm:col-span-2">
+                    <div class="bg-gray-50 p-4 rounded-md">
+                      <p class="text-sm font-medium text-gray-700">Margen de Ganancia</p>
+                      <p class="text-lg font-semibold text-green-600">{{calculateProfitMargin()}}%</p>
+                    </div>
+                  </div>
+                }
+
+              </div>
+            </section>
+          </div>
+        }
+
+        <!-- Tab: Estado -->
+        @if (activeTab === 'status') {
+          <div class="space-y-6">
+            <section>
+              <h2 class="text-xl font-semibold text-gray-800 mb-4">Estado del Producto</h2>
+              <div class="space-y-4">
+                
+                <div class="flex items-center">
+                  <input
+                    type="checkbox"
+                    formControlName="isActive"
+                    class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                  <label class="ml-2 block text-sm text-gray-900">
+                    Producto activo
+                  </label>
+                </div>
+
+                <!-- Información de fechas -->
+                <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2">
+                  <div>
+                    <p class="text-sm font-medium text-gray-700">Fecha de Creación</p>
+                    <p class="text-sm text-gray-800">{{product.createdAt | date:'medium'}}</p>
+                  </div>
+                  <div>
+                    <p class="text-sm font-medium text-gray-700">Última Actualización</p>
+                    <p class="text-sm text-gray-800">{{product.updatedAt | date:'medium'}}</p>
+                  </div>
+                </div>
+
+              </div>
+            </section>
+          </div>
+        }
+
+        <!-- Action Buttons -->
+        <div class="sticky bottom-0 bg-white border-t border-gray-200 px-6 py-4 flex justify-end space-x-3 mt-6">
+          <button
+            type="button"
+            (click)="closeModal()"
+            class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+            Cancelar
+          </button>
+          
+          <!-- Botón de desactivar/activar (solo admin y root) -->
+          @if (canManageProduct) {
+            <button
+              type="button"
+              (click)="toggleProductStatus()"
+              [class]="product.isActive ? 'bg-yellow-600 hover:bg-yellow-700' : 'bg-green-600 hover:bg-green-700'"
+              class="px-4 py-2 text-sm font-medium text-white rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2">
+              {{product.isActive ? 'Desactivar' : 'Activar'}}
+            </button>
+          }
+          
+          <!-- Botón de eliminar (solo admin y root) -->
+          @if (canManageProduct) {
+            <button
+              type="button"
+              (click)="deleteProduct()"
+              class="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+              Eliminar
+            </button>
+          }
+          
+          <button
+            type="submit"
+            [disabled]="productForm.invalid || loading"
+            class="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50">
+            {{loading ? 'Guardando...' : 'Guardar Cambios'}}
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>

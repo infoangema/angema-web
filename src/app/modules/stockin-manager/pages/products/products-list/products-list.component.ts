@@ -15,11 +15,12 @@ import { WarehouseService } from '../../../services/warehouse.service';
 import { AuthService } from '../../../../../core/services/auth.service';
 import { BusinessService } from '../../../../../core/services/business.service';
 import { Business } from '../../../../../core/models/business.model';
+import { EditProductModalComponent } from '../edit-product/edit-product.modal';
 
 @Component({
   selector: 'app-products-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, CurrencyPipe],
+  imports: [CommonModule, FormsModule, CurrencyPipe, EditProductModalComponent],
   templateUrl: './products-list.component.html'
 })
 export class ProductsListComponent implements OnInit, OnDestroy {
@@ -27,6 +28,10 @@ export class ProductsListComponent implements OnInit, OnDestroy {
   categories: Category[] = [];
   warehouses: Warehouse[] = [];
   businesses: Business[] = [];
+
+  // Edit modal state
+  selectedProduct: SKU | null = null;
+  isEditModalVisible = false;
   
   // Propiedades para control de visibilidad
   get isRoot(): boolean {
@@ -34,6 +39,11 @@ export class ProductsListComponent implements OnInit, OnDestroy {
   }
   
   get canViewCost(): boolean {
+    const currentUser = this.authService.getCurrentUserProfile();
+    return currentUser?.roleId === 'root' || currentUser?.roleId === 'admin';
+  }
+
+  get canManageProduct(): boolean {
     const currentUser = this.authService.getCurrentUserProfile();
     return currentUser?.roleId === 'root' || currentUser?.roleId === 'admin';
   }
@@ -124,7 +134,10 @@ export class ProductsListComponent implements OnInit, OnDestroy {
       if (resetPagination) {
         this.products = result.items;
       } else {
-        this.products = [...this.products, ...result.items];
+        // Avoid duplicates when appending new items
+        const existingIds = new Set(this.products.map(p => p.id));
+        const newItems = result.items.filter(item => !existingIds.has(item.id));
+        this.products = [...this.products, ...newItems];
       }
       
       this.lastDoc = result.lastDoc;
@@ -199,7 +212,15 @@ export class ProductsListComponent implements OnInit, OnDestroy {
   }
 
   editProduct(product: SKU): void {
-    this.router.navigate(['app', 'products', 'edit', product.id]);
+    // Debug: Check product data before opening modal
+    console.log('ProductsList.editProduct called with:');
+    console.log('- Product:', product);
+    console.log('- Product ID:', `"${product.id}"`);
+    console.log('- Product ID type:', typeof product.id);
+    console.log('- Product ID length:', product.id?.length);
+
+    this.selectedProduct = product;
+    this.isEditModalVisible = true;
   }
 
   async deleteProduct(product: SKU): Promise<void> {
@@ -207,5 +228,21 @@ export class ProductsListComponent implements OnInit, OnDestroy {
       await this.productService.deleteProduct(product.id);
       await this.loadProducts(true);
     }
+  }
+
+  // Edit modal handlers
+  onProductUpdated(): void {
+    this.loadProducts(true);
+    this.closeEditModal();
+  }
+
+  onProductDeleted(): void {
+    this.loadProducts(true);
+    this.closeEditModal();
+  }
+
+  closeEditModal(): void {
+    this.isEditModalVisible = false;
+    this.selectedProduct = null;
   }
 } 

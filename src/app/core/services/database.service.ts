@@ -59,12 +59,13 @@ export class DatabaseService {
       const docSnap = await getDoc(docRef);
       
       if (docSnap.exists()) {
+        const data = docSnap.data();
         return {
-          id: docSnap.id,
-          ...docSnap.data(),
-          createdAt: docSnap.data()['createdAt']?.toDate(),
-          updatedAt: docSnap.data()['updatedAt']?.toDate(),
-          lastLogin: docSnap.data()['lastLogin']?.toDate()
+          ...data,
+          id: docSnap.id, // Firestore document ID always wins
+          createdAt: data['createdAt']?.toDate(),
+          updatedAt: data['updatedAt']?.toDate(),
+          lastLogin: data['lastLogin']?.toDate()
         } as T;
       }
       return null;
@@ -83,6 +84,18 @@ export class DatabaseService {
     data: T
   ): Promise<void> {
     try {
+      // Debug: Check if ID is valid
+      console.log('DatabaseService.update called with:');
+      console.log('- Collection:', collectionName);
+      console.log('- ID:', `"${id}"`);
+      console.log('- ID type:', typeof id);
+      console.log('- ID length:', id?.length);
+      console.log('- Data:', data);
+
+      if (!id || id.trim() === '') {
+        throw new Error(`Invalid document ID: "${id}". Document ID cannot be empty.`);
+      }
+
       const docRef = doc(this.firebaseService.firestore, collectionName, id);
       await updateDoc(docRef, {
         ...data,
@@ -133,13 +146,16 @@ export class DatabaseService {
     
     return new Observable(observer => {
       const unsubscribe = onSnapshot(q, (snapshot) => {
-        const documents: T[] = snapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data(),
-          createdAt: doc.data()['createdAt']?.toDate(),
-          updatedAt: doc.data()['updatedAt']?.toDate(),
-          lastLogin: doc.data()['lastLogin']?.toDate()
-        } as T));
+        const documents: T[] = snapshot.docs.map(doc => {
+          const data = doc.data();
+          return {
+            ...data,
+            id: doc.id, // Firestore document ID always wins
+            createdAt: data['createdAt']?.toDate(),
+            updatedAt: data['updatedAt']?.toDate(),
+            lastLogin: data['lastLogin']?.toDate()
+          } as T;
+        });
         observer.next(documents);
       }, (error) => {
         console.error(`Error getting all documents from ${collectionName}:`, error);
@@ -170,13 +186,16 @@ export class DatabaseService {
     
     return new Observable(observer => {
       const unsubscribe = onSnapshot(q, (snapshot) => {
-        const documents: T[] = snapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data(),
-          createdAt: doc.data()['createdAt']?.toDate(),
-          updatedAt: doc.data()['updatedAt']?.toDate(),
-          lastLogin: doc.data()['lastLogin']?.toDate()
-        } as T));
+        const documents: T[] = snapshot.docs.map(doc => {
+          const data = doc.data();
+          return {
+            ...data,
+            id: doc.id, // Firestore document ID always wins
+            createdAt: data['createdAt']?.toDate(),
+            updatedAt: data['updatedAt']?.toDate(),
+            lastLogin: data['lastLogin']?.toDate()
+          } as T;
+        });
         observer.next(documents);
       }, (error) => {
         console.error(`Error getting filtered documents from ${collectionName}:`, error);
@@ -196,13 +215,16 @@ export class DatabaseService {
     
     return new Observable(observer => {
       const unsubscribe = onSnapshot(q, (snapshot) => {
-        const documents: T[] = snapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data(),
-          createdAt: doc.data()['createdAt']?.toDate(),
-          updatedAt: doc.data()['updatedAt']?.toDate(),
-          lastLogin: doc.data()['lastLogin']?.toDate()
-        } as T));
+        const documents: T[] = snapshot.docs.map(doc => {
+          const data = doc.data();
+          return {
+            ...data,
+            id: doc.id, // Firestore document ID always wins
+            createdAt: data['createdAt']?.toDate(),
+            updatedAt: data['updatedAt']?.toDate(),
+            lastLogin: data['lastLogin']?.toDate()
+          } as T;
+        });
         observer.next(documents);
       }, (error) => {
         console.error(`Error getting documents with custom query from ${collectionName}:`, error);
@@ -224,16 +246,28 @@ export class DatabaseService {
       
       const documents: T[] = [];
       querySnapshot.forEach((doc) => {
+        const data = doc.data();
         documents.push({
-          id: doc.id,
-          ...doc.data(),
-          createdAt: doc.data()['createdAt']?.toDate(),
-          updatedAt: doc.data()['updatedAt']?.toDate(),
-          lastLogin: doc.data()['lastLogin']?.toDate()
+          ...data,
+          id: doc.id, // Firestore document ID always wins
+          createdAt: data['createdAt']?.toDate(),
+          updatedAt: data['updatedAt']?.toDate(),
+          lastLogin: data['lastLogin']?.toDate()
         } as T);
       });
       
-      return documents;
+      // Remove duplicates to prevent tracking errors
+      const seen = new Set<string>();
+      const uniqueDocuments = documents.filter(doc => {
+        const docId = (doc as any).id;
+        if (seen.has(docId)) {
+          return false;
+        }
+        seen.add(docId);
+        return true;
+      });
+      
+      return uniqueDocuments;
     } catch (error) {
       console.error(`Error getting documents once from ${collectionName}:`, error);
       throw error;
@@ -335,12 +369,27 @@ export class DatabaseService {
       const q = query(collectionRef, ...queryConstraints);
       const snapshot = await getDocs(q) as QuerySnapshot<T>;
 
-      let items = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-        createdAt: doc.data()['createdAt']?.toDate(),
-        updatedAt: doc.data()['updatedAt']?.toDate()
-      })) as T[];
+      let items = snapshot.docs.map(doc => {
+        const data = doc.data();
+        // Ensure the Firestore document ID takes precedence over any id in data
+        return {
+          ...data,
+          id: doc.id, // Firestore document ID always wins
+          createdAt: data['createdAt']?.toDate(),
+          updatedAt: data['updatedAt']?.toDate()
+        } as T;
+      });
+
+      // Remove duplicates based on document ID to prevent tracking errors
+      const seen = new Set<string>();
+      items = items.filter(item => {
+        const itemId = (item as any).id;
+        if (seen.has(itemId)) {
+          return false;
+        }
+        seen.add(itemId);
+        return true;
+      });
 
       let hasMore = false;
       if (constraints.pageSize && items.length > constraints.pageSize) {
