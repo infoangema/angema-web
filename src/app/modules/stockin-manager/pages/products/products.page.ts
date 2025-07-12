@@ -10,36 +10,34 @@ import { CreateProductModalComponent } from './create-product/create-product.mod
   imports: [CommonModule, StockinNavbarComponent, ProductsListComponent, CreateProductModalComponent],
   template: `
     <stockin-navbar></stockin-navbar>
-    <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
-      <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        <div class="px-4 sm:px-6 lg:px-8">
-          <div class="sm:flex sm:items-center">
-            <div class="sm:flex-auto">
-              <h1 class="text-xl font-semibold text-gray-900 dark:text-gray-100">Productos</h1>
-              <p class="mt-2 text-sm text-gray-700 dark:text-gray-300">
-                Gestiona tu inventario, agrega nuevos productos y controla el stock.
-              </p>
-            </div>
-            <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-              <button
-                type="button"
-                (click)="openCreateModal()"
-                class="block rounded-md bg-blue-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
-              >
-                Agregar producto
-              </button>
-            </div>
-          </div>
-          <app-products-list #productsList></app-products-list>
+    
+    <div class="container mx-auto px-4 py-6">
+      <div class="flex justify-between items-center mb-6">
+        <div>
+          <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Productos</h1>
+          <p class="text-gray-600 dark:text-gray-400">Gestiona tu inventario, agrega nuevos productos y controla el stock</p>
         </div>
-      </main>
+        
+        <button
+          type="button"
+          (click)="openCreateModal()"
+          class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 focus:bg-blue-700 active:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150">
+          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+          </svg>
+          Nuevo Producto
+        </button>
+      </div>
+
+      <app-products-list #productsList></app-products-list>
     </div>
 
     <!-- Modal -->
-    <app-create-product-modal 
-      *ngIf="showModal" 
-      (modalClose)="onModalClose()"
-    ></app-create-product-modal>
+    @if (showModal) {
+      <app-create-product-modal 
+        (modalClose)="onModalClose()">
+      </app-create-product-modal>
+    }
   `
 })
 export class StockinProductsPage {

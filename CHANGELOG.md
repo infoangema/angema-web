@@ -5,6 +5,38 @@ Todos los cambios importantes de este proyecto serán documentados en este archi
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 y este proyecto adhiere al [Versionado Semántico](https://semver.org/spec/v2.0.0.html).
 
+## [v.0.6.6] - 2025-07-12
+
+### 🎨 Mejorado
+- **Estandarización de Layout de Contenedores**: Unificado el ancho de contenedores en todas las páginas de gestión
+  - Aplicado layout `container mx-auto px-4 py-6` consistente en productos, categorías, almacenes y atributos
+  - Mejorada consistencia visual y experiencia de usuario
+  - Layout más amplio y espacioso para mejor visualización de datos
+
+### 🔧 Cambiado  
+- **Modernización de Templates Angular**: Actualizada sintaxis de templates a Angular 17+
+  - Convertidos `*ngFor` y `*ngIf` a nueva sintaxis `@for` y `@if`
+  - Mejorada legibilidad y rendimiento de templates
+  - Eliminadas advertencias de sintaxis deprecada
+
+### 🐛 Corregido
+- **Selector de Negocio para Usuarios Root**: Solucionado problema de visibilidad del selector
+  - El selector de negocio ahora permanece visible después de seleccionar un negocio
+  - Usuarios root pueden cambiar de contexto de negocio sin necesidad de logout
+  - Reemplazado estado local con llamadas directas a AuthService
+  - Actualizada sintaxis de template deprecada
+
+### 🏗️ Técnico
+- **Optimización de Templates**: Eliminadas dependencias circulares y mejorada estructura
+- **Corrección de Sintaxis**: Solucionados errores de compilación en templates
+- **Limpieza de Imports**: Removidos imports no utilizados y advertencias
+
+### 📱 UI/UX
+- **Consistencia Visual**: Todas las páginas de gestión ahora tienen el mismo ancho de contenedor
+- **Experiencia Mejorada**: Layout más amplio proporciona mejor visualización de tablas y contenido
+
+---
+
 ## [v.0.6.5] - 2025-07-12
 
 ### ✨ Agregado

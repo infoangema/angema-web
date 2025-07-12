@@ -28,16 +28,21 @@ import { RootBusinessSelectorService } from '../../services/root-business-select
         <a class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 text-sm font-medium leading-normal transition-colors" routerLink="/app/products">Productos</a>
         <a class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 text-sm font-medium leading-normal transition-colors" routerLink="/app/categories">Categorías</a>
         <a class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 text-sm font-medium leading-normal transition-colors" routerLink="/app/warehouses">Almacenes</a>
-        <a *ngIf="canManageAttributes()" class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 text-sm font-medium leading-normal transition-colors" routerLink="/app/attributes">Atributos</a>
+        @if (canManageAttributes()) {
+          <a class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 text-sm font-medium leading-normal transition-colors" routerLink="/app/attributes">Atributos</a>
+        }
         <a class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 text-sm font-medium leading-normal transition-colors" routerLink="/app/orders">Pedidos</a>
         <a class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 text-sm font-medium leading-normal transition-colors" routerLink="/app/customers">Clientes</a>
         <a class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 text-sm font-medium leading-normal transition-colors" routerLink="/app/reports">Reportes</a>
-        <a *ngIf="isRoot()" class="text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-500 text-sm font-semibold leading-normal transition-colors" routerLink="/app/root-admin">Root Admin</a>
+        @if (isRoot()) {
+          <a class="text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-500 text-sm font-semibold leading-normal transition-colors" routerLink="/app/root-admin">Root Admin</a>
+        }
       </nav>
     </div>
     <div class="flex items-center gap-6">
       <!-- Business Selector for Root Users -->
-      <div *ngIf="isRoot()" class="relative">
+      @if (isRoot()) {
+        <div class="relative">
         <button 
           (click)="openBusinessSelector()"
           class="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-md transition-colors"
@@ -50,7 +55,8 @@ import { RootBusinessSelectorService } from '../../services/root-business-select
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
           </svg>
         </button>
-      </div>
+        </div>
+      }
       <label class="relative flex items-center">
         <div class="absolute left-3 text-gray-400 dark:text-gray-500">
           <svg fill="currentColor" height="20px" viewBox="0 0 256 256" width="20px" xmlns="http://www.w3.org/2000/svg">
@@ -66,13 +72,17 @@ import { RootBusinessSelectorService } from '../../services/root-business-select
         class="relative flex cursor-pointer items-center justify-center rounded-md p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-dark-700 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
       >
         <!-- Sun icon -->
-        <svg *ngIf="isDarkMode$ | async" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
-        </svg>
+        @if (isDarkMode$ | async) {
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+          </svg>
+        }
         <!-- Moon icon -->
-        <svg *ngIf="!(isDarkMode$ | async)" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
-        </svg>
+        @if (!(isDarkMode$ | async)) {
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+          </svg>
+        }
       </button>
 
       <button class="relative flex cursor-pointer items-center justify-center rounded-md p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-dark-700 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
@@ -98,10 +108,8 @@ import { RootBusinessSelectorService } from '../../services/root-business-select
         </button>
         
         <!-- Dropdown Menu -->
-        <div 
-          *ngIf="showUserMenu"
-          class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-200"
-        >
+        @if (showUserMenu) {
+          <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-200">
           <div class="px-4 py-2 border-b border-gray-100">
             <p class="text-sm font-medium text-gray-900">{{ getUserDisplayName() }}</p>
             <p class="text-xs text-gray-500">{{ getUserEmail() }}</p>
@@ -115,7 +123,8 @@ import { RootBusinessSelectorService } from '../../services/root-business-select
             </svg>
             Cerrar sesión
           </button>
-        </div>
+          </div>
+        }
       </div>
     </div>
   </header>
@@ -125,7 +134,6 @@ import { RootBusinessSelectorService } from '../../services/root-business-select
 export class StockinNavbarComponent {
   showUserMenu = false;
   isDarkMode$;
-  isRootUser = false;
 
   constructor(
     private authService: AuthService,
@@ -136,10 +144,6 @@ export class StockinNavbarComponent {
     private rootBusinessSelector: RootBusinessSelectorService
   ) {
     this.isDarkMode$ = this.themeService.darkMode$;
-    // Suscribirse a cambios en el usuario
-    this.authService.currentUser$.subscribe(user => {
-      this.isRootUser = user?.roleId === 'root';
-    });
   }
 
   toggleUserMenu() {
@@ -177,7 +181,7 @@ export class StockinNavbarComponent {
   }
 
   isRoot(): boolean {
-    return this.isRootUser;
+    return this.authService.isRoot();
   }
 
   canManageAttributes(): boolean {
