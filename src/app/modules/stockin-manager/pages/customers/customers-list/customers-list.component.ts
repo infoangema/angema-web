@@ -42,7 +42,7 @@ export class CustomersListComponent implements OnInit, OnDestroy {
   // Filtros
   filters: CustomerFilters = {
     search: '',
-    type: null,
+    type: '',
     active: '',
     city: null
   };
@@ -64,8 +64,8 @@ export class CustomersListComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   loading = false;
 
-  customerTypes: { value: CustomerType | null; label: string }[] = [
-    { value: null, label: 'Todos los tipos' },
+  customerTypes: { value: string; label: string }[] = [
+    { value: '', label: 'Todos los tipos' },
     { value: 'individual', label: 'Individual' },
     { value: 'business', label: 'Empresa' },
     { value: 'wholesale', label: 'Mayorista' },
@@ -128,7 +128,7 @@ export class CustomersListComponent implements OnInit, OnDestroy {
       }
 
       // Filtro por tipo
-      if (this.filters.type && customer.customerType !== this.filters.type) {
+      if (this.filters.type && this.filters.type !== '' && customer.customerType !== this.filters.type) {
         return false;
       }
 
@@ -163,7 +163,7 @@ export class CustomersListComponent implements OnInit, OnDestroy {
   clearFilters(): void {
     this.filters = {
       search: '',
-      type: null,
+      type: '',
       active: '',
       city: null
     };
