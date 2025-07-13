@@ -43,7 +43,7 @@ export class CustomersListComponent implements OnInit, OnDestroy {
   filters: CustomerFilters = {
     search: '',
     type: null,
-    active: true,
+    active: '',
     city: null
   };
 
@@ -73,9 +73,9 @@ export class CustomersListComponent implements OnInit, OnDestroy {
   ];
 
   statusOptions = [
-    { value: null, label: 'Todos' },
-    { value: true, label: 'Activos' },
-    { value: false, label: 'Inactivos' }
+    { value: '', label: 'Todos' },
+    { value: 'true', label: 'Activos' },
+    { value: 'false', label: 'Inactivos' }
   ];
 
   constructor(
@@ -132,9 +132,12 @@ export class CustomersListComponent implements OnInit, OnDestroy {
         return false;
       }
 
-      // Filtro por estado activo
-      if (this.filters.active !== null && customer.isActive !== this.filters.active) {
-        return false;
+      // Filtro por estado activo - manejar tanto string como boolean
+      if (this.filters.active !== null && this.filters.active !== '') {
+        const activeValue = this.filters.active === 'true' ? true : this.filters.active === 'false' ? false : this.filters.active;
+        if (customer.isActive !== activeValue) {
+          return false;
+        }
       }
 
       // Filtro por ciudad
@@ -161,7 +164,7 @@ export class CustomersListComponent implements OnInit, OnDestroy {
     this.filters = {
       search: '',
       type: null,
-      active: true,
+      active: '',
       city: null
     };
     this.applyFilters();
@@ -237,6 +240,23 @@ export class CustomersListComponent implements OnInit, OnDestroy {
   getCustomerTypeLabel(type: CustomerType): string {
     const typeOption = this.customerTypes.find(t => t.value === type);
     return typeOption?.label || type;
+  }
+
+  getCustomerTypeClasses(type: CustomerType): string {
+    const baseClasses = 'inline-flex px-2 py-1 text-xs font-semibold rounded-full';
+    
+    switch (type) {
+      case 'individual':
+        return `${baseClasses} bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300`;
+      case 'business':
+        return `${baseClasses} bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-200`;
+      case 'wholesale':
+        return `${baseClasses} bg-purple-100 text-purple-800 dark:bg-purple-800 dark:text-purple-200`;
+      case 'vip':
+        return `${baseClasses} bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-200`;
+      default:
+        return `${baseClasses} bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300`;
+    }
   }
 
   getCustomerFullName(customer: Customer): string {

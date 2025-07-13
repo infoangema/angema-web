@@ -65,20 +65,17 @@ export class LoginComponent {
 
   private async handleRootUserLogin(): Promise<void> {
     try {
+      // Force clear selection first to ensure fresh state
+      this.rootBusinessSelector.clearSelection();
+      
       // Check if root user already has a business selection
       const hasValidSelection = this.rootBusinessSelector.hasValidSelection();
       
-      console.log('=== ROOT USER LOGIN ===');
-      console.log('Has valid selection:', hasValidSelection);
-      console.log('Current selection:', this.rootBusinessSelector.getCurrentSelection());
-      
       if (!hasValidSelection) {
         // Show business selector modal
-        console.log('Showing business selector modal...');
         this.showBusinessSelector = true;
       } else {
         // Navigate directly to dashboard
-        console.log('Navigating to dashboard with existing selection...');
         await this.router.navigate(['/app/dashboard']);
       }
     } catch (error) {

@@ -42,7 +42,7 @@ export type CustomerType = 'individual' | 'business' | 'wholesale' | 'vip';
 export interface CustomerFilters {
   search: string;
   type: CustomerType | null;
-  active: boolean | null;
+  active: boolean | string | null;
   city: string | null;
 }
 

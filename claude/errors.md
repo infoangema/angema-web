@@ -500,3 +500,388 @@ ng lint
 - [Angular Control Flow](https://angular.io/guide/templates/control-flow)
 - [Firestore Best Practices](https://firebase.google.com/docs/firestore/best-practices)
 - [TypeScript Generics](https://www.typescriptlang.org/docs/handbook/2/generics.html)
+
+---
+
+## 🆕 Errores del Módulo de Clientes/CRM
+
+### Error #8: CustomerService Observable Type Mismatch 
+**Fecha**: Enero 2025  
+**Versión**: v.0.7.0  
+**Severidad**: Alta  
+
+#### Descripción del Problema
+Al implementar el CustomerService reactivo con `switchMap` para usuarios root:
+- `TS2322: Type 'Observable<unknown>' is not assignable to type 'Observable<Customer[]>'`
+- El Observable retornado no tenía el tipo correcto
+
+#### Causa Raíz
+El `switchMap` no estaba preservando el tipo `Customer[]` en el Observable retornado.
+
+#### Solución Implementada
+```typescript
+// Importar 'of' para crear Observables tipados
+import { Observable, of } from 'rxjs';
+
+// Usar 'of([])' en lugar de 'new Observable(...)'
+return of([]);
+
+// Tipar explícitamente el Observable
+return new Observable<Customer[]>(observer => {
+  // ...
+});
+```
+
+#### Archivos Modificados
+- `src/app/modules/stockin-manager/services/customer.service.ts`
+
+#### Resultado
+✅ Compilación exitosa sin errores de TypeScript  
+✅ CustomerService reactivo funcionando correctamente  
+
+---
+
+### Error #9: Modal Container Not Set
+**Fecha**: Enero 2025  
+**Versión**: v.0.7.0  
+**Severidad**: Alta  
+
+#### Descripción del Problema
+Al hacer clic en el selector de negocios desde el navbar:
+- Error: "Modal container not set"
+- Modal no se abría
+- BusinessSelectorModal necesitaba ViewContainerRef configurado
+
+#### Síntomas Observados
+1. Console.log mostraba "Modal container not set" repetidamente
+2. Modal no se renderizaba
+3. Usuario no podía cambiar selección de negocio
+
+#### Causa Raíz
+El `ModalService` requiere que se configure un `ViewContainerRef` mediante `setModalContainer()`, pero ninguna página lo estaba configurando.
+
+#### Solución Implementada
+
+##### 1. Configuración de Modal Container en Páginas
+```typescript
+// En cada página que incluye navbar
+import { ViewContainerRef, AfterViewInit } from '@angular/core';
+import { ModalService } from '../../services/modal.service';
+
+export class CustomersPage implements AfterViewInit {
+  @ViewChild('modalContainer', { read: ViewContainerRef }) modalContainer!: ViewContainerRef;
+
+  constructor(private modalService: ModalService) {}
+
+  ngAfterViewInit() {
+    this.modalService.setModalContainer(this.modalContainer);
+  }
+}
+```
+
+##### 2. Template con Modal Container
+```html
+<!-- Modal Container for Dynamic Modals -->
+<div #modalContainer></div>
+```
+
+#### Archivos Modificados
+- `src/app/modules/stockin-manager/pages/customers/customers.page.ts`
+
+#### Resultado
+✅ Modal de selección de negocios se abre correctamente  
+✅ ModalService funcional desde navbar  
+
+---
+
+### Error #10: Business Selector Modal No Se Cierra
+**Fecha**: Enero 2025  
+**Versión**: v.0.7.0  
+**Severidad**: Alta  
+
+#### Descripción del Problema
+Dos problemas relacionados con el cierre del modal:
+
+1. **Modal desde Navbar**: Se abría pero no se cerraba al confirmar selección
+2. **Modal desde Login**: Se abría automáticamente pero no se cerraba al confirmar
+
+#### Síntomas Observados
+1. Notificación de éxito aparecía pero modal permanecía abierto
+2. Diferentes comportamientos entre navbar y login
+3. Modal de login no navegaba a dashboard después de selección
+
+#### Causa Raíz
+El `BusinessSelectorModalComponent` usaba dos enfoques diferentes:
+- **Navbar**: `ModalService.closeModal()` (dinámico)
+- **Login**: `@Output() modalClosed` (binding directo)
+
+Al cambiar solo a `ModalService.closeModal()`, rompió la compatibilidad con login.
+
+#### Solución Implementada
+
+##### 1. Compatibilidad Dual en closeModal()
+```typescript
+closeModal(): void {
+  // Emitir evento para modales que usan binding directo (como login)
+  this.modalClosed.emit();
+  
+  // También usar el ModalService para modales dinámicos (como navbar)
+  try {
+    this.modalService.closeModal();
+  } catch (error) {
+    // El ModalService puede no estar configurado en algunos contextos (como login)
+    console.log('ModalService not available, using direct event emission');
+  }
+}
+```
+
+##### 2. Manejo de Errores Graceful
+```typescript
+// Try-catch para evitar errores cuando ModalService no está configurado
+try {
+  this.modalService.closeModal();
+} catch (error) {
+  console.log('ModalService not available, using direct event emission');
+}
+```
+
+#### Archivos Modificados
+- `src/app/modules/stockin-manager/components/business-selector-modal/business-selector-modal.component.ts`
+
+#### Resultado
+✅ Modal se cierra correctamente desde navbar  
+✅ Modal se cierra correctamente desde login  
+✅ Navegación automática a dashboard funciona  
+✅ Compatibilidad con ambos enfoques de modal  
+
+---
+
+### Error #11: CustomerService No Reactivo a Cambios de Negocio
+**Fecha**: Enero 2025  
+**Versión**: v.0.7.0  
+**Severidad**: Alta  
+
+#### Descripción del Problema
+Los clientes no aparecían automáticamente después de seleccionar un negocio:
+
+1. **CustomerService**: Usaba `getEffectiveBusinessId()` solo al inicializar
+2. **No reactivo**: No escuchaba cambios en la selección de negocio
+3. **Comparación con ProductService**: Los productos funcionaban porque usaban consultas una sola vez
+
+#### Síntomas Observados
+1. Clientes guardados pero no visibles en lista
+2. Estadísticas mostraban clientes existentes
+3. Necesario recargar página para ver cambios
+
+#### Causa Raíz
+```typescript
+// Antes: No reactivo
+watchCustomers(): Observable<Customer[]> {
+  const businessId = this.rootBusinessSelector.getEffectiveBusinessId(); // Solo una vez
+  if (businessId) {
+    return this.databaseService.getWhere<Customer>('customers', 'businessId', '==', businessId);
+  }
+  return of([]);
+}
+```
+
+#### Solución Implementada
+
+##### 1. CustomerService Reactivo con switchMap
+```typescript
+// Después: Reactivo a cambios
+watchCustomers(): Observable<Customer[]> {
+  const isRoot = this.authService.isRoot();
+
+  if (isRoot) {
+    // Escuchar cambios en la selección de negocio
+    return this.rootBusinessSelector.selection$.pipe(
+      switchMap(selection => {
+        const businessId = selection.showAll ? null : selection.businessId;
+        
+        if (businessId) {
+          return this.databaseService.getWhere<Customer>('customers', 'businessId', '==', businessId)
+            .pipe(map(customers => customers.sort((a, b) => 
+              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            )));
+        } else {
+          return of([]);
+        }
+      })
+    );
+  }
+  // ... lógica para usuarios no-root
+}
+```
+
+##### 2. Imports Actualizados
+```typescript
+import { map, switchMap } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+```
+
+#### Archivos Modificados
+- `src/app/modules/stockin-manager/services/customer.service.ts`
+
+#### Resultado
+✅ Clientes se actualizan automáticamente al cambiar negocio  
+✅ Sistema reactivo con RxJS observables  
+✅ Consistencia con el patrón de RootBusinessSelectorService  
+
+---
+
+### Error #12: Filtros de Clientes por Defecto Incorrectos
+**Fecha**: Enero 2025  
+**Versión**: v.0.7.0  
+**Severidad**: Media  
+
+#### Descripción del Problema
+Los filtros de clientes tenían comportamiento inconsistente:
+
+1. **Por defecto**: Filtraba solo clientes activos (`active: true`)
+2. **Limpiar filtros**: Mantenía filtro de activos 
+3. **Expectativa**: Mostrar todos los clientes sin filtros al cargar
+
+#### Síntomas Observados
+1. Clientes creados no aparecían en lista
+2. Estadísticas mostraban clientes pero lista vacía
+3. "Filtrados = 0" aunque había clientes
+
+#### Causa Raíz
+```typescript
+// Configuración inicial problemática
+filters: CustomerFilters = {
+  search: '',
+  type: null,
+  active: true,  // ❌ Siempre filtrando solo activos
+  city: null
+};
+
+clearFilters(): void {
+  this.filters = {
+    search: '',
+    type: null,
+    active: true,  // ❌ No limpiaba realmente
+    city: null
+  };
+}
+```
+
+#### Solución Implementada
+
+##### 1. Filtros por Defecto Sin Restricciones
+```typescript
+// Mostrar todos los clientes por defecto
+filters: CustomerFilters = {
+  search: '',
+  type: null,
+  active: null,  // ✅ Todos los estados
+  city: null
+};
+```
+
+##### 2. Limpiar Filtros Correctamente
+```typescript
+clearFilters(): void {
+  this.filters = {
+    search: '',
+    type: null,
+    active: null,  // ✅ Todos los estados
+    city: null
+  };
+  this.applyFilters();
+}
+```
+
+##### 3. Lógica de Filtrado Actualizada
+```typescript
+// Filtro por estado activo - manejar tanto string como boolean
+if (this.filters.active !== null && this.filters.active !== '') {
+  const activeValue = this.filters.active === 'true' ? true : 
+                     this.filters.active === 'false' ? false : 
+                     this.filters.active;
+  if (customer.isActive !== activeValue) {
+    return false;
+  }
+}
+```
+
+##### 4. Interface Actualizada
+```typescript
+export interface CustomerFilters {
+  search: string;
+  type: CustomerType | null;
+  active: boolean | string | null;  // ✅ Permite string para select HTML
+  city: string | null;
+}
+```
+
+#### Archivos Modificados
+- `src/app/modules/stockin-manager/pages/customers/customers-list/customers-list.component.ts`
+- `src/app/modules/stockin-manager/models/customer.model.ts`
+
+#### Resultado
+✅ Clientes aparecen sin filtros al cargar página  
+✅ F5 resetea filtros correctamente  
+✅ "Limpiar filtros" funciona como esperado  
+✅ Comportamiento consistente con expectativas del usuario  
+
+---
+
+## 📚 Patrones de Errores del Módulo de Clientes
+
+### 1. Servicios No Reactivos
+**Patrón**: Servicios que consultan datos una sola vez en lugar de ser reactivos  
+**Solución**: Usar `switchMap` con observables de selección/configuración  
+**Prevención**: Siempre considerar si los datos pueden cambiar y necesitan ser reactivos  
+
+### 2. Modal Container Missing
+**Patrón**: ModalService requiere configuración de ViewContainerRef en cada página  
+**Solución**: Configurar modalContainer en ngAfterViewInit de cada página  
+**Prevención**: Documentar requerimientos de setup para servicios compartidos  
+
+### 3. Compatibilidad de Modal Approaches
+**Patrón**: Componentes de modal usados tanto dinámicamente como con binding directo  
+**Solución**: Implementar compatibilidad dual en métodos de cierre  
+**Prevención**: Estandarizar un solo approach para modales en toda la aplicación  
+
+### 4. Filtros con Comportamiento Inesperado
+**Patrón**: Filtros que mantienen restricciones por defecto no evidentes al usuario  
+**Solución**: Configurar filtros neutros por defecto y lógica condicional  
+**Prevención**: Siempre mostrar "todos" por defecto, permitir filtrado explícito  
+
+### 5. Type Safety en Observables Complejos
+**Patrón**: switchMap y operadores RxJS pierden información de tipos  
+**Solución**: Tipado explícito y uso de operadores tipados como `of<T>()`  
+**Prevención**: Siempre tipar explícitamente observables complejos  
+
+---
+
+## 🔧 Mejores Prácticas para Módulo de Clientes
+
+### 1. Servicios Reactivos
+- Usar `switchMap` para datos que dependen de selecciones/configuraciones
+- Escuchar cambios en servicios de configuración (`RootBusinessSelectorService`)
+- Evitar consultas "una sola vez" para datos que pueden cambiar
+
+### 2. Modal Management
+- Configurar `ViewContainerRef` en todas las páginas que usen ModalService
+- Implementar compatibilidad dual para diferentes approaches de modal
+- Usar try-catch para servicios opcionales
+
+### 3. Business Logic Isolation
+- Siempre filtrar datos por `businessId` en multi-tenant applications
+- Usar `RootBusinessSelectorService` para usuarios root
+- Mantener lógica de negocio separada entre usuarios root y no-root
+
+### 4. Filter Design
+- Mostrar "todos" por defecto, no aplicar filtros restrictivos
+- Hacer el comportamiento de filtros evidente al usuario
+- Implementar lógica condicional que permita valores "neutros" (null, '')
+
+### Recursos de Documentación
+- [Angular Control Flow](https://angular.io/guide/templates/control-flow)
+- [Firestore Best Practices](https://firebase.google.com/docs/firestore/best-practices)
+- [TypeScript Generics](https://www.typescriptlang.org/docs/handbook/2/generics.html)
+- [RxJS switchMap](https://rxjs.dev/api/operators/switchMap)
+- [Angular ViewContainerRef](https://angular.io/api/core/ViewContainerRef)

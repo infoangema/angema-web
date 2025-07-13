@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 import { where } from '@angular/fire/firestore';
 import { DatabaseService } from '../../../core/services/database.service';
 import { BusinessService } from '../../../core/services/business.service';
@@ -36,23 +36,28 @@ export class CustomerService {
     const isRoot = this.authService.isRoot();
 
     if (isRoot) {
-      const businessId = this.rootBusinessSelector.getEffectiveBusinessId();
-
-      if (businessId) {
-        // Para usuarios root, usar directamente el Observable de Firestore
-        return this.databaseService.getWhere<Customer>('customers', 'businessId', '==', businessId)
-          .pipe(
-            map(customers => customers.sort((a, b) => 
-              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-            ))
-          );
-      } else {
-        // Si no hay businessId seleccionado, no mostrar clientes
-        return new Observable(observer => observer.next([]));
-      }
+      // Para usuarios root, escuchar cambios en la selección de negocio
+      return this.rootBusinessSelector.selection$.pipe(
+        switchMap(selection => {
+          const businessId = selection.showAll ? null : selection.businessId;
+          
+          if (businessId) {
+            // Mostrar solo clientes del negocio seleccionado
+            return this.databaseService.getWhere<Customer>('customers', 'businessId', '==', businessId)
+              .pipe(
+                map(customers => customers.sort((a, b) => 
+                  new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+                ))
+              );
+          } else {
+            // Si no hay businessId seleccionado, no mostrar clientes
+            return of([]);
+          }
+        })
+      );
     } else {
       // Para usuarios no root, necesitamos obtener el businessId de forma asíncrona
-      return new Observable(observer => {
+      return new Observable<Customer[]>(observer => {
         this.businessService.getCurrentBusinessId().then(id => {
           if (id) {
             this.databaseService.getWhere<Customer>('customers', 'businessId', '==', id)

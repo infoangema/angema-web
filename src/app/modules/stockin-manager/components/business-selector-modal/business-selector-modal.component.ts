@@ -6,6 +6,7 @@ import { Business } from '../../../../core/models/business.model';
 import { SessionStorageService } from '../../../../core/services/session-storage.service';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { RootBusinessSelectorService } from '../../services/root-business-selector.service';
+import { ModalService } from '../../services/modal.service';
 
 @Component({
   selector: 'app-business-selector-modal',
@@ -25,7 +26,8 @@ export class BusinessSelectorModalComponent implements OnInit {
     private businessService: BusinessService,
     private sessionStorage: SessionStorageService,
     private notificationService: NotificationService,
-    private rootBusinessSelector: RootBusinessSelectorService
+    private rootBusinessSelector: RootBusinessSelectorService,
+    private modalService: ModalService
   ) {}
 
   ngOnInit(): void {
@@ -33,16 +35,11 @@ export class BusinessSelectorModalComponent implements OnInit {
     
     // Cargar selección actual del servicio de RootBusinessSelector
     const currentSelection = this.rootBusinessSelector.getCurrentSelection();
-    console.log('=== BUSINESS SELECTOR MODAL INIT ===');
-    console.log('Current selection:', currentSelection);
-    
     this.selectedBusinessId = currentSelection.businessId;
     this.showAllSelected = currentSelection.showAll;
     
-    // Si no hay selección válida, por defecto mostrar "Ver Todos"
-    if (!currentSelection.showAll && !currentSelection.businessId) {
-      this.showAllSelected = true;
-    }
+    // DO NOT auto-select "show all" - force user to make an explicit choice
+    // This ensures the business selection is intentional
   }
 
   trackByBusinessId(index: number, business: Business): string {
@@ -60,6 +57,12 @@ export class BusinessSelectorModalComponent implements OnInit {
   }
 
   confirmSelection(): void {
+    // Validate that a selection has been made
+    if (!this.showAllSelected && !this.selectedBusinessId) {
+      this.notificationService.showError('Por favor, selecciona un negocio o elige "Ver Todos"');
+      return;
+    }
+    
     // Usar el servicio de RootBusinessSelector para guardar la selección
     this.rootBusinessSelector.setBusinessSelection(this.selectedBusinessId, this.showAllSelected);
     
@@ -67,11 +70,20 @@ export class BusinessSelectorModalComponent implements OnInit {
       ? 'Visualizando todos los negocios'
       : `Negocio seleccionado correctamente`;
     
-    this.notificationService.success(message);
+    this.notificationService.showSuccess(message);
     this.closeModal();
   }
 
   closeModal(): void {
+    // Emitir evento para modales que usan binding directo (como login)
     this.modalClosed.emit();
+    
+    // También usar el ModalService para modales dinámicos (como navbar)
+    try {
+      this.modalService.closeModal();
+    } catch (error) {
+      // El ModalService puede no estar configurado en algunos contextos (como login)
+      console.log('ModalService not available, using direct event emission');
+    }
   }
 }

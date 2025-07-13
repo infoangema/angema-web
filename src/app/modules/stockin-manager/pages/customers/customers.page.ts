@@ -1,9 +1,10 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, ViewContainerRef, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { StockinNavbarComponent } from '../../components/shared/navbar.component';
 import { CustomersListComponent } from './customers-list/customers-list.component';
 import { CreateCustomerModalComponent } from './create-customer/create-customer.modal';
 import { CustomerSegmentsComponent } from './customer-segments/customer-segments.component';
+import { ModalService } from '../../services/modal.service';
 
 @Component({
   selector: 'stockin-customers-page',
@@ -66,12 +67,22 @@ import { CustomerSegmentsComponent } from './customer-segments/customer-segments
         (modalClose)="onModalClose()">
       </app-create-customer-modal>
     }
+
+    <!-- Modal Container for Dynamic Modals -->
+    <div #modalContainer></div>
   `
 })
-export class StockinCustomersPage {
+export class StockinCustomersPage implements AfterViewInit {
   @ViewChild('customersList') customersList!: CustomersListComponent;
+  @ViewChild('modalContainer', { read: ViewContainerRef }) modalContainer!: ViewContainerRef;
   showModal = false;
   activeTab: 'list' | 'segments' = 'list';
+
+  constructor(private modalService: ModalService) {}
+
+  ngAfterViewInit() {
+    this.modalService.setModalContainer(this.modalContainer);
+  }
 
   openCreateModal() {
     this.showModal = true;
