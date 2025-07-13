@@ -46,7 +46,15 @@ export class NotificationService {
     this.addNotification('success', message, duration);
   }
 
+  showSuccess(message: string, duration = 3000): void {
+    this.addNotification('success', message, duration);
+  }
+
   error(message: string, duration = 5000): void {
+    this.addNotification('error', message, duration);
+  }
+
+  showError(message: string, duration = 5000): void {
     this.addNotification('error', message, duration);
   }
 
@@ -55,6 +63,10 @@ export class NotificationService {
   }
 
   info(message: string, duration = 3000): void {
+    this.addNotification('info', message, duration);
+  }
+
+  showInfo(message: string, duration = 3000): void {
     this.addNotification('info', message, duration);
   }
 
