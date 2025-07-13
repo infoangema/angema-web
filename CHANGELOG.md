@@ -31,10 +31,15 @@ y este proyecto adhiere al [Versionado Semántico](https://semver.org/spec/v2.0.
   - Métodos CRUD con validación de negocio
 
 ### 🐛 Corregido
+- **Lista de Clientes No Visible en Desktop**: Tabla de clientes no se mostraba en pantallas grandes
+  - Problema: Clase CSS `hidden md:block` ocultaba la tabla en ciertos tamaños de pantalla
+  - Solución: Removida restricción de responsive design para mostrar tabla en todos los tamaños
+  - Resultado: Lista de clientes visible en desktop, tablet y móvil con diseño adaptativo
+
 - **Error de Sintaxis Angular 17+**: Corregida sintaxis incorrecta de @switch en atributos
   - Problema: `@switch` dentro de atributo `class` causaba falla silenciosa de renderizado
   - Solución: Implementado método `getCustomerTypeClasses()` con lógica switch
-  - Resultado: Lista de clientes ahora se renderiza correctamente en vista de escritorio
+  - Resultado: Sintaxis de template corregida y compatible con Angular 17+
 
 - **Modal Container No Configurado**: Error al abrir selector de negocios desde navbar
   - Problema: ModalService requería ViewContainerRef configurado en cada página
