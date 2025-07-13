@@ -5,6 +5,102 @@ Todos los cambios importantes de este proyecto serán documentados en este archi
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 y este proyecto adhiere al [Versionado Semántico](https://semver.org/spec/v2.0.0.html).
 
+## [v.0.7.0] - 2025-07-13
+
+### ✨ Nuevo
+- **Módulo de Gestión de Clientes/CRM**: Sistema completo de gestión de clientes
+  - CRUD completo de clientes con información de contacto, comercial y metadata
+  - Búsqueda y filtros avanzados (nombre, email, código, tipo, estado, ciudad)
+  - Paginación y ordenamiento automático por fecha de creación
+  - Sistema de puntos de fidelización con gestión de acumulación
+  - Segmentación básica de clientes (Individual, Empresa, Mayorista, VIP)
+  - Exportación de datos a CSV
+  - Historial de compras por cliente
+  - Integración con sistema multi-tenant por businessId
+
+- **Modal Automático de Selección de Negocio**: Para usuarios root en primer login
+  - Aparece automáticamente cuando usuario root no tiene selección válida
+  - Fuerza selección explícita antes de acceder al dashboard
+  - Validación de selección requerida para continuar
+  - Navegación automática a dashboard después de selección
+
+- **CustomerService Reactivo**: Servicio que se actualiza automáticamente
+  - Observa cambios en selección de negocio para usuarios root
+  - Actualización automática de lista de clientes al cambiar negocio
+  - Soporte completo para aislamiento por businessId
+  - Métodos CRUD con validación de negocio
+
+### 🐛 Corregido
+- **Error de Sintaxis Angular 17+**: Corregida sintaxis incorrecta de @switch en atributos
+  - Problema: `@switch` dentro de atributo `class` causaba falla silenciosa de renderizado
+  - Solución: Implementado método `getCustomerTypeClasses()` con lógica switch
+  - Resultado: Lista de clientes ahora se renderiza correctamente en vista de escritorio
+
+- **Modal Container No Configurado**: Error al abrir selector de negocios desde navbar
+  - Problema: ModalService requería ViewContainerRef configurado en cada página
+  - Solución: Configurado modalContainer en páginas que usan ModalService
+  - Resultado: Modal de selector de negocios funciona desde navbar
+
+- **Modal de Selector No Se Cierra**: Problemas con cierre de modal en diferentes contextos
+  - Problema: Incompatibilidad entre modal dinámico (navbar) y binding directo (login)
+  - Solución: Implementada compatibilidad dual con try-catch graceful
+  - Resultado: Modal se cierra correctamente en ambos contextos
+
+- **CustomerService No Reactivo**: Clientes no aparecían después de seleccionar negocio
+  - Problema: Servicio consultaba businessId solo una vez al inicializar
+  - Solución: Implementado patrón reactivo con switchMap escuchando selection$
+  - Resultado: Lista de clientes se actualiza automáticamente con cambios de negocio
+
+- **Filtros por Defecto Incorrectos**: Filtros ocultaban clientes sin motivo aparente
+  - Problema: Filtro de estado activo configurado como `true` por defecto
+  - Solución: Configurados filtros neutrales (null) para mostrar todos por defecto
+  - Resultado: Clientes aparecen sin filtros al cargar página
+
+### 🔧 Mejorado
+- **Arquitectura Multi-Tenant**: Reforzado aislamiento por businessId
+  - Todos los datos de clientes filtrados por negocio seleccionado
+  - Validación de businessId en operaciones CRUD
+  - Soporte para usuarios root con selección dinámica de negocio
+
+- **Gestión de Modales**: Sistema de modales más robusto
+  - Compatibilidad dual entre modales dinámicos y binding directo
+  - Validación de selección en modal de negocios
+  - Setup automático de ViewContainerRef en páginas
+
+- **Integración RxJS**: Patrones reactivos mejorados
+  - CustomerService totalmente reactivo con switchMap
+  - Observables tipados correctamente
+  - Manejo de errores y estados de loading
+
+### 📚 Documentación
+- **Errores Documentados**: Agregados 5 nuevos patrones de errores en errors.md
+  - Error #8: CustomerService Observable Type Mismatch
+  - Error #9: Modal Container Not Set
+  - Error #10: Business Selector Modal No Se Cierra
+  - Error #11: CustomerService No Reactivo a Cambios de Negocio
+  - Error #12: Filtros de Clientes por Defecto Incorrectos
+
+- **Guías de Servicios**: Agregadas guías detalladas en structure.md
+  - RootBusinessSelectorService: Patrones reactivos y uso correcto
+  - ModalService: Setup requerido y compatibilidad dual
+  - CustomerService: Funcionalidades CRM y filtros
+  - DatabaseService: Mejores prácticas y optimizaciones
+  - Checklist para implementación de nuevos módulos
+
+### 🧪 Técnico
+- **Archivos Principales Modificados**:
+  - `customer.model.ts`: Modelo completo con loyaltyPoints y totalPurchases
+  - `customer.service.ts`: Servicio reactivo con aislamiento por negocio
+  - `customers-list.component.ts`: Lista con filtros y paginación
+  - `login.component.ts`: Modal automático para usuarios root
+  - `business-selector-modal.component.ts`: Validación y compatibilidad dual
+
+- **Patrones Implementados**:
+  - Servicios reactivos multi-tenant
+  - Modal management con ViewContainerRef
+  - Filtros neutrales por defecto
+  - Error handling consistente
+
 ## [v.0.6.6] - 2025-07-12
 
 ### 🎨 Mejorado
