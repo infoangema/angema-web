@@ -304,4 +304,9 @@ export class CustomersListComponent implements OnInit, OnDestroy {
   get Math() {
     return Math;
   }
+
+  // Helper para generar números de página
+  getPageNumbers(): number[] {
+    return Array.from({ length: this.totalPages }, (_, i) => i + 1);
+  }
 }

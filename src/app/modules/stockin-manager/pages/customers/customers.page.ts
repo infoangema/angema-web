@@ -12,14 +12,14 @@ import { ModalService } from '../../services/modal.service';
   imports: [CommonModule, StockinNavbarComponent, CustomersListComponent, CreateCustomerModalComponent, CustomerSegmentsComponent],
   template: `
     <stockin-navbar></stockin-navbar>
-    
+
     <div class="container mx-auto px-4 py-6">
       <div class="flex justify-between items-center mb-6">
         <div>
           <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Clientes</h1>
           <p class="text-gray-600 dark:text-gray-400">Gestiona tu base de clientes, información de contacto y historial de compras</p>
         </div>
-        
+
         <button
           type="button"
           (click)="openCreateModal()"
@@ -60,10 +60,9 @@ import { ModalService } from '../../services/modal.service';
         <app-customer-segments></app-customer-segments>
       }
     </div>
-
     <!-- Modal -->
     @if (showModal) {
-      <app-create-customer-modal 
+      <app-create-customer-modal
         (modalClose)="onModalClose()">
       </app-create-customer-modal>
     }
@@ -95,4 +94,4 @@ export class StockinCustomersPage implements AfterViewInit {
       this.customersList.loadCustomers();
     }
   }
-} 
+}

@@ -180,8 +180,7 @@
                 <div class="text-sm text-gray-500 dark:text-gray-400">{{ customer.phone || 'N/A' }}</div>
               </td>
               <td class="px-6 py-4 whitespace-nowrap">
-                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full"
-                  [class]="getCustomerTypeClasses(customer.customerType)">
+                <span [class]="getCustomerTypeClasses(customer.customerType)">
                   {{ getCustomerTypeLabel(customer.customerType) }}
                 </span>
               </td>
@@ -328,12 +327,12 @@
           Anterior
         </button>
         
-        @for (page of [].constructor(totalPages); track $index; let i = $index) {
+        @for (pageNum of getPageNumbers(); track pageNum) {
           <button
             type="button"
-            (click)="goToPage(i + 1)"
-            [class]="'px-3 py-2 text-sm rounded-md ' + (currentPage === i + 1 ? 'bg-blue-600 text-white' : 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200')">
-            {{ i + 1 }}
+            (click)="goToPage(pageNum)"
+            [class]="'px-3 py-2 text-sm rounded-md ' + (currentPage === pageNum ? 'bg-blue-600 text-white' : 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200')">
+            {{ pageNum }}
           </button>
         }
         
