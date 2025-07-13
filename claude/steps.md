@@ -13,6 +13,7 @@ Este proyecto se desarrolla 100% con IA usando "Claude Code". Como el contexto n
 6. **Usar sintaxis Angular 17+**: `@for`, `@if` en lugar de `*ngFor`, `*ngIf`
 7. **Componentes standalone** con archivos HTML y CSS separados
 8. **Documentar errores** en `/claude/errors.md` para contexto futuro
+9. **🚨 IMPORTANTE: SIEMPRE actualizar CHANGELOG.md ANTES de cada commit** - Documentar todos los cambios
 
 ### 📁 Archivos de Contexto
 - `/claude/structure.md` - Estructura técnica del proyecto

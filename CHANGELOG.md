@@ -31,6 +31,16 @@ y este proyecto adhiere al [Versionado Semántico](https://semver.org/spec/v2.0.
   - Métodos CRUD con validación de negocio
 
 ### 🐛 Corregido
+- **Modal de Edición de Clientes con Pestañas**: Reorganizado formulario excesivamente alto
+  - Problema: Modal de edición tenía mucho scroll y era difícil de navegar
+  - Solución: Dividido formulario en 3 pestañas (Personal, Dirección, Comercial)
+  - Resultado: Modal más compacto y navegable, mejor experiencia de usuario
+
+- **Filtro "Todos los Tipos" No Funcionaba**: Filtro de tipos no mostraba todos después de filtrar
+  - Problema: Angular ngModel convertía `null` a string "null" causando problemas de filtro
+  - Solución: Cambiado valor de `null` a string vacío `''` para compatibilidad con select
+  - Resultado: Filtro "Todos los tipos" funciona correctamente después de filtrar por tipos específicos
+
 - **Error Firestore con Valores Undefined**: Falla al crear clientes por campos undefined
   - Problema: Campos opcionales enviados como `undefined` en lugar de `null` causaban error Firestore
   - Solución: Convertidos todos los campos opcionales de `undefined` a `null` en creación de clientes
