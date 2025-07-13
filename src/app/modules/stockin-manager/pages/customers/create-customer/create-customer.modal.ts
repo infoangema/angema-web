@@ -351,14 +351,14 @@ export class CreateCustomerModalComponent implements OnInit {
         firstName: this.customerForm.value.firstName.trim(),
         lastName: this.customerForm.value.lastName.trim(),
         email: this.customerForm.value.email.trim().toLowerCase(),
-        phone: this.customerForm.value.phone?.trim() || undefined,
-        documentNumber: this.customerForm.value.documentNumber?.trim() || undefined,
-        address: this.customerForm.value.address?.trim() || undefined,
-        city: this.customerForm.value.city?.trim() || undefined,
-        state: this.customerForm.value.state?.trim() || undefined,
-        country: this.customerForm.value.country?.trim() || undefined,
-        postalCode: this.customerForm.value.postalCode?.trim() || undefined,
-        notes: this.customerForm.value.notes?.trim() || undefined
+        phone: this.customerForm.value.phone?.trim() || null,
+        documentNumber: this.customerForm.value.documentNumber?.trim() || null,
+        address: this.customerForm.value.address?.trim() || null,
+        city: this.customerForm.value.city?.trim() || null,
+        state: this.customerForm.value.state?.trim() || null,
+        country: this.customerForm.value.country?.trim() || null,
+        postalCode: this.customerForm.value.postalCode?.trim() || null,
+        notes: this.customerForm.value.notes?.trim() || null
       };
 
       await this.customerService.createCustomer(customerData);

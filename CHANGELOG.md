@@ -31,6 +31,11 @@ y este proyecto adhiere al [Versionado Semántico](https://semver.org/spec/v2.0.
   - Métodos CRUD con validación de negocio
 
 ### 🐛 Corregido
+- **Error Firestore con Valores Undefined**: Falla al crear clientes por campos undefined
+  - Problema: Campos opcionales enviados como `undefined` en lugar de `null` causaban error Firestore
+  - Solución: Convertidos todos los campos opcionales de `undefined` a `null` en creación de clientes
+  - Resultado: Creación de clientes funciona correctamente sin errores de validación Firestore
+
 - **Lista de Clientes No Visible en Desktop**: Tabla de clientes no se mostraba en pantallas grandes
   - Problema: Clase CSS `hidden md:block` ocultaba la tabla en ciertos tamaños de pantalla
   - Solución: Removida restricción de responsive design para mostrar tabla en todos los tamaños
