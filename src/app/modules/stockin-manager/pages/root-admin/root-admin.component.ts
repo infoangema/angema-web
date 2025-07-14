@@ -110,22 +110,22 @@ import { StockinNavbarComponent } from '../../components/shared/navbar.component
                         </span>
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap">
-                        <span [class]="business.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'" 
+                        <span [class]="business.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"
                               class="px-2 py-1 text-xs font-semibold rounded-full">
                           {{ business.isActive ? 'Activo' : 'Inactivo' }}
                         </span>
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {{ business.createdAt | date:'short' }}
+                        {{ business.createdAt | date:'dd/MM/yy' }}
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-                        <button 
+                        <button
                           (click)="toggleBusinessStatus(business)"
                           [class]="business.isActive ? 'text-red-600 hover:text-red-900' : 'text-green-600 hover:text-green-900'"
                         >
                           {{ business.isActive ? 'Desactivar' : 'Activar' }}
                         </button>
-                        <button 
+                        <button
                           (click)="editBusiness(business)"
                           class="text-blue-600 hover:text-blue-900"
                         >
@@ -145,9 +145,9 @@ import { StockinNavbarComponent } from '../../components/shared/navbar.component
           <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
             <div class="flex items-center justify-between flex-column flex-wrap md:flex-row space-y-4 md:space-y-0 pb-4 bg-white">
               <div>
-                <button 
+                <button
                   (click)="showBulkActions = !showBulkActions"
-                  class="inline-flex items-center text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-3 py-1.5" 
+                  class="inline-flex items-center text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-3 py-1.5"
                   type="button"
                 >
                   <span class="sr-only">Action button</span>
@@ -178,11 +178,11 @@ import { StockinNavbarComponent } from '../../components/shared/navbar.component
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
                   </svg>
                 </div>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   [(ngModel)]="userSearchTerm"
                   (input)="filterUsers()"
-                  class="block p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500" 
+                  class="block p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
                   placeholder="Buscar usuarios..."
                 >
               </div>
@@ -192,9 +192,9 @@ import { StockinNavbarComponent } from '../../components/shared/navbar.component
                 <tr>
                   <th scope="col" class="p-4">
                     <div class="flex items-center">
-                      <input 
-                        id="checkbox-all-search" 
-                        type="checkbox" 
+                      <input
+                        id="checkbox-all-search"
+                        type="checkbox"
                         [(ngModel)]="allUsersSelected"
                         (change)="toggleAllUsers()"
                         class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
@@ -223,15 +223,15 @@ import { StockinNavbarComponent } from '../../components/shared/navbar.component
                 </tr>
               </thead>
               <tbody>
-                <tr 
-                  *ngFor="let user of filteredUsers; let i = index" 
+                <tr
+                  *ngFor="let user of filteredUsers; let i = index"
                   class="bg-white border-b border-gray-200 hover:bg-gray-50"
                 >
                   <td class="w-4 p-4">
                     <div class="flex items-center">
-                      <input 
-                        [id]="'checkbox-table-search-' + i" 
-                        type="checkbox" 
+                      <input
+                        [id]="'checkbox-table-search-' + i"
+                        type="checkbox"
                         [(ngModel)]="user.selected"
                         class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
                       >
@@ -245,7 +245,7 @@ import { StockinNavbarComponent } from '../../components/shared/navbar.component
                     <div class="ps-3">
                       <div class="text-base font-semibold">{{ user.displayName }}</div>
                       <div class="font-normal text-gray-500">{{ user.email }}</div>
-                    </div>  
+                    </div>
                   </th>
                   <td class="px-6 py-4">
                     {{ getBusinessName(user.businessId) }}
@@ -262,18 +262,18 @@ import { StockinNavbarComponent } from '../../components/shared/navbar.component
                     </div>
                   </td>
                   <td class="px-6 py-4 text-gray-500">
-                    {{ user.lastLogin ? (user.lastLogin | date:'short') : 'Nunca' }}
+                    {{ user.lastLogin ? (user.lastLogin | date:'dd/MM/yy, HH:mm') : 'Nunca' }}
                   </td>
                   <td class="px-6 py-4">
                     <div class="flex space-x-2">
-                      <button 
+                      <button
                         (click)="toggleUserStatus(user)"
                         [class]="user.isActive ? 'font-medium text-red-600 hover:underline' : 'font-medium text-green-600 hover:underline'"
                       >
                         {{ user.isActive ? 'Desactivar' : 'Activar' }}
                       </button>
                       <span class="text-gray-300">|</span>
-                      <button 
+                      <button
                         (click)="editUser(user)"
                         class="font-medium text-blue-600 hover:underline"
                       >
@@ -298,8 +298,8 @@ import { StockinNavbarComponent } from '../../components/shared/navbar.component
               <h3 class="text-lg font-semibold text-gray-900">
                 Crear Nuevo Negocio
               </h3>
-              <button 
-                type="button" 
+              <button
+                type="button"
                 (click)="showCreateBusinessModal = false"
                 class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"
               >
@@ -321,7 +321,7 @@ import { StockinNavbarComponent } from '../../components/shared/navbar.component
                     placeholder="Ej: Mi Tienda S.A."
                   >
                 </div>
-                
+
                 <div class="col-span-2">
                   <label class="block mb-2 text-sm font-medium text-gray-900">Email del Negocio</label>
                   <input
@@ -331,7 +331,7 @@ import { StockinNavbarComponent } from '../../components/shared/navbar.component
                     placeholder="contacto@mitienda.com"
                   >
                 </div>
-                
+
                 <div class="col-span-2 sm:col-span-1">
                   <label class="block mb-2 text-sm font-medium text-gray-900">Teléfono</label>
                   <input
@@ -341,7 +341,7 @@ import { StockinNavbarComponent } from '../../components/shared/navbar.component
                     placeholder="+54 11 1234 5678"
                   >
                 </div>
-                
+
                 <div class="col-span-2 sm:col-span-1">
                   <label class="block mb-2 text-sm font-medium text-gray-900">Plan</label>
                   <select
@@ -353,7 +353,7 @@ import { StockinNavbarComponent } from '../../components/shared/navbar.component
                     <option value="enterprise">Enterprise</option>
                   </select>
                 </div>
-                
+
                 <div class="col-span-2">
                   <label class="block mb-2 text-sm font-medium text-gray-900">Dirección</label>
                   <input
@@ -363,10 +363,10 @@ import { StockinNavbarComponent } from '../../components/shared/navbar.component
                     placeholder="Calle Principal 123, Ciudad"
                   >
                 </div>
-                
+
                 <div class="col-span-2 border-t pt-4">
                   <h4 class="text-md font-medium text-gray-900 mb-3">Usuario Administrador</h4>
-                  
+
                   <div class="grid gap-4">
                     <div class="col-span-2">
                       <label class="block mb-2 text-sm font-medium text-gray-900">Email del Admin</label>
@@ -377,7 +377,7 @@ import { StockinNavbarComponent } from '../../components/shared/navbar.component
                         placeholder="admin@mitienda.com"
                       >
                     </div>
-                    
+
                     <div class="col-span-2">
                       <label class="block mb-2 text-sm font-medium text-gray-900">Nombre del Admin</label>
                       <input
@@ -387,7 +387,7 @@ import { StockinNavbarComponent } from '../../components/shared/navbar.component
                         placeholder="Juan Pérez"
                       >
                     </div>
-                    
+
                     <div class="col-span-2">
                       <label class="block mb-2 text-sm font-medium text-gray-900">Contraseña</label>
                       <input
@@ -400,7 +400,7 @@ import { StockinNavbarComponent } from '../../components/shared/navbar.component
                   </div>
                 </div>
               </div>
-              
+
               <div class="flex items-center justify-end space-x-4">
                 <button
                   type="button"
@@ -439,8 +439,8 @@ import { StockinNavbarComponent } from '../../components/shared/navbar.component
               <h3 class="text-lg font-semibold text-gray-900">
                 Crear Nuevo Usuario
               </h3>
-              <button 
-                type="button" 
+              <button
+                type="button"
                 (click)="showCreateUserModal = false"
                 class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"
               >
@@ -462,7 +462,7 @@ import { StockinNavbarComponent } from '../../components/shared/navbar.component
                     placeholder="usuario@email.com"
                   >
                 </div>
-                
+
                 <div class="col-span-2">
                   <label class="block mb-2 text-sm font-medium text-gray-900">Nombre completo</label>
                   <input
@@ -472,13 +472,13 @@ import { StockinNavbarComponent } from '../../components/shared/navbar.component
                     placeholder="Juan Pérez"
                   >
                 </div>
-                
+
                 <div class="col-span-2">
                   <p class="text-sm text-gray-600">
                     Se enviará un email de invitación al usuario para que establezca su contraseña.
                   </p>
                 </div>
-                
+
                 <div class="col-span-2 sm:col-span-1">
                   <label class="block mb-2 text-sm font-medium text-gray-900">Negocio</label>
                   <select
@@ -491,7 +491,7 @@ import { StockinNavbarComponent } from '../../components/shared/navbar.component
                     </option>
                   </select>
                 </div>
-                
+
                 <div class="col-span-2 sm:col-span-1">
                   <label class="block mb-2 text-sm font-medium text-gray-900">Rol</label>
                   <select
@@ -504,7 +504,7 @@ import { StockinNavbarComponent } from '../../components/shared/navbar.component
                   </select>
                 </div>
               </div>
-              
+
               <div class="flex items-center justify-end space-x-4">
                 <button
                   type="button"
@@ -543,19 +543,19 @@ export class RootAdminComponent implements OnInit, OnDestroy {
   filteredUsers: (User & { selected?: boolean })[] = [];
   availableRoles: any[] = [];
   availablePlans: any[] = [];
-  
+
   businessForm: FormGroup;
   userForm: FormGroup;
-  
+
   showCreateBusinessModal = false;
   showCreateUserModal = false;
   showBulkActions = false;
   loading = false;
-  
+
   // Search and selection
   userSearchTerm = '';
   allUsersSelected = false;
-  
+
   private subscriptions: Subscription[] = [];
 
   constructor(
@@ -755,7 +755,7 @@ export class RootAdminComponent implements OnInit, OnDestroy {
       this.filteredUsers = this.users.map(user => ({ ...user, selected: false }));
     } else {
       this.filteredUsers = this.users
-        .filter(user => 
+        .filter(user =>
           user.displayName.toLowerCase().includes(this.userSearchTerm.toLowerCase()) ||
           user.email.toLowerCase().includes(this.userSearchTerm.toLowerCase()) ||
           this.getBusinessName(user.businessId).toLowerCase().includes(this.userSearchTerm.toLowerCase()) ||
@@ -837,4 +837,4 @@ export class RootAdminComponent implements OnInit, OnDestroy {
       this.notificationService.error('Error eliminando usuarios');
     }
   }
-} 
+}

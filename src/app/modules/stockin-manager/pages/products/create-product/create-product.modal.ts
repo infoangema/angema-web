@@ -49,7 +49,7 @@ import { Attribute } from '../../../models/attribute.model';
                     <div>
                       <label class="block text-sm font-medium text-gray-700 dark:text-gray-200">Nombre *</label>
                       <input type="text" formControlName="name"
-                        [class]="'mt-1 block w-full rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 ' + 
+                        [class]="'mt-1 block w-full rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 ' +
                         (productForm.get('name')?.invalid && showValidationErrors ? 'border-red-500 dark:border-red-400' : 'border-gray-300 dark:border-gray-600')">
                       @if (productForm.get('name')?.invalid && showValidationErrors) {
                         <p class="mt-1 text-sm text-red-600">Este campo es obligatorio (mínimo 3 caracteres)</p>
@@ -59,7 +59,7 @@ import { Attribute } from '../../../models/attribute.model';
                     <div>
                       <label class="block text-sm font-medium text-gray-700 dark:text-gray-200">Descripción *</label>
                       <textarea formControlName="description" rows="3"
-                        [class]="'mt-1 block w-full rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 ' + 
+                        [class]="'mt-1 block w-full rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 ' +
                         (productForm.get('description')?.invalid && showValidationErrors ? 'border-red-500 dark:border-red-400' : 'border-gray-300 dark:border-gray-600')"></textarea>
                       @if (productForm.get('description')?.invalid && showValidationErrors) {
                         <p class="mt-1 text-sm text-red-600">La descripción es obligatoria</p>
@@ -71,7 +71,7 @@ import { Attribute } from '../../../models/attribute.model';
                       <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-200">Categoría *</label>
                         <select formControlName="category"
-                          [class]="'mt-1 block w-full rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 ' + 
+                          [class]="'mt-1 block w-full rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 ' +
                           (productForm.get('category')?.invalid && showValidationErrors ? 'border-red-500 dark:border-red-400' : 'border-gray-300 dark:border-gray-600')">
                           <option value="">Selecciona una categoría</option>
                           @for (category of categories; track category.id) {
@@ -88,7 +88,7 @@ import { Attribute } from '../../../models/attribute.model';
                       <div formGroupName="location">
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-200">Almacén *</label>
                         <select formControlName="warehouseId" (change)="onWarehouseChange($event)"
-                          [class]="'mt-1 block w-full rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 ' + 
+                          [class]="'mt-1 block w-full rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 ' +
                           (productForm.get('location.warehouseId')?.invalid && showValidationErrors ? 'border-red-500 dark:border-red-400' : 'border-gray-300 dark:border-gray-600')">
                           <option value="">Selecciona un almacén</option>
                           @for (warehouse of warehouses; track warehouse.id) {
@@ -136,7 +136,7 @@ import { Attribute } from '../../../models/attribute.model';
                       <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-200">Color *</label>
                         <select formControlName="color"
-                          [class]="'mt-1 block w-full rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 ' + 
+                          [class]="'mt-1 block w-full rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 ' +
                           (productForm.get('attributes.color')?.invalid && showValidationErrors ? 'border-red-500 dark:border-red-400' : 'border-gray-300 dark:border-gray-600')">
                           <option value="">Seleccionar</option>
                           @for (color of colors; track color.id) {
@@ -150,7 +150,7 @@ import { Attribute } from '../../../models/attribute.model';
                       <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-200">Tamaño *</label>
                         <select formControlName="size"
-                          [class]="'mt-1 block w-full rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 ' + 
+                          [class]="'mt-1 block w-full rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 ' +
                           (productForm.get('attributes.size')?.invalid && showValidationErrors ? 'border-red-500 dark:border-red-400' : 'border-gray-300 dark:border-gray-600')">
                           <option value="">Seleccionar</option>
                           @for (size of sizes; track size.id) {
@@ -164,7 +164,7 @@ import { Attribute } from '../../../models/attribute.model';
                       <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-200">Material *</label>
                         <select formControlName="material"
-                          [class]="'mt-1 block w-full rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 ' + 
+                          [class]="'mt-1 block w-full rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 ' +
                           (productForm.get('attributes.material')?.invalid && showValidationErrors ? 'border-red-500 dark:border-red-400' : 'border-gray-300 dark:border-gray-600')">
                           <option value="">Seleccionar</option>
                           @for (material of materials; track material.id) {
@@ -178,7 +178,7 @@ import { Attribute } from '../../../models/attribute.model';
                       <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-200">Gramos *</label>
                         <input type="number" formControlName="grams" min="1" step="1"
-                          [class]="'mt-1 block w-full rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 ' + 
+                          [class]="'mt-1 block w-full rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 ' +
                           (productForm.get('attributes.grams')?.invalid && showValidationErrors ? 'border-red-500 dark:border-red-400' : 'border-gray-300 dark:border-gray-600')"
                           placeholder="ej: 250">
                         @if (productForm.get('attributes.grams')?.invalid && showValidationErrors) {
@@ -243,7 +243,7 @@ import { Attribute } from '../../../models/attribute.model';
               class="inline-flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 sm:ml-3 sm:w-auto disabled:opacity-50">
               {{ loading ? 'Guardando...' : 'Guardar' }}
             </button>
-            
+
             <!-- Validation messages -->
             @if (!productForm.valid && showValidationErrors) {
               <div class="w-full mt-3 p-3 bg-red-50 border border-red-200 rounded-md">
@@ -291,11 +291,7 @@ import { Attribute } from '../../../models/attribute.model';
                 </ul>
               </div>
             }
-            
-            <!-- Debug info -->
-            <div class="w-full mt-2 text-xs text-gray-500">
-              Debug: Form valid: {{productForm.valid}} | Loading: {{loading}} | Show errors: {{showValidationErrors}}
-            </div>
+
             <button type="button" (click)="onCancel()"
               class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">
               Cancelar
@@ -313,12 +309,12 @@ export class CreateProductModalComponent implements OnInit, OnDestroy {
   warehouses: Warehouse[] = [];
   availableSectors: WarehouseSector[] = [];
   availablePositions: string[] = [];
-  
+
   // Dynamic attributes
   colors: Attribute[] = [];
   sizes: Attribute[] = [];
   materials: Attribute[] = [];
-  
+
   loading = false;
   showValidationErrors = false;
   private subscriptions: Subscription[] = [];
@@ -506,7 +502,7 @@ export class CreateProductModalComponent implements OnInit, OnDestroy {
     console.log('Form valid:', this.productForm.valid);
     console.log('Form errors:', this.productForm.errors);
     console.log('Loading state:', this.loading);
-    
+
     // Check individual form controls
     Object.keys(this.productForm.controls).forEach(key => {
       const control = this.productForm.get(key);
@@ -514,7 +510,7 @@ export class CreateProductModalComponent implements OnInit, OnDestroy {
         console.log(`Invalid control: ${key}`, control.errors);
       }
     });
-    
+
     // Check nested form groups
     ['location', 'stock', 'pricing', 'attributes'].forEach(groupName => {
       const group = this.productForm.get(groupName) as FormGroup;
@@ -528,13 +524,13 @@ export class CreateProductModalComponent implements OnInit, OnDestroy {
         });
       }
     });
-    
+
     if (this.productForm.invalid) {
       console.log('Form is invalid - showing validation errors');
       this.showValidationErrors = true;
       return;
     }
-    
+
     if (this.loading) {
       console.log('Already loading - exiting');
       return;

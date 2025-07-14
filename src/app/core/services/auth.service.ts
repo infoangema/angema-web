@@ -65,9 +65,19 @@ export class AuthService {
           throw new Error('Usuario inactivo');
         }
         
-        this.sessionStorage.set(this.STORAGE_KEYS.USER_SESSION, userProfile);
+        // Actualizar lastLogin en la base de datos
+        const userRef = doc(this.firestore, 'users', userCredential.user.uid);
+        await updateDoc(userRef, {
+          lastLogin: new Date()
+        });
+        
+        // Obtener el perfil actualizado con el nuevo lastLogin
+        const updatedUserProfile = await this.getUserProfile(userCredential.user.uid);
+        const sessionProfile = updatedUserProfile || userProfile;
+        
+        this.sessionStorage.set(this.STORAGE_KEYS.USER_SESSION, sessionProfile);
         this.sessionStorage.updateTimestamp(this.STORAGE_KEYS.LAST_ACTIVITY);
-        this.currentUserSubject.next(userProfile);
+        this.currentUserSubject.next(sessionProfile);
       } catch (error: any) {
         console.error('Error en login:', error);
         throw error;
@@ -113,7 +123,7 @@ export class AuthService {
             roleId: data['roleId'],
             businessId: data['businessId'],
             isActive: data['isActive'],
-            lastLogin: Date.now(),
+            lastLogin: data['lastLogin']?.toDate()?.getTime() || Date.now(),
             accessToken: await this.auth.currentUser?.getIdToken(),
             createdAt: data['createdAt']?.toDate()
           };

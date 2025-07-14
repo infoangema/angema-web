@@ -5,6 +5,28 @@ Todos los cambios importantes de este proyecto serán documentados en este archi
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 y este proyecto adhiere al [Versionado Semántico](https://semver.org/spec/v2.0.0.html).
 
+## [v.0.8.1] - 2025-07-14
+
+### 🐛 Corregido
+- **Último Acceso No Se Mostraba en Panel Root-Admin**: Corregido problema donde usuarios no mostraban fecha de último acceso
+  - Problema: Campo `lastLogin` no se actualizaba en Firestore durante login exitoso
+  - Problema: Método `getUserProfile` sobrescribía valor real con `Date.now()` en lugar de usar valor de BD
+  - Solución: Agregada actualización de `lastLogin` en Firestore durante login exitoso en AuthService
+  - Solución: Corregido `getUserProfile` para usar valor real de `lastLogin` desde base de datos
+  - Resultado: Usuarios ahora muestran correctamente su último acceso en panel root-admin
+
+### 🎨 Mejorado
+- **Formato de Fechas en Root-Admin**: Mejorado formato de fechas para mejor legibilidad
+  - Cambiado formato de `lastLogin` de `'short'` a `'dd/MM/yy, HH:mm'` con horario 24h
+  - Cambiado formato de `createdAt` de negocios de `'short'` a `'dd/MM/yy'` 
+  - Ejemplo: `31/12/24, 14:30` en lugar de `12/31/24, 2:30 PM`
+  - Resultado: Fechas más consistentes y fáciles de leer en formato argentino
+
+### 🧪 Técnico
+- **Archivos Principales Modificados**:
+  - `auth.service.ts`: Agregada actualización de lastLogin en login y corrección de getUserProfile
+  - `root-admin.component.ts`: Actualizado formato de fechas y limpieza de formateo
+
 ## [v.0.8.0] - 2025-07-14
 
 ### ✨ Nuevo
