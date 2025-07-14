@@ -29,7 +29,7 @@ export class EditProductModalComponent implements OnInit, OnDestroy, OnChanges {
   @Input() isVisible = false;
   @Output() productUpdated = new EventEmitter<void>();
   @Output() productDeleted = new EventEmitter<void>();
-  @Output() modalClosed = new EventEmitter<void>();
+  @Output() modalClose = new EventEmitter<void>();
 
   productForm!: FormGroup;
   categories: Category[] = [];
@@ -316,6 +316,6 @@ export class EditProductModalComponent implements OnInit, OnDestroy, OnChanges {
   closeModal(): void {
     this.isVisible = false;
     this.activeTab = 'details';
-    this.modalClosed.emit();
+    this.modalClose.emit();
   }
 }

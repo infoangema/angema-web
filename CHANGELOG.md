@@ -22,10 +22,21 @@ y este proyecto adhiere al [Versionado Semántico](https://semver.org/spec/v2.0.
   - Ejemplo: `31/12/24, 14:30` en lugar de `12/31/24, 2:30 PM`
   - Resultado: Fechas más consistentes y fáciles de leer en formato argentino
 
+### 🐛 Corregido
+- **Botón 'Cancelar' No Funcionaba en Modales**: Corregido problema de eventos de cierre de modal inconsistentes
+  - Problema: Discrepancia entre nombres de eventos `modalClosed` vs `modalClose` en diferentes modales
+  - Archivos afectados: create-category, edit-product, business-selector y login components
+  - Solución: Estandarizado el evento a `modalClose` en todos los modales para consistencia
+  - Resultado: Botones "Cancelar" y "X" funcionan correctamente en todos los modales
+
 ### 🧪 Técnico
 - **Archivos Principales Modificados**:
   - `auth.service.ts`: Agregada actualización de lastLogin en login y corrección de getUserProfile
   - `root-admin.component.ts`: Actualizado formato de fechas y limpieza de formateo
+  - `categories.page.ts`: Corregido evento modalClosed → modalClose
+  - `login.component.html`: Corregido evento modalClosed → modalClose  
+  - `edit-product.modal.ts`: Estandarizado evento modalClosed → modalClose
+  - `products-list.component.html`: Actualizado evento para consistencia
 
 ## [v.0.8.0] - 2025-07-14
 

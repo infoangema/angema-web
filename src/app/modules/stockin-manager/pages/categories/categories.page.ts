@@ -107,7 +107,8 @@ import { StockinNavbarComponent } from '../../components/shared/navbar.component
     <!-- Modal -->
     @if (showCreateModal) {
       <app-create-category-modal 
-        (modalClosed)="onModalClosed()">
+        [category]="selectedCategory"
+        (modalClose)="onModalClosed()">
       </app-create-category-modal>
     }
   `,
