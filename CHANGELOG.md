@@ -29,6 +29,14 @@ y este proyecto adhiere al [Versionado Semántico](https://semver.org/spec/v2.0.
   - Solución: Estandarizado el evento a `modalClose` en todos los modales para consistencia
   - Resultado: Botones "Cancelar" y "X" funcionan correctamente en todos los modales
 
+### 🎨 Mejorado
+- **Modal de Crear Cliente Reorganizado en Pestañas**: Reducido scroll excesivo mediante división en pestañas
+  - Pestaña "Personal": Información básica, nombre, email, teléfono, documento de identidad
+  - Pestaña "Dirección": Información de ubicación y domicilio completo
+  - Pestaña "Comercial": Límite de crédito y notas adicionales
+  - Navegación con botones "Anterior/Siguiente" entre pestañas
+  - Resultado: Modal más compacto y mejor experiencia de usuario
+
 ### 🧪 Técnico
 - **Archivos Principales Modificados**:
   - `auth.service.ts`: Agregada actualización de lastLogin en login y corrección de getUserProfile
@@ -37,6 +45,7 @@ y este proyecto adhiere al [Versionado Semántico](https://semver.org/spec/v2.0.
   - `login.component.html`: Corregido evento modalClosed → modalClose  
   - `edit-product.modal.ts`: Estandarizado evento modalClosed → modalClose
   - `products-list.component.html`: Actualizado evento para consistencia
+  - `create-customer.modal.ts`: Reorganizado en pestañas con navegación mejorada
 
 ## [v.0.8.0] - 2025-07-14
 
