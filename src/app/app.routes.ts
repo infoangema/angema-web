@@ -73,6 +73,11 @@ export const routes: Routes = [
       {
         path: 'session-limit',
         loadComponent: () => import('./modules/stockin-manager/pages/session-limit/session-limit.component').then(m => m.SessionLimitComponent)
+      },
+      {
+        path: 'firebase-monitoring',
+        canActivate: [AuthGuard, RootGuard],
+        loadComponent: () => import('./modules/stockin-manager/pages/firebase-monitoring/firebase-monitoring.component').then(m => m.FirebaseMonitoringComponent)
       }
     ]
   }

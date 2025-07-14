@@ -24,8 +24,9 @@ export class ChangeDetectionService {
   private collectionStatus = new Map<string, CollectionStatus>();
   private readonly STORAGE_PREFIX = 'change_detection_';
 
-  // Tiempo de gracia para considerar que los datos están frescos (30 segundos)
-  private readonly FRESHNESS_THRESHOLD = 30 * 1000;
+  // Tiempo de gracia para considerar que los datos están frescos (10 minutos)
+  // Debe ser menor que el TTL del cache (15 min) pero lo suficientemente largo para evitar refrescos innecesarios
+  private readonly FRESHNESS_THRESHOLD = 10 * 60 * 1000;
 
   constructor(private sessionStorage: SessionStorageService) {
     this.loadCollectionStatus();
@@ -46,7 +47,9 @@ export class ChangeDetectionService {
     const timeSinceLastUpdate = Date.now() - status.lastUpdate;
     const needsRefresh = timeSinceLastUpdate > this.FRESHNESS_THRESHOLD;
     
-    console.log(`ChangeDetection: ${key} - Age: ${timeSinceLastUpdate}ms, Needs refresh: ${needsRefresh}`);
+    if (needsRefresh) {
+      console.log(`ChangeDetection: ${key} - Age: ${timeSinceLastUpdate}ms, needs refresh`);
+    }
     return needsRefresh;
   }
 

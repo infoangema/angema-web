@@ -300,4 +300,10 @@
       </div>
     </div>
   </main>
-</div> 
+</div>
+
+<!-- Business Selector Modal for Root Users -->
+<app-business-selector-modal 
+  *ngIf="showBusinessSelector"
+  (modalClose)="onBusinessSelectorClosed()">
+</app-business-selector-modal> 

@@ -51,9 +51,14 @@ export class LoginComponent {
       
       // Check if user is root and needs business selection
       if (this.authService.isRoot()) {
-        await this.handleRootUserLogin();
+        console.log('Login: Usuario root detectado, navegando a dashboard...');
+        // Para simplificar, navegar directamente al dashboard
+        const navigationResult = await this.router.navigate(['/app/dashboard']);
+        console.log('Login: Resultado de navegación:', navigationResult);
       } else {
-        await this.router.navigate(['/app/dashboard']);
+        console.log('Login: Usuario regular, navegando a dashboard...');
+        const navigationResult = await this.router.navigate(['/app/dashboard']);
+        console.log('Login: Resultado de navegación:', navigationResult);
       }
     } catch (error: any) {
       console.error('Error en login:', error);

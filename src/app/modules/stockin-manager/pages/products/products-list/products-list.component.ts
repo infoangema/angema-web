@@ -15,6 +15,7 @@ import { WarehouseService } from '../../../services/warehouse.service';
 import { AuthService } from '../../../../../core/services/auth.service';
 import { BusinessService } from '../../../../../core/services/business.service';
 import { Business } from '../../../../../core/models/business.model';
+import { RootBusinessSelectorService } from '../../../services/root-business-selector.service';
 import { EditProductModalComponent } from '../edit-product/edit-product.modal';
 
 @Component({
@@ -76,6 +77,7 @@ export class ProductsListComponent implements OnInit, OnDestroy {
     private warehouseService: WarehouseService,
     private authService: AuthService,
     private businessService: BusinessService,
+    private rootBusinessSelector: RootBusinessSelectorService,
     private router: Router
   ) {}
 
@@ -112,6 +114,14 @@ export class ProductsListComponent implements OnInit, OnDestroy {
 
   async loadProducts(resetPagination: boolean = false): Promise<void> {
     if (this.loading) return;
+    
+    // Verificar si el usuario root tiene negocio seleccionado
+    if (this.isRoot && !this.rootBusinessSelector.hasValidSelection()) {
+      console.log('ProductsList: Usuario root sin negocio seleccionado, redirigiendo al dashboard...');
+      this.router.navigate(['/app/dashboard']);
+      return;
+    }
+    
     this.loading = true;
 
     if (resetPagination) {
@@ -120,9 +130,6 @@ export class ProductsListComponent implements OnInit, OnDestroy {
     }
 
     try {
-      // Debug: Check business ID consistency first
-      await this.productService.debugBusinessIdConsistency();
-      
       const result = await this.productService.getProductsByBusiness(
         this.filters,
         this.pageSize,

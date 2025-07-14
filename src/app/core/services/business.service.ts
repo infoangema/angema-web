@@ -2,12 +2,12 @@ import { Injectable } from '@angular/core';
 import { Observable, firstValueFrom, of, from } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { createUserWithEmailAndPassword, UserCredential } from '@angular/fire/auth';
-import { where } from '@angular/fire/firestore';
 import { DatabaseService } from './database.service';
 import { FirebaseService } from './firebase.service';
 import { AuthService } from './auth.service';
 import { CacheService } from './cache.service';
 import { ChangeDetectionService } from './change-detection.service';
+// import { FirebaseMetricsService } from './firebase-metrics.service';
 import { Business, CreateBusinessRequest, User, CreateUserRequest, DEFAULT_BUSINESS_SETTINGS } from '../models/business.model';
 
 @Injectable({
@@ -21,6 +21,7 @@ export class BusinessService {
     private authService: AuthService,
     private cacheService: CacheService,
     private changeDetectionService: ChangeDetectionService
+    // private firebaseMetricsService: FirebaseMetricsService
   ) {}
 
   // === GESTIÓN DE NEGOCIOS ===
@@ -74,29 +75,36 @@ export class BusinessService {
    */
   getBusinesses(): Observable<Business[]> {
     const cacheKey = 'all_businesses';
-    
+
     // Verificar si necesita refresh
     if (!this.changeDetectionService.needsRefresh('businesses')) {
       const cached = this.cacheService.get<Business[]>(cacheKey, 'memory');
       if (cached) {
         console.log('BusinessService: Returning cached businesses');
+        // this.firebaseMetricsService.trackCacheHit('businesses');
         return of(cached);
       }
     }
 
     // Consultar Firebase y actualizar cache
     console.log('BusinessService: Fetching fresh businesses data');
+    const startTime = Date.now();
     return from(this.databaseService.getOnce<Business>('businesses'))
       .pipe(
         map((businesses: Business[]) => businesses.sort((a: Business, b: Business) => a.name.localeCompare(b.name))),
         tap((businesses: Business[]) => {
+          // Tracking de métricas
+          const responseTime = Date.now() - startTime;
+          // this.firebaseMetricsService.trackFirebaseRead('businesses');
+          // this.firebaseMetricsService.trackResponseTime('businesses', responseTime);
+
           // Actualizar cache (memoria para datos estáticos)
           this.cacheService.set(cacheKey, businesses, 30 * 60 * 1000, 'memory'); // 30 minutos TTL
-          
+
           // Marcar como actualizado
           this.changeDetectionService.markAsUpdated('businesses');
-          
-          console.log(`BusinessService: Cached ${businesses.length} businesses`);
+
+          console.log(`BusinessService: Cached ${businesses.length} businesses (${responseTime}ms)`);
         })
       );
   }
@@ -107,7 +115,7 @@ export class BusinessService {
   async getBusinessById(id: string): Promise<Business | null> {
     try {
       const cacheKey = `business_${id}`;
-      
+
       // Verificar cache primero
       if (!this.changeDetectionService.needsRefresh('businesses')) {
         const cached = this.cacheService.get<Business>(cacheKey, 'memory');
@@ -120,13 +128,13 @@ export class BusinessService {
       // Consultar Firebase
       console.log(`BusinessService: Fetching fresh business data for ${id}`);
       const business = await this.databaseService.getById<Business>('businesses', id);
-      
+
       if (business) {
         // Actualizar cache
         this.cacheService.set(cacheKey, business, 30 * 60 * 1000, 'memory'); // 30 minutos TTL
         console.log(`BusinessService: Cached business ${id}`);
       }
-      
+
       return business;
     } catch (error) {
       console.error('Error obteniendo negocio:', error);
@@ -140,11 +148,11 @@ export class BusinessService {
   async updateBusiness(id: string, data: Partial<Business>): Promise<void> {
     try {
       await this.databaseService.update('businesses', id, data);
-      
+
       // Solo invalidar cache, sin notificación adicional
       this.changeDetectionService.invalidateCollection('businesses');
       this.cacheService.remove(`business_${id}`, 'memory');
-      
+
       console.log(`BusinessService: Business ${id} updated and cache invalidated`);
     } catch (error) {
       console.error('Error actualizando negocio:', error);
@@ -158,11 +166,11 @@ export class BusinessService {
   async deleteBusiness(id: string): Promise<void> {
     try {
       await this.databaseService.softDelete('businesses', id);
-      
+
       // Solo invalidar cache, sin notificación adicional
       this.changeDetectionService.invalidateCollection('businesses');
       this.cacheService.remove(`business_${id}`, 'memory');
-      
+
       console.log(`BusinessService: Business ${id} deleted and cache invalidated`);
     } catch (error) {
       console.error('Error eliminando negocio:', error);
@@ -246,20 +254,20 @@ export class BusinessService {
    */
   getAvailableRoles(): { id: string; name: string; description: string }[] {
     return [
-      { 
-        id: 'admin', 
-        name: 'Administrador', 
-        description: 'Control total del negocio' 
+      {
+        id: 'admin',
+        name: 'Administrador',
+        description: 'Control total del negocio'
       },
-      { 
-        id: 'editor', 
-        name: 'Editor', 
-        description: 'Gestión de inventario y pedidos' 
+      {
+        id: 'editor',
+        name: 'Editor',
+        description: 'Gestión de inventario y pedidos'
       },
-      { 
-        id: 'vendedor', 
-        name: 'Vendedor/Operador', 
-        description: 'Solo gestión de pedidos' 
+      {
+        id: 'vendedor',
+        name: 'Vendedor/Operador',
+        description: 'Solo gestión de pedidos'
       }
     ];
   }
@@ -269,20 +277,20 @@ export class BusinessService {
    */
   getAvailablePlans(): { id: string; name: string; description: string }[] {
     return [
-      { 
-        id: 'basic', 
-        name: 'Básico', 
-        description: 'Funcionalidades esenciales' 
+      {
+        id: 'basic',
+        name: 'Básico',
+        description: 'Funcionalidades esenciales'
       },
-      { 
-        id: 'premium', 
-        name: 'Premium', 
-        description: 'Funcionalidades avanzadas' 
+      {
+        id: 'premium',
+        name: 'Premium',
+        description: 'Funcionalidades avanzadas'
       },
-      { 
-        id: 'enterprise', 
-        name: 'Enterprise', 
-        description: 'Funcionalidades completas' 
+      {
+        id: 'enterprise',
+        name: 'Enterprise',
+        description: 'Funcionalidades completas'
       }
     ];
   }
@@ -294,12 +302,12 @@ export class BusinessService {
    */
   async getCurrentBusinessId(): Promise<string | null> {
     const profile = await firstValueFrom(this.authService.currentUser$);
-    
+
     if (this.authService.isRoot()) {
       // Para usuarios root, usar el servicio de selección de negocio
       try {
         const { RootBusinessSelectorService } = await import('../../modules/stockin-manager/services/root-business-selector.service');
-        const rootSelector = new RootBusinessSelectorService(this.authService, 
+        const rootSelector = new RootBusinessSelectorService(this.authService,
           // Inyectar SessionStorageService dinámicamente
           await import('./session-storage.service').then(m => new m.SessionStorageService())
         );
@@ -309,12 +317,12 @@ export class BusinessService {
         return null;
       }
     }
-    
+
     // Para usuarios regulares
     if (!profile?.businessId) {
       throw new Error('No hay un negocio asociado al usuario actual');
     }
-    
+
     return profile.businessId;
   }
 
@@ -331,4 +339,4 @@ export class BusinessService {
     // El businessId específico significa "filtrar por ese negocio"
     return null; // Valor por defecto para root users
   }
-} 
+}

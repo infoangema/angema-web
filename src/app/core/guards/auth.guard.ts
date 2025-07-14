@@ -16,16 +16,20 @@ export class AuthGuard implements CanActivate {
   ) {}
 
   canActivate(): Observable<boolean> {
+    console.log('AuthGuard: canActivate() llamado');
     return this.authService.currentUser$.pipe(
       take(1),
       switchMap(user => {
         if (!user) {
+          console.log('AuthGuard: Usuario no autenticado, redirigiendo a login');
           this.router.navigate(['/app/login']);
           return [false];
         }
 
-        // Verificar control de sesiones para usuarios no-root
-        if (user.roleId !== 'root') {
+        console.log('AuthGuard: Usuario autenticado:', { roleId: user.roleId, businessId: user.businessId });
+
+        // Solo verificar control de sesiones para usuarios no-root que tengan businessId
+        if (user.roleId !== 'root' && user.businessId) {
           return from(this.checkSessionControl()).pipe(
             map(sessionAllowed => {
               if (!sessionAllowed) {
@@ -37,7 +41,8 @@ export class AuthGuard implements CanActivate {
           );
         }
 
-        // Para usuarios root, siempre permitir acceso
+        // Para usuarios root o usuarios sin businessId, siempre permitir acceso
+        console.log('AuthGuard: Permitiendo acceso para usuario root/sin businessId');
         return [true];
       })
     );

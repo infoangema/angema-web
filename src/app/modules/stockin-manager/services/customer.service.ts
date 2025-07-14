@@ -7,6 +7,7 @@ import { BusinessService } from '../../../core/services/business.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { CacheService } from '../../../core/services/cache.service';
 import { ChangeDetectionService } from '../../../core/services/change-detection.service';
+// import { FirebaseMetricsService } from '../../../core/services/firebase-metrics.service';
 import { RootBusinessSelectorService } from './root-business-selector.service';
 import { 
   Customer, 
@@ -30,6 +31,7 @@ export class CustomerService {
     private authService: AuthService,
     private cacheService: CacheService,
     private changeDetectionService: ChangeDetectionService,
+    // private firebaseMetricsService: FirebaseMetricsService,
     private rootBusinessSelector: RootBusinessSelectorService
   ) {}
 
@@ -76,25 +78,32 @@ export class CustomerService {
       const cached = this.cacheService.get<Customer[]>(cacheKey, 'localStorage');
       if (cached) {
         console.log(`CustomerService: Returning cached data for ${businessId}`);
+        // this.firebaseMetricsService.trackCacheHit('customers', businessId);
         return of(cached);
       }
     }
 
     // Consultar Firebase y actualizar cache
     console.log(`CustomerService: Fetching fresh data for ${businessId}`);
+    const startTime = Date.now();
     return from(this.databaseService.getOnce<Customer>('customers', where('businessId', '==', businessId)))
       .pipe(
         map((customers: Customer[]) => customers.sort((a: Customer, b: Customer) => 
           new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         )),
         tap((customers: Customer[]) => {
+          // Tracking de métricas
+          const responseTime = Date.now() - startTime;
+          // this.firebaseMetricsService.trackFirebaseRead('customers', businessId);
+          // this.firebaseMetricsService.trackResponseTime(`customers_${businessId}`, responseTime);
+          
           // Actualizar cache (localStorage para persistencia entre sesiones)
           this.cacheService.set(cacheKey, customers, 10 * 60 * 1000, 'localStorage'); // 10 minutos TTL
           
           // Marcar como actualizado
           this.changeDetectionService.markAsUpdated('customers', businessId);
           
-          console.log(`CustomerService: Cached ${customers.length} customers for ${businessId}`);
+          console.log(`CustomerService: Cached ${customers.length} customers for ${businessId} (${responseTime}ms)`);
         })
       );
   }

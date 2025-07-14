@@ -36,6 +36,7 @@ import { RootBusinessSelectorService } from '../../services/root-business-select
         <a class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 text-sm font-medium leading-normal transition-colors" routerLink="/app/reports">Reportes</a>
         @if (isRoot()) {
           <a class="text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-500 text-sm font-semibold leading-normal transition-colors" routerLink="/app/root-admin">Root Admin</a>
+          <a class="text-orange-600 hover:text-orange-700 dark:text-orange-400 dark:hover:text-orange-500 text-sm font-semibold leading-normal transition-colors" routerLink="/app/firebase-monitoring">Firebase Monitor</a>
         }
       </nav>
     </div>

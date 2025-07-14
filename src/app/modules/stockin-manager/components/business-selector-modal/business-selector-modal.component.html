@@ -69,7 +69,7 @@
           (click)="confirmSelection()"
           [disabled]="!selectedBusinessId && !showAllSelected"
           class="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed rounded-md transition-colors">
-          Confirmar
+          Confirmar {{ !selectedBusinessId && !showAllSelected ? '(Deshabilitado)' : '(Habilitado)' }}
         </button>
       </div>
     </div>

@@ -2,9 +2,11 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { StockinNavbarComponent } from '../../components/shared/navbar.component';
+import { BusinessSelectorModalComponent } from '../../components/business-selector-modal/business-selector-modal.component';
 import { AuthService } from '../../../../core/services/auth.service';
 import { RootMessagesService } from '../../../../core/services/root-messages.service';
 import { NotificationService } from '../../../../core/services/notification.service';
+import { RootBusinessSelectorService } from '../../services/root-business-selector.service';
 import { RootMessage, MESSAGE_STATUS, MESSAGE_TYPES } from '../../../../core/models/root-messages.model';
 import { Subscription } from 'rxjs';
 
@@ -14,13 +16,15 @@ import { Subscription } from 'rxjs';
   imports: [
     CommonModule,
     RouterModule,
-    StockinNavbarComponent
+    StockinNavbarComponent,
+    BusinessSelectorModalComponent
   ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit, OnDestroy {
   isRoot = false;
+  showBusinessSelector = false;
   rootMessages: RootMessage[] = [];
   loadingMessages = false;
   messageStats = {
@@ -35,14 +39,28 @@ export class DashboardComponent implements OnInit, OnDestroy {
   constructor(
     private authService: AuthService,
     private rootMessagesService: RootMessagesService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private rootBusinessSelector: RootBusinessSelectorService
   ) {}
 
   ngOnInit() {
     this.checkUserRole();
     if (this.isRoot) {
+      this.checkBusinessSelection();
       this.loadRootMessages();
     }
+  }
+
+  private checkBusinessSelection(): void {
+    // Verificar si el usuario root tiene negocio seleccionado
+    if (!this.rootBusinessSelector.hasValidSelection()) {
+      console.log('Dashboard: Usuario root sin negocio seleccionado, mostrando selector...');
+      this.showBusinessSelector = true;
+    }
+  }
+
+  onBusinessSelectorClosed(): void {
+    this.showBusinessSelector = false;
   }
 
   ngOnDestroy() {

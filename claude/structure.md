@@ -5,8 +5,9 @@
 **Proyecto**: Angema Web - Portfolio y StockIn Manager  
 **Framework**: Angular 19 (Standalone Components)  
 **Stack**: TypeScript 5.7, RxJS 7.8, Bootstrap 5.3.3, TailwindCSS, Flowbite  
-**Backend**: Firebase (Firestore, Authentication, Storage)  
+**Backend**: Firebase (Firestore + Realtime Database, Authentication, Storage)  
 **Deployment**: Vercel  
+**Optimizations**: Intelligent caching, session control, change detection  
 
 ## Arquitectura de la Aplicación
 
@@ -25,15 +26,18 @@
 - Configuración SPA en Vercel
 
 #### Gestión de Estado
-- **LocalStorage**: Persistencia de estado del spinner
+- **LocalStorage**: Persistencia de estado del spinner y cache de clientes
+- **SessionStorage**: Cache de productos y datos de sesión
+- **Memory Cache**: Cache temporal para datos estáticos (negocios)
 - **Services**: Estado compartido usando Angular services
 - **RxJS Observables**: Flujo de datos reactivo
 - **No State Management Library**: Usa servicios nativos de Angular
 
 #### Servicios y Organización
-- **Core Services**: Autenticación, base de datos, notificaciones
+- **Core Services**: Autenticación, base de datos, notificaciones, cache, sesiones
 - **Module Services**: Servicios específicos por módulo (productos, categorías, etc.)
 - **Shared Services**: Servicios reutilizables entre módulos
+- **Firebase Optimization Services**: Cache, change detection, session control, metrics
 
 ## Estructura de Directorios
 
@@ -217,6 +221,42 @@ interface Customer {
 
 ## Servicios Principales
 
+### Firebase Optimization Services
+
+#### CacheService
+- **Propósito**: Sistema de cache multi-nivel con TTL automático
+- **Storage Types**: memory, localStorage, sessionStorage
+- **Funcionalidades**: Set/Get con TTL, limpieza automática, invalidación
+- **Métodos**: `set()`, `get()`, `invalidate()`, `cleanup()`
+- **Uso**: Cache inteligente para reducir consultas Firebase
+
+#### ChangeDetectionService
+- **Propósito**: Detección de cambios y control de freshness de datos
+- **Funcionalidades**: Tracking de actualización, invalidación por colección
+- **Freshness Threshold**: 10 minutos para considerar datos frescos
+- **Métodos**: `needsRefresh()`, `markAsUpdated()`, `invalidateCollection()`
+- **Uso**: Determinar cuándo usar cache vs hacer nueva consulta
+
+#### CacheInvalidationService
+- **Propósito**: Invalidación automática de cache según reglas predefinidas
+- **Reglas**: 7 patrones de invalidación (customers, products, etc.)
+- **Funcionalidades**: Invalidación por eventos, patrones regex
+- **Métodos**: `invalidateByEvent()`, `shouldInvalidate()`
+- **Uso**: Mantener consistencia de cache con cambios de datos
+
+#### SessionControlService
+- **Propósito**: Control de sesiones concurrentes usando Firebase Realtime Database
+- **Funcionalidades**: Límites por plan, detección de desconexión
+- **Planes**: Basic (1), Premium (5), Enterprise (ilimitado)
+- **Métodos**: `registerSession()`, `removeSession()`, `getActiveSessions()`
+- **Uso**: Prevenir conexiones concurrentes no autorizadas
+
+#### FirebaseMetricsService
+- **Propósito**: Tracking de métricas de uso de Firebase
+- **Funcionalidades**: Conteo de reads, cache hits, tiempos de respuesta
+- **Métodos**: `trackFirebaseRead()`, `trackCacheHit()`, `trackResponseTime()`
+- **Uso**: Monitoreo de optimizaciones y costos
+
 ### Core Services
 
 #### DatabaseService
@@ -233,6 +273,7 @@ interface Customer {
 #### BusinessService
 - **Propósito**: Gestión de negocios y contexto empresarial
 - **Funcionalidades**: CRUD negocios, contexto actual, validaciones
+- **Optimizations**: Memory cache (30 min TTL), static data optimization
 
 ### Module Services
 
@@ -245,12 +286,14 @@ interface Customer {
 - **Propósito**: Gestión completa de productos (SKUs)
 - **Funcionalidades**: CRUD productos, búsqueda, filtros, paginación
 - **SKU Generation**: Generación automática de códigos SKU
+- **Optimizations**: SessionStorage cache (15 min TTL), lazy loading, client-side filtering
 
 #### CustomerService
 - **Propósito**: Gestión completa de clientes/CRM
 - **Funcionalidades**: CRUD clientes, búsqueda, filtros, exportación CSV
 - **Features**: Puntos de fidelización, segmentación, historial de compras
 - **Business Logic**: Aislamiento por negocio, códigos únicos de cliente
+- **Optimizations**: LocalStorage cache (10 min TTL), persistence between sessions
 
 #### RootBusinessSelectorService
 - **Propósito**: Gestión de selección de negocio para usuarios root
@@ -324,19 +367,152 @@ export const firebaseConfig = {
 - **Tree Shaking**: Eliminación de código no usado
 - **Bundle Analysis**: Límites de tamaño configurados
 
-### Firestore Optimizations
-- **Client-side Filtering**: Para evitar índices complejos
-- **Pagination**: Carga incremental de datos
-- **Real-time Subscriptions**: Solo donde es necesario
+### Firebase Optimizations
+- **Intelligent Caching**: 80-90% reducción en Firebase reads
+  - **CustomerService**: LocalStorage cache (10 min TTL)
+  - **ProductService**: SessionStorage cache (15 min TTL)
+  - **BusinessService**: Memory cache (30 min TTL)
+- **Client-side Filtering**: Evita índices complejos en Firestore
+- **Lazy Loading**: Carga única con filtrado local
+- **Session Control**: Previene conexiones concurrentes no autorizadas
+- **Change Detection**: Invalidación inteligente de cache
+- **Dual Firebase Architecture**: Firestore + Realtime Database según uso
+
+### Cache Strategy
+- **Multi-level Storage**: Memory > SessionStorage > LocalStorage
+- **TTL Automatic**: Limpieza automática de cache expirado
+- **Invalidation Rules**: 7 patrones automáticos de invalidación
+- **Freshness Control**: 10 minutos threshold para datos frescos
 
 ### UI/UX Optimizations
 - **Responsive Design**: Mobile-first approach
 - **Loading States**: Spinners y skeleton screens
 - **Error Handling**: Notificaciones user-friendly
+- **Session Limits**: UI completa para gestión de sesiones por plan
 
 ---
 
 ## 📖 Guías de Uso de Servicios
+
+### CacheService
+
+#### Propósito
+Gestiona cache multi-nivel con TTL automático para optimizar consultas Firebase.
+
+#### Uso Básico
+```typescript
+// Set cache con TTL (en milisegundos)
+this.cacheService.set('products_123', products, 15 * 60 * 1000, 'sessionStorage');
+
+// Get cache
+const cached = this.cacheService.get<Product[]>('products_123', 'sessionStorage');
+
+// Invalidar cache específico
+this.cacheService.invalidate('products_123', 'sessionStorage');
+
+// Limpiar cache expirado
+this.cacheService.cleanup();
+```
+
+#### Storage Types
+- **memory**: Más rápido, se pierde al recargar página
+- **sessionStorage**: Persiste durante la sesión del navegador
+- **localStorage**: Persiste entre sesiones del navegador
+
+#### Patrones de Implementación
+```typescript
+// En servicios de datos
+getDataWithCache(businessId: string): Observable<T[]> {
+  const cacheKey = `data_${businessId}`;
+  
+  // Verificar si necesita refresh
+  if (!this.changeDetectionService.needsRefresh('data', businessId)) {
+    const cached = this.cacheService.get<T[]>(cacheKey, 'sessionStorage');
+    if (cached) {
+      return of(cached);
+    }
+  }
+  
+  // Fetch fresh data
+  return this.fetchFromFirebase(businessId).pipe(
+    tap(data => {
+      this.cacheService.set(cacheKey, data, 15 * 60 * 1000, 'sessionStorage');
+      this.changeDetectionService.markAsUpdated('data', businessId);
+    })
+  );
+}
+```
+
+### ChangeDetectionService
+
+#### Propósito
+Controla la freshness de datos y determina cuándo usar cache vs hacer nuevas consultas.
+
+#### Uso Básico
+```typescript
+// Verificar si necesita refresh
+if (this.changeDetectionService.needsRefresh('products', businessId)) {
+  // Hacer nueva consulta
+  const data = await this.fetchFromFirebase();
+  
+  // Marcar como actualizado
+  this.changeDetectionService.markAsUpdated('products', businessId);
+}
+
+// Invalidar cache cuando hay cambios
+this.changeDetectionService.invalidateCollection('products', businessId);
+```
+
+#### Configuración
+- **Freshness Threshold**: 10 minutos por defecto
+- **Storage**: SessionStorage para persistir entre navegación
+- **Scope**: Por colección y businessId
+
+### SessionControlService
+
+#### Propósito
+Controla sesiones concurrentes usando Firebase Realtime Database según plan de negocio.
+
+#### Uso Básico
+```typescript
+// Registrar sesión (automático en login)
+const result = await this.sessionControlService.registerSession();
+if (!result.success) {
+  console.log('Sesión bloqueada:', result.message);
+  // Mostrar UI de límite de sesiones
+}
+
+// Obtener sesiones activas (solo admins)
+const sessions = await this.sessionControlService.getActiveSessions(businessId);
+
+// Forzar cierre de sesión
+await this.sessionControlService.forceRemoveSession(businessId, sessionId);
+```
+
+#### Límites por Plan
+- **Basic**: 1 sesión concurrente
+- **Premium**: 5 sesiones concurrentes  
+- **Enterprise**: Ilimitado
+
+### FirebaseMetricsService
+
+#### Propósito
+Trackea métricas de uso de Firebase para monitorear optimizaciones.
+
+#### Uso Básico
+```typescript
+// Track Firebase read
+this.firebaseMetricsService.trackFirebaseRead('products', businessId);
+
+// Track cache hit
+this.firebaseMetricsService.trackCacheHit('products', businessId);
+
+// Track response time
+this.firebaseMetricsService.trackResponseTime('products_fetch', responseTime);
+
+// Get metrics
+const metrics = this.firebaseMetricsService.getMetrics();
+```
 
 ### RootBusinessSelectorService
 

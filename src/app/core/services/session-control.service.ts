@@ -154,6 +154,26 @@ export class SessionControlService {
   }
 
   /**
+   * Obtiene las sesiones activas para un negocio (público para métricas)
+   */
+  async getActiveSessionsForBusiness(businessId: string): Promise<SessionInfo[]> {
+    try {
+      const sessionsRef = ref(this.firebaseService.realtimeDatabase, `sessions/${businessId}`);
+      const snapshot = await get(sessionsRef);
+      
+      if (!snapshot.exists()) {
+        return [];
+      }
+
+      const sessions = snapshot.val();
+      return Object.values(sessions) as SessionInfo[];
+    } catch (error) {
+      console.error('Error obteniendo sesiones activas:', error);
+      return [];
+    }
+  }
+
+  /**
    * Actualiza el contador de sesiones para un negocio
    */
   private async updateSessionCount(businessId: string): Promise<void> {

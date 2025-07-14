@@ -210,6 +210,41 @@ export class CacheService {
   }
 
   /**
+   * Obtener estadísticas detalladas de almacenamiento para métricas
+   */
+  getStorageStats(storageType: CacheStorageType): { 
+    total: number; 
+    expired: number; 
+    size: number; 
+  } {
+    let total = 0;
+    let expired = 0;
+    let size = 0;
+
+    switch (storageType) {
+      case 'memory':
+        total = this.memoryCache.size;
+        expired = Array.from(this.memoryCache.values()).filter(entry => this.isExpired(entry)).length;
+        size = this.calculateMemoryCacheSize();
+        break;
+      case 'localStorage':
+        const localKeys = this.getWebStorageCacheKeys('localStorage');
+        total = localKeys.length;
+        expired = this.countExpiredWebStorageEntries('localStorage');
+        size = this.calculateWebStorageSize('localStorage');
+        break;
+      case 'sessionStorage':
+        const sessionKeys = this.getWebStorageCacheKeys('sessionStorage');
+        total = sessionKeys.length;
+        expired = this.countExpiredWebStorageEntries('sessionStorage');
+        size = this.calculateWebStorageSize('sessionStorage');
+        break;
+    }
+
+    return { total, expired, size };
+  }
+
+  /**
    * Observable para escuchar cambios en el cache
    */
   getCacheUpdates(): Observable<{ key: string; action: 'set' | 'invalidate' | 'clear' }> {
@@ -296,5 +331,43 @@ export class CacheService {
         storage.remove(key);
       }
     });
+  }
+
+  private calculateMemoryCacheSize(): number {
+    let size = 0;
+    this.memoryCache.forEach(entry => {
+      size += JSON.stringify(entry).length * 2; // Aproximación en bytes
+    });
+    return size;
+  }
+
+  private calculateWebStorageSize(storageType: 'localStorage' | 'sessionStorage'): number {
+    const storage = storageType === 'localStorage' ? this.localStorage : this.sessionStorage;
+    const keys = this.getWebStorageCacheKeys(storageType);
+    let size = 0;
+    
+    keys.forEach(key => {
+      const entry = storage.get<CacheEntry>(key);
+      if (entry) {
+        size += JSON.stringify(entry).length * 2; // Aproximación en bytes
+      }
+    });
+    
+    return size;
+  }
+
+  private countExpiredWebStorageEntries(storageType: 'localStorage' | 'sessionStorage'): number {
+    const storage = storageType === 'localStorage' ? this.localStorage : this.sessionStorage;
+    const keys = this.getWebStorageCacheKeys(storageType);
+    let expired = 0;
+    
+    keys.forEach(key => {
+      const entry = storage.get<CacheEntry>(key);
+      if (entry && this.isExpired(entry)) {
+        expired++;
+      }
+    });
+    
+    return expired;
   }
 }

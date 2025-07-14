@@ -63,6 +63,31 @@ y este proyecto adhiere al [Versionado Semántico](https://semver.org/spec/v2.0.
   - Cast explícito en `toPromise()` para evitar tipos unknown
   - Todos los servicios compilan sin errores TypeScript
 
+- **Dependencia Circular en FirebaseMetricsService**: Resuelto problema de inyección circular
+  - Problema: SessionControlService y FirebaseMetricsService creaban referencias circulares
+  - Solución: Implementada inyección lazy con comentarios temporales
+  - Resultado: Compilación exitosa sin dependencias circulares
+
+- **Navegación Fallida para Usuarios Root**: Corregido problema de login sin acceso al dashboard
+  - Problema: AuthGuard aplicaba control de sesiones a usuarios root causando fallo de navegación
+  - Solución: Implementada validación para excluir usuarios root del control de sesiones
+  - Resultado: Usuarios root pueden acceder al dashboard sin restricciones
+
+- **Carga de Productos Fallida sin Selección de Negocio**: Corregido error en usuarios root
+  - Problema: ProductService intentaba consultar con businessId null causando errores Firestore
+  - Solución: Agregada validación de selección de negocio antes de cargar productos
+  - Resultado: Redirección automática a dashboard cuando no hay negocio seleccionado
+
+- **Cache Invalidado Prematuramente**: Corregido problema de FRESHNESS_THRESHOLD inconsistente
+  - Problema: ChangeDetectionService marcaba datos como obsoletos en 30 segundos vs 15 min de TTL
+  - Solución: Ajustado FRESHNESS_THRESHOLD de 30 segundos a 10 minutos
+  - Resultado: Cache funciona correctamente sin refrescos innecesarios
+
+- **Llamadas Firebase Innecesarias**: Eliminadas consultas redundantes en ProductService
+  - Problema: debugBusinessIdConsistency() hacía consultas adicionales en cada carga
+  - Solución: Removida llamada a debugBusinessIdConsistency() del flujo principal
+  - Resultado: Reducción significativa en llamadas Firebase por navegación
+
 ### 🏗️ Arquitectura
 - **Configuración Dual Firebase**: Firestore + Realtime Database funcionando en paralelo
   - Firestore (São Paulo): Datos principales de la aplicación

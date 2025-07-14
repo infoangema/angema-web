@@ -256,11 +256,12 @@ export class SessionManagementService {
 2. ✅ Optimizar BusinessService con cache
 3. ✅ Crear sistema de invalidación por eventos
 
-### Fase 4: Monitoreo y Ajustes (Semana 4) - menu que solo deberia ver el usuario Root
-1. Implementar métricas de uso de Firebase y sesiones activas
-2. Dashboard de control de sesiones por negocio y plan
-3. Ajustar TTL de cache según patrones de uso
-4. Optimizar consultas adicionales identificadas
+### Fase 4: Monitoreo y Ajustes (Semana 4) ✅ COMPLETADA - menu que solo deberia ver el usuario Root
+0. ✅ crear acceso en el router y el navbar a la funcionalidad
+1. ✅ Implementar métricas de uso de Firebase y sesiones activas
+2. ✅ Dashboard de control de sesiones por negocio y plan
+3. ✅ Ajustar TTL de cache según patrones de uso
+4. ✅ Optimizar consultas adicionales identificadas
 
 ## 5. RESULTADOS ESPERADOS
 

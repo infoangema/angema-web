@@ -6,6 +6,7 @@ import { BusinessService } from '../../../core/services/business.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { CacheService } from '../../../core/services/cache.service';
 import { ChangeDetectionService } from '../../../core/services/change-detection.service';
+// import { FirebaseMetricsService } from '../../../core/services/firebase-metrics.service';
 import { RootBusinessSelectorService } from './root-business-selector.service';
 import { SKU, SKUFilters, ProductsResponse, SortField, SortDirection } from '../models/sku.model';
 import { DocumentSnapshot } from '@angular/fire/firestore';
@@ -21,6 +22,7 @@ export class ProductService {
     private authService: AuthService,
     private cacheService: CacheService,
     private changeDetectionService: ChangeDetectionService,
+    // private firebaseMetricsService: FirebaseMetricsService,
     private rootBusinessSelector: RootBusinessSelectorService
   ) {}
 
@@ -34,24 +36,31 @@ export class ProductService {
     if (!this.changeDetectionService.needsRefresh('products', businessId)) {
       const cached = this.cacheService.get<SKU[]>(cacheKey, 'sessionStorage');
       if (cached) {
-        console.log(`ProductService: Returning cached data for ${businessId}`);
+        console.log(`ProductService: Cache hit for ${businessId} (${cached.length} products)`);
+        // this.firebaseMetricsService.trackCacheHit('products', businessId);
         return of(cached);
       }
     }
 
     // Consultar Firebase y actualizar cache
     console.log(`ProductService: Fetching fresh data for ${businessId}`);
+    const startTime = Date.now();
     return from(this.databaseService.getOnce<SKU>('products', where('businessId', '==', businessId), where('isActive', '==', true)))
       .pipe(
         map((products: SKU[]) => products.sort((a: SKU, b: SKU) => a.name.localeCompare(b.name))),
         tap((products: SKU[]) => {
+          // Tracking de métricas
+          const responseTime = Date.now() - startTime;
+          // this.firebaseMetricsService.trackFirebaseRead('products', businessId);
+          // this.firebaseMetricsService.trackResponseTime(`products_${businessId}`, responseTime);
+          
           // Actualizar cache (sessionStorage para datos por sesión)
           this.cacheService.set(cacheKey, products, 15 * 60 * 1000, 'sessionStorage'); // 15 minutos TTL
           
           // Marcar como actualizado
           this.changeDetectionService.markAsUpdated('products', businessId);
           
-          console.log(`ProductService: Cached ${products.length} products for ${businessId}`);
+          console.log(`ProductService: Cached ${products.length} products for ${businessId} (${responseTime}ms)`);
         })
       );
   }

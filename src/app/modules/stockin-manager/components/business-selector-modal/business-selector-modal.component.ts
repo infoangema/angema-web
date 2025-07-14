@@ -16,7 +16,7 @@ import { ModalService } from '../../services/modal.service';
   styleUrls: ['./business-selector-modal.component.css']
 })
 export class BusinessSelectorModalComponent implements OnInit {
-  @Output() modalClosed = new EventEmitter<void>();
+  @Output() modalClose = new EventEmitter<void>();
   
   businesses$!: Observable<Business[]>;
   selectedBusinessId: string | null = null;
@@ -52,17 +52,29 @@ export class BusinessSelectorModalComponent implements OnInit {
   }
 
   clearSelection(): void {
+    console.log('BusinessSelector: clearSelection() llamado');
     this.selectedBusinessId = null;
     this.showAllSelected = true;
+    console.log('BusinessSelector: después de clearSelection - selectedBusinessId:', this.selectedBusinessId, 'showAllSelected:', this.showAllSelected);
   }
 
   confirmSelection(): void {
+    console.log('BusinessSelector: confirmSelection() llamado');
+    console.log('BusinessSelector: selectedBusinessId:', this.selectedBusinessId);
+    console.log('BusinessSelector: showAllSelected:', this.showAllSelected);
+    
     // Validate that a selection has been made
-    if (!this.showAllSelected && !this.selectedBusinessId) {
+    const hasBusinessId = !!this.selectedBusinessId;
+    const hasShowAll = this.showAllSelected;
+    console.log('BusinessSelector: hasBusinessId:', hasBusinessId, 'hasShowAll:', hasShowAll);
+    
+    if (!hasShowAll && !hasBusinessId) {
+      console.log('BusinessSelector: No hay selección válida');
       this.notificationService.showError('Por favor, selecciona un negocio o elige "Ver Todos"');
       return;
     }
     
+    console.log('BusinessSelector: Guardando selección...');
     // Usar el servicio de RootBusinessSelector para guardar la selección
     this.rootBusinessSelector.setBusinessSelection(this.selectedBusinessId, this.showAllSelected);
     
@@ -70,16 +82,21 @@ export class BusinessSelectorModalComponent implements OnInit {
       ? 'Visualizando todos los negocios'
       : `Negocio seleccionado correctamente`;
     
+    console.log('BusinessSelector: Mostrando notificación y cerrando modal');
     this.notificationService.showSuccess(message);
     this.closeModal();
   }
 
   closeModal(): void {
+    console.log('BusinessSelector: closeModal() llamado');
+    
     // Emitir evento para modales que usan binding directo (como login)
-    this.modalClosed.emit();
+    console.log('BusinessSelector: Emitiendo evento modalClose');
+    this.modalClose.emit();
     
     // También usar el ModalService para modales dinámicos (como navbar)
     try {
+      console.log('BusinessSelector: Intentando cerrar con ModalService');
       this.modalService.closeModal();
     } catch (error) {
       // El ModalService puede no estar configurado en algunos contextos (como login)
