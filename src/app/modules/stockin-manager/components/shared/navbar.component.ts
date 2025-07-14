@@ -7,6 +7,7 @@ import { ThemeService } from '../../../../core/services/theme.service';
 import { ModalService } from '../../services/modal.service';
 import { BusinessSelectorModalComponent } from '../business-selector-modal/business-selector-modal.component';
 import { RootBusinessSelectorService } from '../../services/root-business-selector.service';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'stockin-navbar',
@@ -21,7 +22,10 @@ import { RootBusinessSelectorService } from '../../services/root-business-select
             <path clip-rule="evenodd" d="M12.0799 24L4 19.2479L9.95537 8.75216L18.04 13.4961L18.0446 4H29.9554L29.96 13.4961L38.0446 8.75216L44 19.2479L35.92 24L44 28.7521L38.0446 39.2479L29.96 34.5039L29.9554 44H18.0446L18.04 34.5039L9.95537 39.2479L4 28.7521L12.0799 24Z" fill="currentColor" fill-rule="evenodd"></path>
           </svg>
         </div>
-        <h2 class="text-xl font-semibold tracking-tight dark:text-white">StockIn Manager</h2>
+        <div class="flex flex-col">
+          <h2 class="text-xl font-semibold tracking-tight dark:text-white">StockIn Manager</h2>
+          <span class="text-xs text-gray-500 dark:text-gray-400">v{{ version }}</span>
+        </div>
       </div>
       <nav class="flex items-center gap-6">
         <a class="text-blue-600 dark:text-blue-400 text-sm font-semibold leading-normal" routerLink="/app/dashboard">Dashboard</a>
@@ -135,6 +139,7 @@ import { RootBusinessSelectorService } from '../../services/root-business-select
 export class StockinNavbarComponent {
   showUserMenu = false;
   isDarkMode$;
+  version = environment.version;
 
   constructor(
     private authService: AuthService,

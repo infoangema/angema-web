@@ -14,12 +14,52 @@ Este proyecto se desarrolla 100% con IA usando "Claude Code". Como el contexto n
 7. **Componentes standalone** con archivos HTML y CSS separados
 8. **Documentar errores** en `/claude/errors.md` para contexto futuro
 9. **🚨 IMPORTANTE: SIEMPRE actualizar CHANGELOG.md ANTES de cada commit** - Documentar todos los cambios
+10. **🏷️ FORMATO DE BRANCHES**: Usar siempre `version/v.X.Y.Z` (ejemplo: `version/v.0.8.1`)
+11. **📦 VERSIONADO AUTOMÁTICO**: Usar scripts para actualizar versión en environments y footer
 
 ### 📁 Archivos de Contexto
 - `/claude/structure.md` - Estructura técnica del proyecto
 - `/claude/description.md` - Descripción global y funcionalidades
 - `/claude/errors.md` - Registro de errores y soluciones
 - `/claude/steps.md` - Este archivo (pasos y tareas)
+
+---
+
+## 📦 SISTEMA DE VERSIONADO SEMÁNTICO
+
+### Formato de Branches
+- **Patrón**: `version/v.X.Y.Z` (ejemplo: `version/v.0.8.1`)
+- **Estructura**: Versionado semántico con prefijo "v."
+- **Uso**: Para todas las features, fixes y releases
+
+### Versionado Semántico
+- **MAJOR** (X): Cambios incompatibles en API o funcionalidades breaking
+- **MINOR** (Y): Funcionalidades nuevas compatibles hacia atrás
+- **PATCH** (Z): Correcciones de bugs compatibles
+
+### Ejemplos de Versionado
+- `version/v.1.0.0` - Release principal/lanzamiento
+- `version/v.0.9.0` - Nueva funcionalidad mayor (módulo completo)
+- `version/v.0.8.1` - Fix o mejora menor
+- `version/v.0.8.2` - Hotfix crítico
+
+### Scripts de Versionado
+```bash
+# Crear branch con versión
+git checkout -b version/v.0.8.1
+
+# Usar script automático para commit
+npm run commit "feat: nueva funcionalidad"
+
+# Verificar versión actualizada
+npm run version:check
+```
+
+### Archivos que Contienen Versión
+- `package.json` - Versión principal del proyecto
+- `src/environments/environment.ts` - Versión para desarrollo
+- `src/environments/environment.prod.ts` - Versión para producción
+- Footer del sitio web - Versión visible para usuarios
 
 ---
 

@@ -1,6 +1,6 @@
 {
   "name": "angema-web",
-  "version": "0.0.0",
+  "version": "0.8.1",
   "engines": {
     "node": ">=18.0.0",
     "npm": ">=8.0.0"
@@ -12,7 +12,10 @@
     "build": "ng build --configuration production",
     "build:vercel": "npm install --legacy-peer-deps && ng build --configuration production",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "commit": "scripts/commit-with-version.sh",
+    "version:check": "scripts/version-check.sh",
+    "version:update": "node scripts/update-version.js"
   },
   "private": true,
   "dependencies": {
