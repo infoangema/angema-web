@@ -1,10 +1,13 @@
 import { Injectable } from '@angular/core';
-import { Observable, firstValueFrom } from 'rxjs';
+import { Observable, firstValueFrom, of, from } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
 import { createUserWithEmailAndPassword, UserCredential } from '@angular/fire/auth';
 import { where } from '@angular/fire/firestore';
 import { DatabaseService } from './database.service';
 import { FirebaseService } from './firebase.service';
 import { AuthService } from './auth.service';
+import { CacheService } from './cache.service';
+import { ChangeDetectionService } from './change-detection.service';
 import { Business, CreateBusinessRequest, User, CreateUserRequest, DEFAULT_BUSINESS_SETTINGS } from '../models/business.model';
 
 @Injectable({
@@ -15,7 +18,9 @@ export class BusinessService {
   constructor(
     private databaseService: DatabaseService,
     private firebaseService: FirebaseService,
-    private authService: AuthService
+    private authService: AuthService,
+    private cacheService: CacheService,
+    private changeDetectionService: ChangeDetectionService
   ) {}
 
   // === GESTIÓN DE NEGOCIOS ===
@@ -65,18 +70,64 @@ export class BusinessService {
   }
 
   /**
-   * Obtener todos los negocios
+   * Obtener todos los negocios con cache
    */
   getBusinesses(): Observable<Business[]> {
-    return this.databaseService.getAll<Business>('businesses');
+    const cacheKey = 'all_businesses';
+    
+    // Verificar si necesita refresh
+    if (!this.changeDetectionService.needsRefresh('businesses')) {
+      const cached = this.cacheService.get<Business[]>(cacheKey, 'memory');
+      if (cached) {
+        console.log('BusinessService: Returning cached businesses');
+        return of(cached);
+      }
+    }
+
+    // Consultar Firebase y actualizar cache
+    console.log('BusinessService: Fetching fresh businesses data');
+    return from(this.databaseService.getOnce<Business>('businesses'))
+      .pipe(
+        map((businesses: Business[]) => businesses.sort((a: Business, b: Business) => a.name.localeCompare(b.name))),
+        tap((businesses: Business[]) => {
+          // Actualizar cache (memoria para datos estáticos)
+          this.cacheService.set(cacheKey, businesses, 30 * 60 * 1000, 'memory'); // 30 minutos TTL
+          
+          // Marcar como actualizado
+          this.changeDetectionService.markAsUpdated('businesses');
+          
+          console.log(`BusinessService: Cached ${businesses.length} businesses`);
+        })
+      );
   }
 
   /**
-   * Obtener un negocio por ID
+   * Obtener un negocio por ID con cache
    */
   async getBusinessById(id: string): Promise<Business | null> {
     try {
-      return await this.databaseService.getById<Business>('businesses', id);
+      const cacheKey = `business_${id}`;
+      
+      // Verificar cache primero
+      if (!this.changeDetectionService.needsRefresh('businesses')) {
+        const cached = this.cacheService.get<Business>(cacheKey, 'memory');
+        if (cached) {
+          console.log(`BusinessService: Returning cached business ${id}`);
+          return cached;
+        }
+      }
+
+      // Consultar Firebase
+      console.log(`BusinessService: Fetching fresh business data for ${id}`);
+      const business = await this.databaseService.getById<Business>('businesses', id);
+      
+      if (business) {
+        // Actualizar cache
+        this.cacheService.set(cacheKey, business, 30 * 60 * 1000, 'memory'); // 30 minutos TTL
+        console.log(`BusinessService: Cached business ${id}`);
+      }
+      
+      return business;
     } catch (error) {
       console.error('Error obteniendo negocio:', error);
       throw error;
@@ -89,6 +140,12 @@ export class BusinessService {
   async updateBusiness(id: string, data: Partial<Business>): Promise<void> {
     try {
       await this.databaseService.update('businesses', id, data);
+      
+      // Solo invalidar cache, sin notificación adicional
+      this.changeDetectionService.invalidateCollection('businesses');
+      this.cacheService.remove(`business_${id}`, 'memory');
+      
+      console.log(`BusinessService: Business ${id} updated and cache invalidated`);
     } catch (error) {
       console.error('Error actualizando negocio:', error);
       throw error;
@@ -101,6 +158,12 @@ export class BusinessService {
   async deleteBusiness(id: string): Promise<void> {
     try {
       await this.databaseService.softDelete('businesses', id);
+      
+      // Solo invalidar cache, sin notificación adicional
+      this.changeDetectionService.invalidateCollection('businesses');
+      this.cacheService.remove(`business_${id}`, 'memory');
+      
+      console.log(`BusinessService: Business ${id} deleted and cache invalidated`);
     } catch (error) {
       console.error('Error eliminando negocio:', error);
       throw error;

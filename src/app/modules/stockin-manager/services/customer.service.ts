@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { Observable, of, from } from 'rxjs';
+import { map, switchMap, tap } from 'rxjs/operators';
 import { where } from '@angular/fire/firestore';
 import { DatabaseService } from '../../../core/services/database.service';
 import { BusinessService } from '../../../core/services/business.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { CacheService } from '../../../core/services/cache.service';
+import { ChangeDetectionService } from '../../../core/services/change-detection.service';
 import { RootBusinessSelectorService } from './root-business-selector.service';
 import { 
   Customer, 
@@ -26,11 +28,13 @@ export class CustomerService {
     private databaseService: DatabaseService,
     private businessService: BusinessService,
     private authService: AuthService,
+    private cacheService: CacheService,
+    private changeDetectionService: ChangeDetectionService,
     private rootBusinessSelector: RootBusinessSelectorService
   ) {}
 
   /**
-   * Observar todos los clientes del negocio actual
+   * Observar todos los clientes del negocio actual con cache inteligente
    */
   watchCustomers(): Observable<Customer[]> {
     const isRoot = this.authService.isRoot();
@@ -42,43 +46,57 @@ export class CustomerService {
           const businessId = selection.showAll ? null : selection.businessId;
           
           if (businessId) {
-            // Mostrar solo clientes del negocio seleccionado
-            return this.databaseService.getWhere<Customer>('customers', 'businessId', '==', businessId)
-              .pipe(
-                map(customers => customers.sort((a, b) => 
-                  new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-                ))
-              );
+            return this.getCustomersWithCache(businessId);
           } else {
-            // Si no hay businessId seleccionado, no mostrar clientes
             return of([]);
           }
         })
       );
     } else {
-      // Para usuarios no root, necesitamos obtener el businessId de forma asíncrona
-      return new Observable<Customer[]>(observer => {
-        this.businessService.getCurrentBusinessId().then(id => {
-          if (id) {
-            this.databaseService.getWhere<Customer>('customers', 'businessId', '==', id)
-              .pipe(
-                map(customers => customers.sort((a, b) => 
-                  new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-                ))
-              )
-              .subscribe({
-                next: customers => observer.next(customers),
-                error: error => observer.error(error)
-              });
-          } else {
-            observer.next([]);
+      // Para usuarios no root, usar cache con businessId fijo
+      return from(this.businessService.getCurrentBusinessId()).pipe(
+        switchMap(businessId => {
+          if (!businessId) {
+            return of([]);
           }
-        }).catch(error => {
-          console.error('Error getting business ID:', error);
-          observer.error(error);
-        });
-      });
+          return this.getCustomersWithCache(businessId);
+        })
+      );
     }
+  }
+
+  /**
+   * Obtener clientes con estrategia de cache
+   */
+  private getCustomersWithCache(businessId: string): Observable<Customer[]> {
+    const cacheKey = `customers_${businessId}`;
+    
+    // Verificar si necesita refresh
+    if (!this.changeDetectionService.needsRefresh('customers', businessId)) {
+      const cached = this.cacheService.get<Customer[]>(cacheKey, 'localStorage');
+      if (cached) {
+        console.log(`CustomerService: Returning cached data for ${businessId}`);
+        return of(cached);
+      }
+    }
+
+    // Consultar Firebase y actualizar cache
+    console.log(`CustomerService: Fetching fresh data for ${businessId}`);
+    return from(this.databaseService.getOnce<Customer>('customers', where('businessId', '==', businessId)))
+      .pipe(
+        map((customers: Customer[]) => customers.sort((a: Customer, b: Customer) => 
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        )),
+        tap((customers: Customer[]) => {
+          // Actualizar cache (localStorage para persistencia entre sesiones)
+          this.cacheService.set(cacheKey, customers, 10 * 60 * 1000, 'localStorage'); // 10 minutos TTL
+          
+          // Marcar como actualizado
+          this.changeDetectionService.markAsUpdated('customers', businessId);
+          
+          console.log(`CustomerService: Cached ${customers.length} customers for ${businessId}`);
+        })
+      );
   }
 
   /**
@@ -189,7 +207,14 @@ export class CustomerService {
       notes: customerData.notes?.trim()
     };
 
-    return this.databaseService.create('customers', customer);
+    const customerId = await this.databaseService.create('customers', customer);
+    
+    // Solo invalidar cache, sin notificación adicional
+    this.changeDetectionService.invalidateCollection('customers', businessId);
+    
+    console.log(`CustomerService: Customer created and cache invalidated for business ${businessId}`);
+
+    return customerId;
   }
 
   /**
@@ -212,6 +237,14 @@ export class CustomerService {
     if (updateData.notes) updateData.notes = updateData.notes.trim();
 
     await this.databaseService.update('customers', id, updateData);
+    
+    // Obtener businessId para invalidar cache
+    const businessId = await this.getBusinessId();
+    
+    // Solo invalidar cache, sin notificación adicional
+    this.changeDetectionService.invalidateCollection('customers', businessId);
+    
+    console.log(`CustomerService: Customer updated and cache invalidated for business ${businessId}`);
   }
 
   /**
@@ -219,6 +252,14 @@ export class CustomerService {
    */
   async deleteCustomer(id: string): Promise<void> {
     await this.databaseService.softDelete('customers', id);
+    
+    // Obtener businessId para invalidar cache
+    const businessId = await this.getBusinessId();
+    
+    // Solo invalidar cache, sin notificación adicional
+    this.changeDetectionService.invalidateCollection('customers', businessId);
+    
+    console.log(`CustomerService: Customer deleted and cache invalidated for business ${businessId}`);
   }
 
   /**

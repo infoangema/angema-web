@@ -3,6 +3,7 @@ export const environment = {
   firebase: {
     apiKey: 'AIzaSyAEDW7vh5YTDV6sEkOfhdYTAEG7kosAM4Q',
     authDomain: 'stockin-manager.firebaseapp.com',
+    databaseURL: 'https://stockin-manager-default-rtdb.firebaseio.com/',
     projectId: 'stockin-manager',
     storageBucket: 'stockin-manager.firebasestorage.app',
     messagingSenderId: '951330132229',

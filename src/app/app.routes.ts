@@ -69,6 +69,10 @@ export const routes: Routes = [
         path: 'root-admin',
         canActivate: [AuthGuard, RootGuard],
         loadComponent: () => import('./modules/stockin-manager/pages/root-admin/root-admin.component').then(m => m.RootAdminComponent)
+      },
+      {
+        path: 'session-limit',
+        loadComponent: () => import('./modules/stockin-manager/pages/session-limit/session-limit.component').then(m => m.SessionLimitComponent)
       }
     ]
   }
