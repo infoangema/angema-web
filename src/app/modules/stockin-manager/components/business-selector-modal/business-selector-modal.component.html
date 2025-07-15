@@ -13,7 +13,7 @@
       <div class="space-y-3 max-h-96 overflow-y-auto">
         @if (businesses$ | async; as businesses) {
           @for (business of businesses; track business.id) {
-            <div 
+            <div
               class="border border-gray-200 dark:border-gray-700 rounded-lg p-4 cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition-colors"
               [class.border-blue-500]="selectedBusinessId === business.id"
               [class.bg-blue-50]="selectedBusinessId === business.id"
@@ -32,7 +32,7 @@
                   </p>
                 </div>
                 <div class="ml-3">
-                  <div 
+                  <div
                     class="w-4 h-4 rounded-full border-2 flex items-center justify-center"
                     [class.border-blue-500]="selectedBusinessId === business.id"
                     [class.bg-blue-500]="selectedBusinessId === business.id"
@@ -69,7 +69,7 @@
           (click)="confirmSelection()"
           [disabled]="!selectedBusinessId && !showAllSelected"
           class="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed rounded-md transition-colors">
-          Confirmar {{ !selectedBusinessId && !showAllSelected ? '(Deshabilitado)' : '(Habilitado)' }}
+          Confirmar
         </button>
       </div>
     </div>

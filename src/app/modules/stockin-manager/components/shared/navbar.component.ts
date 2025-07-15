@@ -28,19 +28,70 @@ import { environment } from '../../../../../environments/environment';
         </div>
       </div>
       <nav class="flex items-center gap-6">
-        <a class="text-blue-600 dark:text-blue-400 text-sm font-semibold leading-normal" routerLink="/app/dashboard">Dashboard</a>
-        <a class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 text-sm font-medium leading-normal transition-colors" routerLink="/app/products">Productos</a>
-        <a class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 text-sm font-medium leading-normal transition-colors" routerLink="/app/categories">Categorías</a>
-        <a class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 text-sm font-medium leading-normal transition-colors" routerLink="/app/warehouses">Almacenes</a>
+        <a
+          routerLink="/app/dashboard"
+          routerLinkActive="text-blue-600 dark:text-blue-400 font-semibold"
+          [routerLinkActiveOptions]="{exact: true}"
+          class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 text-lg font-medium leading-normal transition-colors">
+          Dashboard
+        </a>
+        <a
+          routerLink="/app/products"
+          routerLinkActive="text-blue-600 dark:text-blue-400 font-semibold"
+          class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 text-lg font-medium leading-normal transition-colors">
+          Productos
+        </a>
+        <a
+          routerLink="/app/categories"
+          routerLinkActive="text-blue-600 dark:text-blue-400 font-semibold"
+          class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 text-lg font-medium leading-normal transition-colors">
+          Categorías
+        </a>
+        <a
+          routerLink="/app/warehouses"
+          routerLinkActive="text-blue-600 dark:text-blue-400 font-semibold"
+          class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 text-lg font-medium leading-normal transition-colors">
+          Almacenes
+        </a>
         @if (canManageAttributes()) {
-          <a class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 text-sm font-medium leading-normal transition-colors" routerLink="/app/attributes">Atributos</a>
+          <a
+            routerLink="/app/attributes"
+            routerLinkActive="text-blue-600 dark:text-blue-400 font-semibold"
+            class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 text-lg font-medium leading-normal transition-colors">
+            Atributos
+          </a>
         }
-        <a class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 text-sm font-medium leading-normal transition-colors" routerLink="/app/orders">Pedidos</a>
-        <a class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 text-sm font-medium leading-normal transition-colors" routerLink="/app/customers">Clientes</a>
-        <a class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 text-sm font-medium leading-normal transition-colors" routerLink="/app/reports">Reportes</a>
+        <a
+          routerLink="/app/orders"
+          routerLinkActive="text-blue-600 dark:text-blue-400 font-semibold"
+          class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 text-lg font-medium leading-normal transition-colors">
+          Pedidos
+        </a>
+        <a
+          routerLink="/app/customers"
+          routerLinkActive="text-blue-600 dark:text-blue-400 font-semibold"
+          class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 text-lg font-medium leading-normal transition-colors">
+          Clientes
+        </a>
+        <a
+          routerLink="/app/reports"
+          routerLinkActive="text-blue-600 dark:text-blue-400 font-semibold"
+          class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 text-lg font-medium leading-normal transition-colors">
+          Reportes
+        </a>
         @if (isRoot()) {
-          <a class="text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-500 text-sm font-semibold leading-normal transition-colors" routerLink="/app/root-admin">Root Admin</a>
-          <a class="text-orange-600 hover:text-orange-700 dark:text-orange-400 dark:hover:text-orange-500 text-sm font-semibold leading-normal transition-colors" routerLink="/app/firebase-monitoring">Firebase Monitor</a>
+          <a
+            routerLink="/app/root-admin"
+            routerLinkActive="text-red-700 dark:text-red-300 font-semibold"
+            class="text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-500 text-lg font-semibold leading-normal transition-colors">
+            Root Admin
+          </a>
+          <a
+            routerLink="/app/firebase-monitoring"
+            routerLinkActive="text-orange-700 dark:text-orange-300 font-semibold"
+            class="text-orange-600 hover:text-orange-700 dark:text-orange-400 dark:hover:text-orange-500 text-lg font-semibold leading-normal transition-colors">
+            Firebase Monitor
+          </a>
         }
       </nav>
     </div>
@@ -48,9 +99,9 @@ import { environment } from '../../../../../environments/environment';
       <!-- Business Selector for Root Users -->
       @if (isRoot()) {
         <div class="relative">
-        <button 
+        <button
           (click)="openBusinessSelector()"
-          class="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-md transition-colors"
+          class="flex items-center gap-2 px-3 py-2 text-lg font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-md transition-colors"
         >
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-4m-5 0H9m0 0H5m0 0H3m13 0v-3c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v3m8 0V9c0-1.1-.9-2-2-2H9c-1.1 0-2 .9-2 2v12"></path>
@@ -68,11 +119,11 @@ import { environment } from '../../../../../environments/environment';
             <path d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"></path>
           </svg>
         </div>
-        <input class="form-input w-72 rounded-md border-gray-300 dark:border-dark-600 bg-gray-50 dark:bg-dark-700 py-2 pl-10 pr-4 text-sm text-gray-800 dark:text-gray-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 placeholder:text-gray-400 dark:placeholder:text-gray-500" placeholder="Buscar por SKU, nombre de producto..." />
+        <input class="form-input w-72 rounded-md border-gray-300 dark:border-dark-600 bg-gray-50 dark:bg-dark-700 py-2 pl-10 pr-4 text-lg text-gray-800 dark:text-gray-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 placeholder:text-gray-400 dark:placeholder:text-gray-500" placeholder="Buscar por SKU, nombre de producto..." />
       </label>
 
       <!-- Theme Toggle Button -->
-      <button 
+      <button
         (click)="toggleTheme()"
         class="relative flex cursor-pointer items-center justify-center rounded-md p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-dark-700 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
       >
@@ -99,10 +150,10 @@ import { environment } from '../../../../../environments/environment';
           <span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
         </span>
       </button>
-      
+
       <!-- User Menu Dropdown -->
       <div class="relative">
-        <button 
+        <button
           (click)="toggleUserMenu()"
           class="flex items-center gap-2 rounded-full p-1 hover:bg-gray-100 transition-colors"
         >
@@ -111,17 +162,17 @@ import { environment } from '../../../../../environments/environment';
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
           </svg>
         </button>
-        
+
         <!-- Dropdown Menu -->
         @if (showUserMenu) {
           <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-200">
           <div class="px-4 py-2 border-b border-gray-100">
-            <p class="text-sm font-medium text-gray-900">{{ getUserDisplayName() }}</p>
+            <p class="text-lg font-medium text-gray-900">{{ getUserDisplayName() }}</p>
             <p class="text-xs text-gray-500">{{ getUserEmail() }}</p>
           </div>
-          <button 
+          <button
             (click)="logout()"
-            class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
+            class="w-full text-left px-4 py-2 text-lg text-gray-700 hover:bg-gray-100 flex items-center gap-2"
           >
             <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
@@ -172,7 +223,7 @@ export class StockinNavbarComponent {
       if (this.authService.isRoot()) {
         this.rootBusinessSelector.clearSelection();
       }
-      
+
       await this.authService.logout();
       this.notificationService.success('Sesión cerrada correctamente');
       this.showUserMenu = false;
@@ -197,7 +248,7 @@ export class StockinNavbarComponent {
 
   getBusinessSelectorText(): string {
     if (!this.isRoot()) return '';
-    
+
     const selection = this.rootBusinessSelector.getCurrentSelection();
     if (selection.showAll) {
       return 'Todos los negocios';
@@ -210,7 +261,7 @@ export class StockinNavbarComponent {
 
   async openBusinessSelector(): Promise<void> {
     if (!this.isRoot()) return;
-    
+
     try {
       await this.modalService.open(BusinessSelectorModalComponent);
       // Optionally refresh current page data after business selection change
@@ -219,4 +270,4 @@ export class StockinNavbarComponent {
       console.error('Error opening business selector:', error);
     }
   }
-} 
+}

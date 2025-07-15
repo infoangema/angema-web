@@ -5,6 +5,18 @@ Todos los cambios importantes de este proyecto serán documentados en este archi
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 y este proyecto adhiere al [Versionado Semántico](https://semver.org/spec/v2.0.0.html).
 
+## [v.0.8.2] - 2025-07-14
+
+### 🐛 Corregido
+- **Botón 'Cancelar' No Funcionaba en Modales**: Corregido problema de eventos de cierre de modal inconsistentes
+  - Menu: se arregla la seleccion de menu.
+  - Se quita hardcode
+
+### 🧪 Técnico
+- **Archivos Principales Modificados**:
+  - `navbar.component.ts`: correccion de menu.
+  - `business-selector-modal.component.ts`: Se quita hardcode
+
 ## [v.0.8.1] - 2025-07-14
 
 ### 🐛 Corregido
