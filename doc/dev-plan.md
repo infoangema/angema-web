@@ -357,11 +357,7 @@ Implementar el núcleo del sistema: gestión de productos SKU y control de stock
    - Asignación de ubicaciones a SKUs
    - Vista de distribución de stock
 
-3. **Control de Stock**
-   - Entrada/salida manual de stock
-   - Registro de movimientos
-   - Alertas de stock mínimo
-   - Stock reservado vs disponible
+
 
 4. **Gestión de Imágenes**
    - Upload a Firebase Storage
@@ -387,23 +383,27 @@ Introducir gestión de ventas y métricas operativas en tiempo real.
 
 #### Entregables
 1. **Módulo de Pedidos**
+   - Entrada/salida manual de stock
+   - Registro de movimientos
    - Listado con filtros avanzados
    - Detalle completo de pedidos
    - Cambio de estados
    - Creación manual de pedidos
+   - Alertas de stock mínimo
+   - Stock reservado vs disponible
 
-2. **Dashboard Inteligente**
+2**Impresión de Pedidos**
+  - Generación de PDF
+  - Hojas de picking
+  - Etiquetas de envío
+  - Códigos QR para tracking
+
+3**Dashboard Inteligente**
    - Resumen del día (pedidos, ventas)
    - Top 10 productos con stock bajo
    - Productos más vendidos
    - Métricas por almacén
    - Gráficos en tiempo real
-
-3. **Impresión de Pedidos**
-   - Generación de PDF
-   - Hojas de picking
-   - Etiquetas de envío
-   - Códigos QR para tracking
 
 4. **Actualizaciones en Tiempo Real**
    - WebSockets con Firestore

@@ -39,6 +39,120 @@
 - **Shared Services**: Servicios reutilizables entre módulos
 - **Firebase Optimization Services**: Cache, change detection, session control, metrics
 
+#### NotificationService - Métodos Disponibles
+**IMPORTANTE**: Para evitar errores recurrentes con nombres de métodos, usar siempre:
+
+```typescript
+// Métodos principales (sin prefijo "show")
+notificationService.success(message: string, duration?: number)
+notificationService.error(message: string, duration?: number)  
+notificationService.warning(message: string, duration?: number)
+notificationService.info(message: string, duration?: number)
+
+// Métodos alternativos (con prefijo "show")  
+notificationService.showSuccess(message: string, duration?: number)
+notificationService.showError(message: string, duration?: number)
+notificationService.showInfo(message: string, duration?: number)
+// ❌ NO EXISTE: notificationService.showWarning() 
+
+// Métodos adicionales
+notificationService.removeNotification(id: string)
+notificationService.clearAll()
+```
+
+**Ejemplos de uso correcto:**
+```typescript
+// ✅ Correcto - métodos principales
+this.notificationService.success('Orden creada exitosamente');
+this.notificationService.error('Error al cargar productos');
+this.notificationService.warning('Stock insuficiente');
+
+// ✅ Correcto - métodos alternativos
+this.notificationService.showSuccess('Orden creada exitosamente');
+this.notificationService.showError('Error al cargar productos');
+
+// ❌ Incorrecto - método inexistente
+this.notificationService.showWarning('Mensaje'); // NO EXISTE
+```
+
+#### DatabaseService - Manejo de Timestamps y Campos Undefined
+**IMPORTANTE**: El DatabaseService maneja automáticamente:
+
+```typescript
+// Conversión segura de timestamps
+private convertToDate(timestamp: any): Date | undefined {
+  // Maneja: Date objects, Firestore Timestamps, objetos con seconds, strings/numbers
+}
+
+// Filtrado automático de campos undefined
+private removeUndefinedFields(obj: any): any {
+  // Preserva: Timestamps de Firestore, Date objects, valores válidos
+  // Remueve: campos undefined que causan errores en Firebase
+}
+```
+
+**Beneficios automáticos:**
+- ✅ Previene errores de Firebase por campos undefined
+- ✅ Convierte timestamps de Firestore a Date objects
+- ✅ Preserva objetos Date y Timestamps válidos
+- ✅ Aplicado automáticamente en create() y update()
+- ✅ Manejo robusto de diferentes formatos de fecha
+
+#### Firestore - Estrategia de Consultas Sin Índices Compuestos
+**IMPORTANTE**: Para evitar errores de índices faltantes en Firestore:
+
+```typescript
+// ✅ Consultas simples (sin índices necesarios)
+databaseService.getWhere('orders', 'businessId', '==', businessId);
+databaseService.getAll('orders', 'createdAt', 'desc');
+
+// ❌ Consultas complejas (requieren índices)
+// getWithQuery('orders', where('businessId', '==', id), orderBy('createdAt', 'desc'))
+
+// Estrategia adoptada: 
+// 1. Consultas simples en Firebase
+// 2. Filtrado y ordenamiento del lado del cliente
+// 3. Usuarios root: consulta sin filtros + filtrado local
+```
+
+**Ventajas de esta estrategia:**
+- ✅ Sin errores de índices faltantes
+- ✅ Queries en tiempo real funcionales  
+- ✅ Filtrado complejo del lado del cliente
+- ✅ Soporte completo para usuarios root
+- ✅ Performance aceptable para volúmenes medianos
+
+#### Cache Cross-Service - Invalidación Inteligente
+**IMPORTANTE**: Invalidación automática de cache entre servicios relacionados:
+
+```typescript
+// OrderService invalida cache de productos cuando afecta stock:
+async createOrder() {
+  // ... crear orden y reservar stock
+  this.invalidateOrderCache(businessId);
+  await this.productService.invalidateProductCache(businessId); // ✅ Cross-service
+}
+
+async updateOrder() {
+  // ... cambiar estado de orden (delivered/cancelled)
+  if (status === 'delivered' || status === 'cancelled') {
+    await this.productService.invalidateProductCache(businessId); // ✅ Cross-service
+  }
+}
+
+// ProductService método público para invalidación externa:
+async invalidateProductCache(businessId?: string): Promise<void> {
+  this.changeDetectionService.invalidateCollection('products', businessId);
+}
+```
+
+**Beneficios de invalidación cross-service:**
+- ✅ Cache siempre actualizado entre módulos relacionados
+- ✅ Stock actualizado en página de productos después de crear órdenes
+- ✅ Sincronización automática sin intervención manual
+- ✅ Datos consistentes en toda la aplicación
+- ✅ UX mejorada con información siempre actualizada
+
 ## Estructura de Directorios
 
 ### Core Structure

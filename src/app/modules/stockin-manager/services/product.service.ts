@@ -226,4 +226,18 @@ export class ProductService {
       return businessId;
     }
   }
+
+  /**
+   * Invalidar cache de productos para un negocio específico
+   * Útil cuando otras operaciones afectan el stock de productos
+   */
+  async invalidateProductCache(businessId?: string): Promise<void> {
+    try {
+      const targetBusinessId = businessId || await this.getBusinessId();
+      this.changeDetectionService.invalidateCollection('products', targetBusinessId);
+      console.log(`ProductService: Cache invalidated for business ${targetBusinessId} (external operation)`);
+    } catch (error) {
+      console.error('Error invalidating product cache:', error);
+    }
+  }
 }

@@ -29,6 +29,7 @@
     "@angular/platform-browser-dynamic": "20.0.6",
     "@angular/router": "20.0.6",
     "@popperjs/core": "^2.11.8",
+    "@zxing/ngx-scanner": "^20.0.0",
     "bootstrap": "^5.3.3",
     "firebase": "^11.10.0",
     "flowbite": "^3.1.2",

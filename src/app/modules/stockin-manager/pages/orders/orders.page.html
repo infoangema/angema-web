@@ -1,0 +1,424 @@
+<stockin-navbar></stockin-navbar>
+<div class="min-h-screen bg-gray-100">
+  <main class="container mx-auto px-4 py-6">
+
+    <!-- Header Section -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+      <div class="flex justify-between items-center">
+        <div>
+          <h1 class="text-2xl font-bold text-gray-900">Gestión de Órdenes</h1>
+          <p class="text-gray-600 mt-1">Administra las órdenes de venta de tu negocio</p>
+        </div>
+
+        <div class="flex gap-3">
+          @if (canManageOrders) {
+            <button
+              (click)="openCreateOrderModal()"
+              class="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 transition-colors"
+            >
+              <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+              </svg>
+              Nueva Orden
+            </button>
+          }
+
+          <button
+            (click)="exportOrders()"
+            class="inline-flex items-center px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 focus:ring-4 focus:ring-green-300 transition-colors"
+          >
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+            Exportar CSV
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+              <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="ml-3">
+            <p class="text-sm font-medium text-gray-500">Total</p>
+            <p class="text-lg font-semibold text-gray-900">{{ orderStats.totalOrders }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <div class="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
+              <svg class="w-4 h-4 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="ml-3">
+            <p class="text-sm font-medium text-gray-500">Pendientes</p>
+            <p class="text-lg font-semibold text-gray-900">{{ orderStats.pendingOrders }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+              <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="ml-3">
+            <p class="text-sm font-medium text-gray-500">Preparando</p>
+            <p class="text-lg font-semibold text-gray-900">{{ orderStats.preparingOrders }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+              <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="ml-3">
+            <p class="text-sm font-medium text-gray-500">Entregadas</p>
+            <p class="text-lg font-semibold text-gray-900">{{ orderStats.deliveredOrders }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <div class="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
+              <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="ml-3">
+            <p class="text-sm font-medium text-gray-500">Ingresos</p>
+            <p class="text-lg font-semibold text-gray-900">{{ orderStats.totalRevenue | currency:'ARS':'symbol':'1.2-2' }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filters Section -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+
+        <!-- Search -->
+        <div>
+          <label for="search" class="block text-sm font-medium text-gray-700 mb-2">Buscar</label>
+          <input
+            type="text"
+            id="search"
+            [(ngModel)]="filters.search"
+            (input)="applyFilters()"
+            placeholder="Número, cliente, producto..."
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          >
+        </div>
+
+        <!-- Status Filter -->
+        <div>
+          <label for="status" class="block text-sm font-medium text-gray-700 mb-2">Estado</label>
+          <select
+            id="status"
+            [(ngModel)]="filters.status"
+            (change)="applyFilters()"
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          >
+            <option value="">Todos los estados</option>
+            @for (status of orderStatuses; track status.value) {
+              <option [value]="status.value">{{ status.label }}</option>
+            }
+          </select>
+        </div>
+
+        <!-- Source Filter -->
+        <div>
+          <label for="source" class="block text-sm font-medium text-gray-700 mb-2">Origen</label>
+          <select
+            id="source"
+            [(ngModel)]="filters.source"
+            (change)="applyFilters()"
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          >
+            <option value="">Todos los orígenes</option>
+            @for (source of orderSources; track source.value) {
+              <option [value]="source.value">{{ source.label }}</option>
+            }
+          </select>
+        </div>
+
+        <!-- Date Range -->
+        <div>
+          <label for="dateFrom" class="block text-sm font-medium text-gray-700 mb-2">Fecha desde</label>
+          <input
+            type="date"
+            id="dateFrom"
+            [(ngModel)]="filters.dateFrom"
+            (change)="applyFilters()"
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          >
+        </div>
+
+      </div>
+
+      <!-- Clear Filters -->
+      <div class="mt-4 flex justify-end">
+        <button
+          (click)="clearFilters()"
+          class="text-sm text-gray-600 hover:text-gray-800 underline"
+        >
+          Limpiar filtros
+        </button>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    @if (loading) {
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+        <div class="flex items-center justify-center">
+          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          <span class="ml-2 text-gray-600">Cargando órdenes...</span>
+        </div>
+      </div>
+    }
+
+    <!-- Orders List -->
+    @if (!loading && filteredOrders.length > 0) {
+      <!-- Desktop Table -->
+      <div class="md:block bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Orden
+              </th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Cliente
+              </th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Estado
+              </th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Total
+              </th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Fecha
+              </th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Origen
+              </th>
+              <th scope="col" class="relative px-6 py-3">
+                <span class="sr-only">Acciones</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            @for (order of paginatedOrders; track order.id) {
+              <tr class="hover:bg-gray-50">
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="text-sm font-medium text-gray-900">{{ order.orderNumber }}</div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="text-sm text-gray-900">{{ order.customer.name }}</div>
+                  <div class="text-sm text-gray-500">{{ order.customer.email }}</div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span [class]="getStatusClasses(order.status)" class="inline-flex px-2 py-1 text-xs font-semibold rounded-full">
+                    {{ getStatusLabel(order.status) }}
+                  </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  {{ order.total | currency:'ARS':'symbol':'1.2-2' }}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {{ order.createdAt | date:'dd/MM/yy HH:mm' }}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {{ getSourceLabel(order.source) }}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                  <div class="flex justify-end space-x-2">
+                    <button
+                      (click)="viewOrder(order)"
+                      class="text-blue-600 hover:text-blue-900"
+                      title="Ver orden"
+                    >
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                      </svg>
+                    </button>
+                    @if (canManageOrders && order.status !== 'delivered' && order.status !== 'cancelled') {
+                      <button
+                        (click)="editOrder(order)"
+                        class="text-indigo-600 hover:text-indigo-900"
+                        title="Editar orden"
+                      >
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                        </svg>
+                      </button>
+                    }
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Mobile Cards -->
+      <div class="md:hidden space-y-4">
+        @for (order of paginatedOrders; track order.id) {
+          <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+            <div class="flex justify-between items-start mb-3">
+              <div>
+                <p class="font-medium text-gray-900">{{ order.orderNumber }}</p>
+                <p class="text-sm text-gray-500">{{ order.createdAt | date:'dd/MM/yy HH:mm' }}</p>
+              </div>
+              <span [class]="getStatusClasses(order.status)" class="inline-flex px-2 py-1 text-xs font-semibold rounded-full">
+                {{ getStatusLabel(order.status) }}
+              </span>
+            </div>
+
+            <div class="space-y-2 mb-4">
+              <div class="flex justify-between">
+                <span class="text-sm text-gray-500">Cliente:</span>
+                <span class="text-sm font-medium text-gray-900">{{ order.customer.name }}</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-sm text-gray-500">Total:</span>
+                <span class="text-sm font-medium text-gray-900">{{ order.total | currency:'ARS':'symbol':'1.2-2' }}</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-sm text-gray-500">Origen:</span>
+                <span class="text-sm text-gray-500">{{ getSourceLabel(order.source) }}</span>
+              </div>
+            </div>
+
+            <div class="flex space-x-2">
+              <button
+                (click)="viewOrder(order)"
+                class="flex-1 px-3 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+              >
+                Ver
+              </button>
+              @if (canManageOrders && order.status !== 'delivered' && order.status !== 'cancelled') {
+                <button
+                  (click)="editOrder(order)"
+                  class="flex-1 px-3 py-2 text-sm bg-gray-600 text-white rounded-lg hover:bg-gray-700"
+                >
+                  Editar
+                </button>
+              }
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Pagination -->
+      @if (totalPages > 1) {
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mt-6">
+          <div class="flex items-center justify-between">
+            <div class="text-sm text-gray-700">
+              Mostrando {{ (currentPage - 1) * pageSize + 1 }} a {{ Math.min(currentPage * pageSize, filteredOrders.length) }} de {{ filteredOrders.length }} órdenes
+            </div>
+            <div class="flex space-x-2">
+              <button
+                (click)="currentPage = currentPage - 1"
+                [disabled]="currentPage === 1"
+                class="px-3 py-2 text-sm border border-gray-300 rounded-lg disabled:bg-gray-50 disabled:text-gray-400 hover:bg-gray-50"
+              >
+                Anterior
+              </button>
+              @for (page of getPageNumbers(); track page) {
+                <button
+                  (click)="currentPage = page"
+                  [class]="page === currentPage ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 border-gray-300'"
+                  class="px-3 py-2 text-sm border rounded-lg hover:bg-gray-50"
+                >
+                  {{ page }}
+                </button>
+              }
+              <button
+                (click)="currentPage = currentPage + 1"
+                [disabled]="currentPage === totalPages"
+                class="px-3 py-2 text-sm border border-gray-300 rounded-lg disabled:bg-gray-50 disabled:text-gray-400 hover:bg-gray-50"
+              >
+                Siguiente
+              </button>
+            </div>
+          </div>
+        </div>
+      }
+    }
+
+    <!-- Empty State -->
+    @if (!loading && filteredOrders.length === 0) {
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-8 text-center">
+        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+        </svg>
+        <h3 class="mt-2 text-lg font-medium text-gray-900">No hay órdenes</h3>
+        <p class="mt-1 text-gray-500">
+          @if (hasActiveFilters()) {
+            No se encontraron órdenes que coincidan con los filtros aplicados.
+          } @else {
+            Comienza creando tu primera orden de venta.
+          }
+        </p>
+        @if (canManageOrders && !hasActiveFilters()) {
+          <div class="mt-6">
+            <button
+              (click)="openCreateOrderModal()"
+              class="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700"
+            >
+              <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+              </svg>
+              Nueva Orden
+            </button>
+          </div>
+        }
+      </div>
+    }
+
+  </main>
+</div>
+
+<!-- Modals -->
+@if (isCreateModalVisible) {
+  <app-create-order-modal
+    (orderCreated)="onOrderCreated()"
+    (modalClose)="onModalClosed()"
+  ></app-create-order-modal>
+}
+
+@if (isEditModalVisible && selectedOrder) {
+  <!-- Edit Order Modal Component (will be created next) -->
+}
+
+@if (isViewModalVisible && selectedOrder) {
+  <!-- View Order Modal Component (will be created next) -->
+}

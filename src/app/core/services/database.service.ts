@@ -40,11 +40,15 @@ export class DatabaseService {
   async create<T extends DocumentData>(collectionName: string, data: T): Promise<string> {
     try {
       const collectionRef = collection(this.firebaseService.firestore, collectionName);
-      const docRef = await addDoc(collectionRef, {
+      
+      // Remove undefined fields to prevent Firebase errors
+      const cleanData = this.removeUndefinedFields({
         ...data,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp()
       });
+      
+      const docRef = await addDoc(collectionRef, cleanData);
       return docRef.id;
     } catch (error) {
       console.error(`Error creating document in ${collectionName}:`, error);
@@ -65,9 +69,9 @@ export class DatabaseService {
         return {
           ...data,
           id: docSnap.id, // Firestore document ID always wins
-          createdAt: data['createdAt']?.toDate(),
-          updatedAt: data['updatedAt']?.toDate(),
-          lastLogin: data['lastLogin']?.toDate()
+          createdAt: this.convertToDate(data['createdAt']),
+          updatedAt: this.convertToDate(data['updatedAt']),
+          lastLogin: this.convertToDate(data['lastLogin'])
         } as T;
       }
       return null;
@@ -99,10 +103,14 @@ export class DatabaseService {
       }
 
       const docRef = doc(this.firebaseService.firestore, collectionName, id);
-      await updateDoc(docRef, {
+      
+      // Remove undefined fields to prevent Firebase errors
+      const cleanData = this.removeUndefinedFields({
         ...data,
         updatedAt: serverTimestamp()
       });
+      
+      await updateDoc(docRef, cleanData);
     } catch (error) {
       console.error(`Error updating document ${id} in ${collectionName}:`, error);
       throw error;
@@ -153,9 +161,9 @@ export class DatabaseService {
           return {
             ...data,
             id: doc.id, // Firestore document ID always wins
-            createdAt: data['createdAt']?.toDate(),
-            updatedAt: data['updatedAt']?.toDate(),
-            lastLogin: data['lastLogin']?.toDate()
+            createdAt: this.convertToDate(data['createdAt']),
+            updatedAt: this.convertToDate(data['updatedAt']),
+            lastLogin: this.convertToDate(data['lastLogin'])
           } as T;
         });
         observer.next(documents);
@@ -196,9 +204,9 @@ export class DatabaseService {
           return {
             ...data,
             id: doc.id, // Firestore document ID always wins
-            createdAt: data['createdAt']?.toDate(),
-            updatedAt: data['updatedAt']?.toDate(),
-            lastLogin: data['lastLogin']?.toDate()
+            createdAt: this.convertToDate(data['createdAt']),
+            updatedAt: this.convertToDate(data['updatedAt']),
+            lastLogin: this.convertToDate(data['lastLogin'])
           } as T;
         });
         observer.next(documents);
@@ -225,9 +233,9 @@ export class DatabaseService {
           return {
             ...data,
             id: doc.id, // Firestore document ID always wins
-            createdAt: data['createdAt']?.toDate(),
-            updatedAt: data['updatedAt']?.toDate(),
-            lastLogin: data['lastLogin']?.toDate()
+            createdAt: this.convertToDate(data['createdAt']),
+            updatedAt: this.convertToDate(data['updatedAt']),
+            lastLogin: this.convertToDate(data['lastLogin'])
           } as T;
         });
         observer.next(documents);
@@ -255,9 +263,9 @@ export class DatabaseService {
         documents.push({
           ...data,
           id: doc.id, // Firestore document ID always wins
-          createdAt: data['createdAt']?.toDate(),
-          updatedAt: data['updatedAt']?.toDate(),
-          lastLogin: data['lastLogin']?.toDate()
+          createdAt: this.convertToDate(data['createdAt']),
+          updatedAt: this.convertToDate(data['updatedAt']),
+          lastLogin: this.convertToDate(data['lastLogin'])
         } as T);
       });
       
@@ -380,8 +388,8 @@ export class DatabaseService {
         return {
           ...data,
           id: doc.id, // Firestore document ID always wins
-          createdAt: data['createdAt']?.toDate(),
-          updatedAt: data['updatedAt']?.toDate()
+          createdAt: this.convertToDate(data['createdAt']),
+          updatedAt: this.convertToDate(data['updatedAt'])
         } as T;
       });
 
@@ -425,5 +433,63 @@ export class DatabaseService {
    */
   getDocRef(collectionName: string, id: string): DocumentReference {
     return doc(this.firebaseService.firestore, collectionName, id);
+  }
+
+  /**
+   * Remove undefined fields from an object to prevent Firebase errors
+   */
+  private removeUndefinedFields(obj: any): any {
+    if (obj === null || typeof obj !== 'object') {
+      return obj;
+    }
+
+    if (Array.isArray(obj)) {
+      return obj.map(item => this.removeUndefinedFields(item));
+    }
+
+    // Special handling for Firestore timestamps and Date objects
+    if (obj instanceof Date || (obj && typeof obj.toDate === 'function')) {
+      return obj;
+    }
+
+    const cleaned: any = {};
+    for (const key in obj) {
+      if (obj.hasOwnProperty(key) && obj[key] !== undefined) {
+        cleaned[key] = this.removeUndefinedFields(obj[key]);
+      }
+    }
+    return cleaned;
+  }
+
+  /**
+   * Safely convert Firestore timestamp or Date to Date object
+   */
+  private convertToDate(timestamp: any): Date | undefined {
+    if (!timestamp) {
+      return undefined;
+    }
+
+    // If it's already a Date object, return it
+    if (timestamp instanceof Date) {
+      return timestamp;
+    }
+
+    // If it's a Firestore Timestamp, convert it
+    if (timestamp && typeof timestamp.toDate === 'function') {
+      return timestamp.toDate();
+    }
+
+    // If it's a plain object with seconds/nanoseconds (Firestore timestamp format)
+    if (timestamp && typeof timestamp === 'object' && timestamp.seconds) {
+      return new Date(timestamp.seconds * 1000);
+    }
+
+    // If it's a string or number, try to parse it
+    if (typeof timestamp === 'string' || typeof timestamp === 'number') {
+      const date = new Date(timestamp);
+      return isNaN(date.getTime()) ? undefined : date;
+    }
+
+    return undefined;
   }
 } 

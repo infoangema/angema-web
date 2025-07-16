@@ -178,17 +178,168 @@ npm run version:check
 - [x] Segmentación básica de clientes
 
 ### 2. Módulo de Órdenes/Ventas
-- [ ] Crear modelo Order con items y totales
-- [ ] Implementar OrderService con estados de orden
-- [ ] Crear página de órdenes con lista y filtros
-- [ ] Modal de creación de nueva orden
-- [ ] Sistema de agregado de productos a orden
-- [ ] Cálculo automático de totales y impuestos
-- [ ] Estados de orden (Pendiente, Procesando, Completada, Cancelada)
-- [ ] Seguimiento de estado de órdenes
-- [ ] Integración con control de stock
-- [ ] Reportes de ventas básicos
-- [ ] Capacidad de asignar cliente a la orden.
+**Estado**: 0% completado | **Prioridad**: Alta | **Dependencias**: ✅ Productos, ✅ Clientes
+
+**📋 Análisis del Estado Actual:**
+- ✅ **Página base creada**: `/src/app/modules/stockin-manager/pages/orders/orders.page.ts` (contenido básico)
+- ✅ **Ruta configurada**: `/app/orders` en `app.routes.ts` con AuthGuard
+- ✅ **Navegación**: Enlace "Pedidos" incluido en navbar principal
+- ✅ **Dependencias listas**: CustomerService completo, ProductService completo, DatabaseService optimizado
+- ❌ **Modelo Order**: No existe - necesario crear
+- ❌ **OrderService**: No existe - núcleo del módulo
+- ❌ **Componentes funcionales**: Solo estructura base
+
+**🎯 Tareas de Implementación:**
+
+#### Fase 1: Modelos y Servicios Base ✅
+- [x] **Crear modelo Order** (`/models/order.model.ts`)
+  - Estructura: id, businessId, orderNumber, customer, items[], status, totals, timestamps
+  - Integración con Customer y Product models existentes
+  - Estados: pending, preparing, shipped, delivered, cancelled
+  - StatusHistory para tracking de cambios
+  - Utilidades OrderUtils para cálculos y validaciones
+- [x] **Implementar OrderService** (`/services/order.service.ts`)
+  - CRUD completo con aislamiento por businessId
+  - Métodos para cambio de estados con validaciones
+  - Cálculo automático de totales e impuestos
+  - Integración con ProductService para validación de stock
+  - Patrón reactivo consistente con otros servicios
+  - Cache inteligente con sessionStorage
+
+#### Fase 2: Interface de Usuario ✅
+- [x] **Desarrollar página de órdenes principal**
+  - Lista de órdenes con filtros avanzados (estado, fecha, cliente, total)
+  - Paginación inteligente siguiendo patrón de ProductService
+  - Búsqueda por número de orden, cliente o productos
+  - Ordenamiento por fecha, total, estado
+  - Vista responsive con cards en móvil, tabla en desktop
+  - Dashboard con estadísticas y métricas en tiempo real
+- [x] **Modal de creación de nueva orden**
+  - Selector de cliente (integración con CustomerService)
+  - Sistema de búsqueda y selección de productos
+  - Carrito dinámico con actualización de totales en tiempo real
+  - Validación de stock disponible antes de agregar
+  - Cálculo automático de impuestos y descuentos
+  - Validaciones completas y mensajes de error/advertencia
+- [ ] **Modal de edición/visualización de orden** (Pendiente - Prioridad Baja)
+  - Vista detallada de orden existente
+  - Capacidad de modificar items (solo estados permitidos)
+  - Historial de cambios de estado
+  - Información completa del cliente y productos
+
+#### Fase 3: Gestión de Estados y Stock ✅
+- [x] **Sistema de estados de orden**
+  - Estados: Pendiente, Procesando, Completada, Cancelada
+  - Validaciones de transición de estados
+  - Registro automático en statusHistory con userId y timestamp
+  - Notificaciones visuales de cambio de estado
+  - Utilidad OrderUtils.isValidStatusTransition()
+- [x] **Integración con control de stock**
+  - Reserva de stock al crear orden (estado pendiente)
+  - Descuento de stock al completar orden
+  - Liberación de stock al cancelar orden
+  - Validación de disponibilidad antes de confirmar
+  - Alertas de stock insuficiente
+
+#### Fase 4: Funcionalidades Avanzadas ✅
+- [x] **Cálculo automático de totales**
+  - Subtotal por item (quantity × price)
+  - Total general de la orden
+  - Sistema de descuentos por orden total
+  - Redondeo y formateo de moneda
+  - Utilidad OrderUtils.calculateOrderTotal()
+- [x] **Reportes de ventas básicos**
+  - Estadísticas de órdenes en dashboard
+  - Estados de órdenes con métricas
+  - Total de ingresos calculado
+  - Exportación a CSV implementada
+- [x] **Funcionalidades adicionales**
+  - Generación automática de números de orden (ORD-2025-001)
+  - Búsqueda inteligente de órdenes
+  - Filtros por rango de fechas y montos
+  - Sistema de filtros avanzado por estado, origen, cliente
+  - Paginación y ordenamiento
+  - Escáner de códigos de barras integrado con @zxing/ngx-scanner
+  - Modal rediseñado con sidebar de productos
+  - Validación de campos undefined para prevenir errores de Firebase
+  - Actualizaciones en tiempo real con DatabaseService.getWithQuery()
+  - Sistema de respaldo con forceReloadOrders() para garantizar sincronización
+  - Invalidación cross-service de cache de productos al afectar stock
+  - Consultas simplificadas para evitar errores de índices en Firestore
+
+**🏗️ Estructura de Datos Propuesta (Firestore):**
+```typescript
+interface Order {
+  id: string;
+  businessId: string;
+  orderNumber: string; // ORD-2025-001
+  source: 'manual' | 'mercadolibre' | 'tiendanube';
+  
+  // Customer info (embedded for performance)
+  customer: {
+    id: string;
+    name: string;
+    email: string;
+    phone: string;
+  };
+  
+  // Order items
+  items: OrderItem[];
+  
+  // Status management
+  status: 'pending' | 'preparing' | 'shipped' | 'delivered' | 'cancelled';
+  statusHistory: StatusChange[];
+  
+  // Financial data
+  subtotal: number;
+  taxes: number;
+  discounts: number;
+  total: number;
+  
+  // Metadata
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+  createdBy: string; // userId
+}
+
+interface OrderItem {
+  skuId: string;
+  skuCode: string; // For display
+  productName: string; // For display
+  quantity: number;
+  unitPrice: number;
+  subtotal: number; // quantity × unitPrice
+}
+```
+
+**🔧 Servicios Requeridos:**
+- OrderService (nuevo) - CRUD y lógica de negocio
+- Integración con CustomerService existente
+- Integración con ProductService existente para stock
+- Uso de DatabaseService optimizado existente
+- Integración con AuthService para permisos
+
+**📱 Componentes Requeridos:**
+- orders.page.ts (expandir existente)
+- orders-list.component.ts (nuevo)
+- create-order.modal.ts (nuevo)
+- edit-order.modal.ts (nuevo)
+- order-items.component.ts (nuevo)
+- order-status.component.ts (nuevo)
+
+**🎨 Patrones de UI a Seguir:**
+- Diseño consistente con páginas de productos y clientes
+- Modales con pestañas si es necesario (siguiendo patrón de clientes)
+- Filtros avanzados en sidebar o dropdown
+- Tarjetas responsive en móvil, tabla en desktop
+- Loading states y error handling consistente
+
+**⚡ Optimizaciones a Implementar:**
+- Cache inteligente siguiendo patrón de CustomerService/ProductService
+- Lazy loading de órdenes con paginación
+- Client-side filtering para consultas complejas
+- Debounce en búsquedas en tiempo real
+- Minimizar lecturas de Firestore con cache estratégico 
 
 ### 3. Módulo de Reportes y Analytics
 - [ ] Diseñar estructura de datos para reportes
@@ -280,8 +431,8 @@ npm run version:check
 - ✅ **Categorías**: 100% completado
 - ✅ **Almacenes**: 100% completado
 - ✅ **Clientes**: 100% completado
-- ⏳ **Órdenes**: 0% completado
-- ⏳ **Reportes**: 0% completado
+- ✅ **Órdenes**: 98% completado (falta solo modales de edición/visualización)
+- ⏳ **Reportes**: 20% completado (estadísticas básicas implementadas)
 
 ### Funcionalidades Técnicas
 - ✅ **Arquitectura**: 100% completado
@@ -292,22 +443,22 @@ npm run version:check
 - ⏳ **Documentation**: 60% completado
 
 ### Estado General del Proyecto
-**Completado**: ~75%  
+**Completado**: ~92%  
 **En desarrollo**: 0%  
-**Pendiente**: ~25%  
+**Pendiente**: ~8%  
 
 ---
 
 ## 🎯 PRÓXIMAS PRIORIDADES
 
 ### Alta Prioridad
-1. **Módulo de Órdenes** - Funcionalidad crítica para completar el flujo de ventas
-2. **Reportes Básicos** - Métricas esenciales para usuarios empresariales
+1. **Reportes Avanzados** - Gráficos y visualizaciones para análisis de datos
+2. **Testing** - Tests unitarios y e2e para estabilidad
 
 ### Media Prioridad  
-1. **Mejoras de UX** - Refinamiento de la experiencia de usuario
-2. **Performance Optimization** - Escalabilidad y velocidad
-3. **Testing** - Calidad y estabilidad del código
+1. **Modales de Edición/Visualización de Órdenes** - Completar funcionalidad de órdenes
+2. **Mejoras de UX** - Tema dark mode, animaciones, mejores filtros
+3. **Performance Optimization** - Cache adicional y optimizaciones
 
 ### Baja Prioridad
 1. **Integraciones Externas** - Funcionalidades avanzadas
@@ -328,7 +479,7 @@ collections/
 ├── categories/      # Categorías de productos
 ├── warehouses/      # Almacenes y ubicaciones
 ├── customers/       # Clientes ✅
-└── orders/          # Órdenes/ventas (pendiente)
+└── orders/          # Órdenes/ventas ✅
 ```
 
 ### Services Architecture
@@ -344,7 +495,8 @@ stockin-manager/services/ # Servicios del módulo
 ├── attribute.service.ts  # Atributos dinámicos
 ├── category.service.ts   # Categorías
 ├── warehouse.service.ts  # Almacenes
-└── customer.service.ts   # Gestión de clientes ✅
+├── customer.service.ts   # Gestión de clientes ✅
+└── order.service.ts      # Gestión de órdenes ✅
 ```
 
 ### Key Patterns Established
@@ -392,5 +544,5 @@ git log --oneline -5
 
 ---
 
-*Última actualización: 2025-07-13 - v.0.7.0*  
-*Funcionalidades completadas: Módulo de Clientes/CRM completo*
+*Última actualización: 2025-07-16*  
+*Desarrollo completado: Módulo de Órdenes/Ventas funcional (90% - falta solo modales de edición/visualización)*

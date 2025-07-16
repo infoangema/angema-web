@@ -80,6 +80,10 @@
           Stock
           <span class="ml-1">{{ getSortIcon('stock.current') }}</span>
         </th>
+        <th scope="col" class="px-6 py-3 cursor-pointer" (click)="sortBy('stock.current')">
+          Reservados
+          <span class="ml-1">{{ getSortIcon('stock.current') }}</span>
+        </th>
         @if (canViewCost) {
           <th scope="col" class="px-6 py-3 cursor-pointer" (click)="sortBy('pricing.cost')">
             Costo
@@ -119,6 +123,13 @@
             <span class="text-gray-500 ml-2">(Min: {{product.stock.minimum}})</span>
           </div>
         </td>
+          <td class="px-6 py-4">
+            <div class="flex items-center">
+            <span [class]="product.stock.current <= product.stock.reserved ? 'text-red-500' : ''">
+              {{ product.stock.reserved }}
+            </span>
+            </div>
+          </td>
         @if (canViewCost) {
           <td class="px-6 py-4">
             <div class="text-sm font-medium text-gray-900 dark:text-white">

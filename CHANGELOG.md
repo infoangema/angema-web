@@ -5,6 +5,26 @@ Todos los cambios importantes de este proyecto serán documentados en este archi
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 y este proyecto adhiere al [Versionado Semántico](https://semver.org/spec/v2.0.0.html).
 
+## [v.0.9.3] - 2025-07-16
+
+### 🎨 Mejorado
+- **Nueva columna de reservados en product list**.
+
+### 🐛 Agregado
+- **Nueva fet de crear y listar pedidos**: Se crea lista y modal de crear orden.
+
+
+### 🧪 Técnico
+- **Archivos Agregados Modificados**:
+  - `database.service.ts`
+  - `orders-page.ts`
+  - `product.service.ts`
+  - `product-list.component.html`  
+  - `create-order.modal-new.template.html` 
+  - `orer.modelts`  
+  - `order.service.ts`
+  - `orders.page.html`
+
 ## [v.0.8.2] - 2025-07-14
 
 ### 🐛 Corregido
