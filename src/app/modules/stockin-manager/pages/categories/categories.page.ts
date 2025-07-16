@@ -94,6 +94,7 @@ import { PageHeaderIcons } from '../../components/shared/page-header-icons';
             </tbody>
           </table>
         </div>
+      </div>
       </main>
     </div>
 
