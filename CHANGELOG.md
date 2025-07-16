@@ -5,6 +5,59 @@ Todos los cambios importantes de este proyecto serán documentados en este archi
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 y este proyecto adhiere al [Versionado Semántico](https://semver.org/spec/v2.0.0.html).
 
+## [v.0.9.4] - 2025-07-16
+
+### 🔧 Mejorado
+- **Sistema de Versionado Automático**: Implementado sistema completo de versionado automático para branches
+  - Git hooks configurados para detección automática de branches `version/v.X.Y.Z`
+  - Actualización automática de package.json y environments al cambiar de branch
+  - Hook `post-checkout` para actualización automática de versión
+  - Hook `prepare-commit-msg` para agregar `[v.X.Y.Z]` automáticamente a commits
+  - Validación de formato semántico antes de proceder con cambios
+
+- **Nuevos Scripts de Versionado**: Comandos npm mejorados para gestión de versiones
+  - `npm run branch:version [version]` - Crear branch de versión con formato correcto
+  - `npm run version:auto-setup` - Configurar Git hooks automáticos (una sola vez)
+  - `scripts/auto-version-setup.sh` - Script de configuración completa
+  - `scripts/create-version-branch.sh` - Creación de branches con validación
+
+- **CHANGELOG.md Regenerado**: Documentación completa del módulo de órdenes
+  - Documentación detallada de todas las funcionalidades implementadas
+  - Registro completo de errores corregidos y soluciones aplicadas
+  - Documentación técnica de archivos modificados y patrones implementados
+  - Métricas de funcionalidad completada (98% módulo de órdenes)
+
+### 🐛 Corregido
+- **Corrección de CSS en Lista de Órdenes**: Removida clase 'hidden' que impedía mostrar órdenes
+  - Problema: `class="hidden md:block"` ocultaba tabla en todos los tamaños de pantalla
+  - Solución: Simplificado a `class="md:block"` para diseño responsive correcto
+  - Resultado: Tabla visible en desktop, cards en móvil como está diseñado
+
+### 🔧 Técnico
+- **Archivos Principales Agregados**:
+  - `scripts/auto-version-setup.sh`: Configuración completa de Git hooks
+  - `scripts/create-version-branch.sh`: Creación de branches con validación
+  - `.git/hooks/post-checkout`: Hook para actualización automática de versión
+  - `.git/hooks/prepare-commit-msg`: Hook para formato automático de commits
+
+- **Archivos Principales Modificados**:
+  - `package.json`: Agregados comandos `branch:version` y `version:auto-setup`
+  - `CHANGELOG.md`: Regenerado con documentación completa del módulo de órdenes
+  - `orders.page.html`: Corrección de CSS responsive para visibilidad de tabla
+  - `environments/*.ts`: Actualización automática de versión a 0.9.4
+
+### 🎯 Funcionalidad Automática
+- **Detección Automática**: Sistema detecta branches `version/v.X.Y.Z` y actualiza versión
+- **Validación Semántica**: Verifica formato X.Y.Z antes de proceder
+- **Actualización Completa**: package.json, environments y buildDate actualizados automáticamente
+- **Commits Formateados**: Mensajes de commit incluyen `[v.X.Y.Z]` automáticamente
+
+### 🚀 Beneficios
+- **Automatización**: Elimina pasos manuales de actualización de versión
+- **Consistencia**: Formato estándar en todos los commits y versiones
+- **Validación**: Previene errores de formato en versionado
+- **Eficiencia**: Workflow más rápido para releases y desarrollo
+
 ## [v.0.9.3] - 2025-07-16
 
 ### ✨ Agregado

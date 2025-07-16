@@ -1,6 +1,6 @@
 {
   "name": "angema-web",
-  "version": "0.8.1",
+  "version": "0.9.4",
   "engines": {
     "node": ">=18.0.0",
     "npm": ">=8.0.0"
@@ -15,7 +15,9 @@
     "test": "ng test",
     "commit": "scripts/commit-with-version.sh",
     "version:check": "scripts/version-check.sh",
-    "version:update": "node scripts/update-version.js"
+    "version:update": "node scripts/update-version.js",
+    "branch:version": "scripts/create-version-branch.sh",
+    "version:auto-setup": "scripts/auto-version-setup.sh"
   },
   "private": true,
   "dependencies": {

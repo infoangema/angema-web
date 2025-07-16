@@ -1,3 +1,27 @@
+<!-- Estadísticas rápidas -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
+    <div class="text-2xl font-bold text-blue-600 dark:text-blue-400">{{ customers.length }}</div>
+    <div class="text-sm text-gray-600 dark:text-gray-400">Total Clientes</div>
+  </div>
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
+    <div class="text-2xl font-bold text-green-600 dark:text-green-400">
+      {{ getActiveCustomersCount() }}
+    </div>
+    <div class="text-sm text-gray-600 dark:text-gray-400">Activos</div>
+  </div>
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
+    <div class="text-2xl font-bold text-yellow-600 dark:text-yellow-400">
+      {{ getVipCustomersCount() }}
+    </div>
+    <div class="text-sm text-gray-600 dark:text-gray-400">VIP</div>
+  </div>
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
+    <div class="text-2xl font-bold text-purple-600 dark:text-purple-400">{{ filteredCustomers.length }}</div>
+    <div class="text-sm text-gray-600 dark:text-gray-400">Filtrados</div>
+  </div>
+</div>
+
 <!-- Filtros -->
 <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-6">
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
@@ -58,6 +82,8 @@
     </div>
   </div>
 
+
+
   <!-- Botones de acción -->
   <div class="flex justify-between items-center">
     <button
@@ -78,30 +104,6 @@
         Exportar
       </button>
     </div>
-  </div>
-</div>
-
-<!-- Estadísticas rápidas -->
-<div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-  <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
-    <div class="text-2xl font-bold text-blue-600 dark:text-blue-400">{{ customers.length }}</div>
-    <div class="text-sm text-gray-600 dark:text-gray-400">Total Clientes</div>
-  </div>
-  <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
-    <div class="text-2xl font-bold text-green-600 dark:text-green-400">
-      {{ getActiveCustomersCount() }}
-    </div>
-    <div class="text-sm text-gray-600 dark:text-gray-400">Activos</div>
-  </div>
-  <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
-    <div class="text-2xl font-bold text-yellow-600 dark:text-yellow-400">
-      {{ getVipCustomersCount() }}
-    </div>
-    <div class="text-sm text-gray-600 dark:text-gray-400">VIP</div>
-  </div>
-  <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
-    <div class="text-2xl font-bold text-purple-600 dark:text-purple-400">{{ filteredCustomers.length }}</div>
-    <div class="text-sm text-gray-600 dark:text-gray-400">Filtrados</div>
   </div>
 </div>
 
