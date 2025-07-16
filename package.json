@@ -1,6 +1,6 @@
 {
   "name": "angema-web",
-  "version": "0.9.4",
+  "version": "0.9.5",
   "engines": {
     "node": ">=18.0.0",
     "npm": ">=8.0.0"

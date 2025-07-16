@@ -1,6 +1,8 @@
 import { Component, ViewChild, ViewContainerRef, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { StockinNavbarComponent } from '../../components/shared/navbar.component';
+import { PageHeaderComponent, PageHeaderAction } from '../../components/shared/page-header.component';
+import { PageHeaderIcons } from '../../components/shared/page-header-icons';
 import { CustomersListComponent } from './customers-list/customers-list.component';
 import { CreateCustomerModalComponent } from './create-customer/create-customer.modal';
 import { CustomerSegmentsComponent } from './customer-segments/customer-segments.component';
@@ -9,27 +11,17 @@ import { ModalService } from '../../services/modal.service';
 @Component({
   selector: 'stockin-customers-page',
   standalone: true,
-  imports: [CommonModule, StockinNavbarComponent, CustomersListComponent, CreateCustomerModalComponent, CustomerSegmentsComponent],
+  imports: [CommonModule, StockinNavbarComponent, PageHeaderComponent, CustomersListComponent, CreateCustomerModalComponent, CustomerSegmentsComponent],
   template: `
     <stockin-navbar></stockin-navbar>
-
-    <div class="container mx-auto px-4 py-6">
-      <div class="flex justify-between items-center mb-6">
-        <div>
-          <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Clientes</h1>
-          <p class="text-gray-600 dark:text-gray-400">Gestiona tu base de clientes, información de contacto y historial de compras</p>
-        </div>
-
-        <button
-          type="button"
-          (click)="openCreateModal()"
-          class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 focus:bg-blue-700 active:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150">
-          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-          </svg>
-          Nuevo Cliente
-        </button>
-      </div>
+    
+    <div class="min-h-screen bg-gray-100">
+      <main class="container mx-auto px-4 py-6">
+        <stockin-page-header 
+          title="Gestión de Clientes"
+          subtitle="Administra tu base de clientes y gestiona la información de contacto"
+          [actions]="headerActions">
+        </stockin-page-header>
 
       <!-- Pestañas -->
       <div class="mb-6">
@@ -59,6 +51,7 @@ import { ModalService } from '../../services/modal.service';
       } @else if (activeTab === 'segments') {
         <app-customer-segments></app-customer-segments>
       }
+      </main>
     </div>
     <!-- Modal -->
     @if (showModal) {
@@ -77,6 +70,21 @@ export class StockinCustomersPage implements AfterViewInit {
   showModal = false;
   activeTab: 'list' | 'segments' = 'list';
 
+  headerActions: PageHeaderAction[] = [
+    {
+      label: 'Nuevo Cliente',
+      icon: PageHeaderIcons.add,
+      color: 'blue',
+      action: () => this.openCreateModal()
+    },
+    {
+      label: 'Exportar CSV',
+      icon: PageHeaderIcons.export,
+      color: 'green',
+      action: () => this.exportToCSV()
+    }
+  ];
+
   constructor(private modalService: ModalService) {}
 
   ngAfterViewInit() {
@@ -93,5 +101,10 @@ export class StockinCustomersPage implements AfterViewInit {
     if (this.customersList) {
       this.customersList.loadCustomers();
     }
+  }
+
+  exportToCSV() {
+    // TODO: Implement CSV export functionality
+    console.log('Export to CSV functionality to be implemented');
   }
 }

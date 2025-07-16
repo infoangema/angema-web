@@ -1,35 +1,28 @@
 import { Component, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { StockinNavbarComponent } from '../../components/shared/navbar.component';
+import { PageHeaderComponent, PageHeaderAction } from '../../components/shared/page-header.component';
+import { PageHeaderIcons } from '../../components/shared/page-header-icons';
 import { ProductsListComponent } from './products-list/products-list.component';
 import { CreateProductModalComponent } from './create-product/create-product.modal';
 
 @Component({
   selector: 'stockin-products-page',
   standalone: true,
-  imports: [CommonModule, StockinNavbarComponent, ProductsListComponent, CreateProductModalComponent],
+  imports: [CommonModule, StockinNavbarComponent, PageHeaderComponent, ProductsListComponent, CreateProductModalComponent],
   template: `
     <stockin-navbar></stockin-navbar>
     
-    <div class="container mx-auto px-4 py-6">
-      <div class="flex justify-between items-center mb-6">
-        <div>
-          <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Productos</h1>
-          <p class="text-gray-600 dark:text-gray-400">Gestiona tu inventario, agrega nuevos productos y controla el stock</p>
-        </div>
-        
-        <button
-          type="button"
-          (click)="openCreateModal()"
-          class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 focus:bg-blue-700 active:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150">
-          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-          </svg>
-          Nuevo Producto
-        </button>
-      </div>
+    <div class="min-h-screen bg-gray-100">
+      <main class="container mx-auto px-4 py-6">
+        <stockin-page-header 
+          title="Gestión de Productos"
+          subtitle="Gestiona tu inventario, agrega nuevos productos y controla el stock"
+          [actions]="headerActions">
+        </stockin-page-header>
 
-      <app-products-list #productsList></app-products-list>
+        <app-products-list #productsList></app-products-list>
+      </main>
     </div>
 
     <!-- Modal -->
@@ -43,6 +36,15 @@ import { CreateProductModalComponent } from './create-product/create-product.mod
 export class StockinProductsPage {
   @ViewChild('productsList') productsList!: ProductsListComponent;
   showModal = false;
+
+  headerActions: PageHeaderAction[] = [
+    {
+      label: 'Nuevo Producto',
+      icon: PageHeaderIcons.add,
+      color: 'blue',
+      action: () => this.openCreateModal()
+    }
+  ];
 
   openCreateModal() {
     this.showModal = true;

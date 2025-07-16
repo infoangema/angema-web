@@ -1066,6 +1066,113 @@ async executeOperation(): Promise<void> {
 
 ---
 
+## 🎨 Estilo y Diseño UI
+
+### PageHeaderComponent - Estilo Consistente
+**IMPORTANTE**: Todas las páginas principales deben usar el `PageHeaderComponent` para consistencia visual.
+
+```typescript
+// Estructura estándar para páginas principales
+import { PageHeaderComponent, PageHeaderAction } from '../../components/shared/page-header.component';
+import { PageHeaderIcons } from '../../components/shared/page-header-icons';
+
+@Component({
+  imports: [CommonModule, StockinNavbarComponent, PageHeaderComponent],
+  template: `
+    <stockin-navbar></stockin-navbar>
+    
+    <div class="min-h-screen bg-gray-100">
+      <main class="container mx-auto px-4 py-6">
+        <stockin-page-header 
+          title="Gestión de [Módulo]"
+          subtitle="Descripción del módulo y sus funcionalidades"
+          [actions]="headerActions">
+        </stockin-page-header>
+
+        <!-- Contenido principal -->
+        
+      </main>
+    </div>
+  `
+})
+export class PageComponent {
+  headerActions: PageHeaderAction[] = [
+    {
+      label: 'Nuevo [Elemento]',
+      icon: PageHeaderIcons.add,
+      color: 'blue',
+      action: () => this.openCreateModal()
+    }
+  ];
+}
+```
+
+### Patrones de Títulos Estandarizados
+| Página | Título | Subtítulo |
+|--------|--------|-----------|
+| Productos | "Gestión de Productos" | "Gestiona tu inventario, agrega nuevos productos y controla el stock" |
+| Clientes | "Gestión de Clientes" | "Administra tu base de clientes y gestiona la información de contacto" |
+| Órdenes | "Gestión de Órdenes" | "Administra las órdenes de venta de tu negocio" |
+| Categorías | "Gestión de Categorías" | "Organiza y gestiona las categorías de productos" |
+| Almacenes | "Gestión de Almacenes" | "Organiza y gestiona los almacenes de tu negocio" |
+| Atributos | "Gestión de Atributos" | "Gestiona los atributos dinámicos de productos (colores, tamaños, materiales)" |
+
+### Iconos y Colores Estándar
+```typescript
+// Colores por tipo de acción
+const actionColors = {
+  blue: 'Acciones principales (Nuevo, Editar)',
+  green: 'Exportar, Confirmar, Éxito',
+  red: 'Eliminar, Cancelar, Peligro',
+  yellow: 'Advertencias, Pendiente',
+  gray: 'Acciones secundarias',
+  indigo: 'Acciones especiales',
+  purple: 'Acciones premium'
+};
+
+// Iconos más utilizados
+PageHeaderIcons.add       // Agregar nuevo elemento
+PageHeaderIcons.edit      // Editar elemento
+PageHeaderIcons.export    // Exportar datos
+PageHeaderIcons.view      // Ver detalles
+PageHeaderIcons.refresh   // Actualizar datos
+PageHeaderIcons.filter    // Filtrar resultados
+```
+
+### Estructura HTML Base
+```html
+<!-- Patrón obligatorio para todas las páginas -->
+<stockin-navbar></stockin-navbar>
+
+<div class="min-h-screen bg-gray-100">
+  <main class="container mx-auto px-4 py-6">
+    <stockin-page-header [title]="title" [subtitle]="subtitle" [actions]="actions"></stockin-page-header>
+    
+    <!-- Stats Cards (opcional) -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+        <!-- Contenido de stats -->
+      </div>
+    </div>
+    
+    <!-- Filters Section (opcional) -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+      <!-- Filtros -->
+    </div>
+    
+    <!-- Content Section -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+      <!-- Contenido principal -->
+    </div>
+  </main>
+</div>
+```
+
+### Documentación Completa
+Ver `claude/ui-style-guide.md` para guía completa de implementación y mejores prácticas.
+
+---
+
 ## 📋 Checklist para Nuevos Módulos
 
 ### Servicios de Datos
@@ -1076,6 +1183,11 @@ async executeOperation(): Promise<void> {
 - [ ] Incluir validación de negocio en operaciones CRUD
 
 ### Componentes de Página
+- [ ] **Usar PageHeaderComponent** para consistencia visual
+- [ ] **Importar PageHeaderComponent y PageHeaderIcons**
+- [ ] **Implementar headerActions** con iconos y colores estándar
+- [ ] **Seguir estructura HTML base** (`min-h-screen bg-gray-100` + `<main>`)
+- [ ] **Aplicar patrones de títulos** estandarizados
 - [ ] Configurar `ViewContainerRef` para `ModalService`
 - [ ] Implementar `ngAfterViewInit` con `setModalContainer`
 - [ ] Agregar `<div #modalContainer></div>` al template

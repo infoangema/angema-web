@@ -7,30 +7,23 @@ import { NotificationService } from '../../../../core/services/notification.serv
 import { AuthService } from '../../../../core/services/auth.service';
 import { CreateWarehouseModal } from './create-warehouse/create-warehouse.modal';
 import { StockinNavbarComponent } from '../../components/shared/navbar.component';
+import { PageHeaderComponent, PageHeaderAction } from '../../components/shared/page-header.component';
+import { PageHeaderIcons } from '../../components/shared/page-header-icons';
 
 @Component({
   selector: 'stockin-warehouses',
   standalone: true,
-  imports: [CommonModule, FormsModule, CreateWarehouseModal, StockinNavbarComponent],
+  imports: [CommonModule, FormsModule, CreateWarehouseModal, StockinNavbarComponent, PageHeaderComponent],
   template: `
     <stockin-navbar></stockin-navbar>
     
-    <div class="container mx-auto px-4 py-6">
-      <div class="flex justify-between items-center mb-6">
-        <div>
-          <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Almacenes</h1>
-          <p class="text-gray-600 dark:text-gray-400">Gestiona los almacenes y ubicaciones de productos</p>
-        </div>
-        
-        <button
-          (click)="openCreateModal()"
-          class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 focus:bg-blue-700 active:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150">
-          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-          </svg>
-          Nuevo Almacén
-        </button>
-      </div>
+    <div class="min-h-screen bg-gray-100">
+      <main class="container mx-auto px-4 py-6">
+        <stockin-page-header 
+          title="Gestión de Almacenes"
+          subtitle="Organiza y gestiona los almacenes de tu negocio"
+          [actions]="headerActions">
+        </stockin-page-header>
 
       <!-- Filtros -->
       <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 mb-6">
@@ -178,6 +171,7 @@ import { StockinNavbarComponent } from '../../components/shared/navbar.component
           (modalClose)="onModalClose()"
         ></app-create-warehouse-modal>
       }
+      </main>
     </div>
   `,
   styleUrls: []
@@ -190,6 +184,15 @@ export class WarehousesPage implements OnInit {
   showModal = false;
   selectedWarehouse?: Warehouse;
   showSectorDetails: { [key: string]: boolean } = {};
+
+  headerActions: PageHeaderAction[] = [
+    {
+      label: 'Nuevo Almacén',
+      icon: PageHeaderIcons.add,
+      color: 'blue',
+      action: () => this.openCreateModal()
+    }
+  ];
 
   constructor(
     private warehouseService: WarehouseService,
