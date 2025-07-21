@@ -13,7 +13,7 @@ export interface Order {
   items: OrderItem[];
   
   // Status management
-  status: OrderStatus;
+  status: OrderStatus | string;
   statusHistory: StatusChange[];
   
   // Financial data
@@ -24,6 +24,10 @@ export interface Order {
   
   // Additional info
   notes?: string;
+  
+  // Enterprise plan features
+  lastStatusChangedBy?: string; // Last user who changed status (Enterprise)
+  lastStatusChangeAt?: Date; // When status was last changed (Enterprise)
   
   // Metadata
   createdAt: Date;
@@ -61,16 +65,27 @@ export interface OrderCustomer {
 }
 
 export interface StatusChange {
-  status: OrderStatus;
+  status: OrderStatus | string;
   timestamp: Date;
   userId: string;
   userName: string;
   reason?: string; // Optional reason for status change
+  userEmail?: string; // For Enterprise plan user tracking
+  isAutomatic?: boolean; // For Enterprise plan automatic changes via Flutter app
 }
 
 export type OrderSource = 'manual' | 'mercadolibre' | 'tiendanube' | 'website';
 
 export type OrderStatus = 'pending' | 'preparing' | 'shipped' | 'delivered' | 'cancelled';
+
+// Plan-based status definitions
+export type BasicPlanStatus = 'pending' | 'preparing' | 'prepared' | 'dispatched' | 'canceled' | 'returned' | 'refunded';
+export type PremiumPlanStatus = BasicPlanStatus | 'in_delivery' | 'delivered';
+export type EnterprisePlanStatus = PremiumPlanStatus;
+
+export type PlanBasedOrderStatus = BasicPlanStatus | PremiumPlanStatus | EnterprisePlanStatus;
+
+export type BusinessPlan = 'basic' | 'premium' | 'enterprise';
 
 export interface OrderFilters {
   search: string; // Search by order number, customer name, or product
@@ -101,7 +116,7 @@ export interface UpdateOrderRequest {
   items?: UpdateOrderItem[];
   notes?: string;
   discounts?: number;
-  status?: OrderStatus;
+  status?: OrderStatus | string;
   statusReason?: string;
 }
 
@@ -157,6 +172,22 @@ export const ORDER_STATUS_TRANSITIONS: Record<OrderStatus, OrderStatus[]> = {
   cancelled: [] // Final state
 };
 
+// Plan-based status transitions
+export const PLAN_BASED_STATUS_TRANSITIONS: Record<PlanBasedOrderStatus, PlanBasedOrderStatus[]> = {
+  // Basic plan states
+  pending: ['preparing', 'canceled'],
+  preparing: ['prepared', 'canceled'],
+  prepared: ['dispatched', 'canceled'],
+  dispatched: ['returned', 'refunded'],
+  canceled: ['refunded'], // Can be refunded after cancellation
+  returned: ['refunded'],
+  refunded: [], // Final state
+  
+  // Premium plan additional states
+  in_delivery: ['delivered', 'returned', 'canceled'],
+  delivered: ['returned'], // Can be returned after delivery
+};
+
 // Status labels for UI
 export const ORDER_STATUS_LABELS: Record<OrderStatus, string> = {
   pending: 'Pendiente',
@@ -166,6 +197,22 @@ export const ORDER_STATUS_LABELS: Record<OrderStatus, string> = {
   cancelled: 'Cancelado'
 };
 
+// Plan-based status labels
+export const PLAN_BASED_STATUS_LABELS: Record<PlanBasedOrderStatus, string> = {
+  // Basic plan states
+  pending: 'Pendiente',
+  preparing: 'Preparando',
+  prepared: 'Preparado',
+  dispatched: 'Despachado',
+  canceled: 'Cancelado',
+  returned: 'Devuelto',
+  refunded: 'Reembolsado',
+  
+  // Premium plan additional states
+  in_delivery: 'En Viaje',
+  delivered: 'Entregado'
+};
+
 // Status colors for UI
 export const ORDER_STATUS_COLORS: Record<OrderStatus, string> = {
   pending: 'bg-yellow-100 text-yellow-800',
@@ -173,6 +220,22 @@ export const ORDER_STATUS_COLORS: Record<OrderStatus, string> = {
   shipped: 'bg-purple-100 text-purple-800',
   delivered: 'bg-green-100 text-green-800',
   cancelled: 'bg-red-100 text-red-800'
+};
+
+// Plan-based status colors with soft colors as specified
+export const PLAN_BASED_STATUS_COLORS: Record<PlanBasedOrderStatus, string> = {
+  // Basic plan states with soft colors
+  pending: 'bg-red-50 text-red-700 border-red-200', // rojizo suave
+  preparing: 'bg-yellow-50 text-yellow-700 border-yellow-200', // amarillo suave
+  prepared: 'bg-green-50 text-green-700 border-green-200', // verde suave
+  dispatched: 'bg-purple-50 text-purple-700 border-purple-200', // morado suave
+  canceled: 'bg-red-100 text-red-800 border-red-300', // rojo más fuerte
+  returned: 'bg-yellow-100 text-yellow-800 border-yellow-300', // amarillo más fuerte
+  refunded: 'bg-orange-50 text-orange-700 border-orange-200', // naranja suave
+  
+  // Premium plan additional states
+  in_delivery: 'bg-blue-50 text-blue-700 border-blue-200', // azul suave
+  delivered: 'bg-blue-100 text-blue-800 border-blue-300' // azul fuerte
 };
 
 // Source labels for UI
@@ -185,6 +248,34 @@ export const ORDER_SOURCE_LABELS: Record<OrderSource, string> = {
 
 export type SortField = 'orderNumber' | 'customer.name' | 'total' | 'status' | 'createdAt' | 'updatedAt';
 export type SortDirection = 'asc' | 'desc';
+
+// Plan-based status collections for business plans
+export const BUSINESS_PLAN_STATUSES: Record<BusinessPlan, PlanBasedOrderStatus[]> = {
+  basic: ['pending', 'preparing', 'prepared', 'dispatched', 'canceled', 'returned', 'refunded'],
+  premium: ['pending', 'preparing', 'prepared', 'dispatched', 'canceled', 'returned', 'refunded', 'in_delivery', 'delivered'],
+  enterprise: ['pending', 'preparing', 'prepared', 'dispatched', 'canceled', 'returned', 'refunded', 'in_delivery', 'delivered']
+};
+
+// Stock operations for each status transition
+export enum StockOperation {
+  RESERVE = 'RESERVE',                   // Reserve stock (pending)
+  NO_CHANGE = 'NO_CHANGE',               // No stock change
+  CONFIRM = 'CONFIRM',                   // Confirm sale and update stock (dispatched)
+  RELEASE = 'RELEASE',                   // Release reserved stock (canceled)
+  RELEASE_AND_RESTORE = 'RELEASE_AND_RESTORE' // Release reserved and restore current stock (returned)
+}
+
+export const STATUS_STOCK_OPERATIONS: Record<PlanBasedOrderStatus, StockOperation> = {
+  pending: StockOperation.RESERVE,     // Reserve stock
+  preparing: StockOperation.NO_CHANGE, // No change
+  prepared: StockOperation.NO_CHANGE,  // No change
+  dispatched: StockOperation.CONFIRM,  // Confirm sale, update stock
+  canceled: StockOperation.RELEASE,    // Release reserved stock
+  returned: StockOperation.RELEASE_AND_RESTORE, // Release reserved and restore current stock
+  refunded: StockOperation.NO_CHANGE,  // No stock change (already handled)
+  in_delivery: StockOperation.NO_CHANGE, // No change
+  delivered: StockOperation.NO_CHANGE   // No change (already confirmed at dispatch)
+};
 
 // Utility functions
 export class OrderUtils {
@@ -230,5 +321,30 @@ export class OrderUtils {
   
   static getSourceLabel(source: OrderSource): string {
     return ORDER_SOURCE_LABELS[source];
+  }
+  
+  // Plan-based utility methods
+  static getPlanBasedStatusLabel(status: PlanBasedOrderStatus): string {
+    return PLAN_BASED_STATUS_LABELS[status];
+  }
+  
+  static getPlanBasedStatusColor(status: PlanBasedOrderStatus): string {
+    return PLAN_BASED_STATUS_COLORS[status];
+  }
+  
+  static getAvailableStatusesForPlan(plan: BusinessPlan): PlanBasedOrderStatus[] {
+    return BUSINESS_PLAN_STATUSES[plan];
+  }
+  
+  static isValidPlanBasedStatusTransition(currentStatus: PlanBasedOrderStatus, newStatus: PlanBasedOrderStatus): boolean {
+    return PLAN_BASED_STATUS_TRANSITIONS[currentStatus].includes(newStatus);
+  }
+  
+  static getStockOperation(status: PlanBasedOrderStatus): StockOperation {
+    return STATUS_STOCK_OPERATIONS[status];
+  }
+  
+  static isPlanBasedStatus(status: string): status is PlanBasedOrderStatus {
+    return Object.keys(PLAN_BASED_STATUS_LABELS).includes(status);
   }
 }

@@ -358,6 +358,27 @@ interface Customer {
 - **Métodos**: `invalidateByEvent()`, `shouldInvalidate()`
 - **Uso**: Mantener consistencia de cache con cambios de datos
 
+#### **OrderStatesService** (Nuevo)
+- **Propósito**: Manejo de estados desde archivo JSON estático
+- **Zero Firebase reads**: Estados cargan desde `/src/assets/data/order-states.json`
+- **Ubicación**: `src/app/modules/stockin-manager/services/order-states.service.ts`
+- **Beneficios**: Performance optimizada, configuración centralizada
+- **Arquitectura**:
+```
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   Component     │    │   Service       │    │  JSON Config    │
+│   orders.page   │    │ OrderStatesServ │    │ order-states.js │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+         │                       │                       │
+         │ 1. Load config        │                       │
+         │ ────────────────────▶ │ 2. HTTP Request       │
+         │                       │ ────────────────────▶ │
+         │ 3. Get statuses       │ 4. Return JSON        │
+         │ ────────────────────▶ │ ◀─────────────────── │
+         │ 4. Return options     │                       │
+         │ ◀────────────────────│                       │
+```
+
 #### SessionControlService
 - **Propósito**: Control de sesiones concurrentes usando Firebase Realtime Database
 - **Funcionalidades**: Límites por plan, detección de desconexión
@@ -1211,3 +1232,241 @@ Ver `claude/ui-style-guide.md` para guía completa de implementación y mejores 
 - [ ] Mostrar notificaciones apropiadas
 - [ ] Registrar errores en console para debugging
 - [ ] Manejar estados de loading y error
+
+---
+
+## 📘 OrderStatesService - Guía de Uso
+
+### **IMPORTANTE: Patrón para Configuraciones Estáticas**
+
+El `OrderStatesService` representa un **nuevo patrón arquitectónico** para manejar configuraciones estáticas sin consultas Firebase. Este patrón debe usarse para:
+
+- ✅ Estados de órdenes
+- ✅ Configuraciones de aplicación
+- ✅ Catálogos estáticos (países, monedas, etc.)
+- ✅ Plantillas de texto
+- ✅ Opciones de negocio predefinidas
+
+### Uso Básico
+
+```typescript
+// En ngOnInit del componente
+async ngOnInit() {
+  await this.orderStatesService.loadStatesConfig();
+  // Resto de inicialización...
+}
+
+// Obtener estados para un plan
+get orderStatuses() {
+  return this.orderStatesService.getStatusOptions(this.currentBusinessPlan);
+}
+
+// Obtener transiciones válidas
+getAvailableTransitions(currentStatus: string): string[] {
+  return this.orderStatesService.getValidTransitions(currentStatus);
+}
+
+// Obtener etiqueta de estado
+getStatusLabel(status: string): string {
+  return this.orderStatesService.getStatusLabel(status);
+}
+
+// Obtener clases CSS
+getStatusClasses(status: string): string {
+  return this.orderStatesService.getStatusClasses(status);
+}
+```
+
+### Configuración JSON
+
+```json
+// /src/assets/data/order-states.json
+{
+  "version": "1.0.0",
+  "lastUpdated": "2025-07-20",
+  "businessPlans": {
+    "basic": {
+      "name": "Plan Básico",
+      "statuses": ["pending", "preparing", "prepared", "dispatched", "canceled", "returned", "refunded"]
+    },
+    "premium": {
+      "name": "Plan Premium", 
+      "statuses": ["pending", "preparing", "prepared", "dispatched", "canceled", "returned", "refunded", "in_delivery", "delivered"]
+    },
+    "enterprise": {
+      "name": "Plan Enterprise",
+      "statuses": ["pending", "preparing", "prepared", "dispatched", "canceled", "returned", "refunded", "in_delivery", "delivered"]
+    }
+  },
+  "statusLabels": {
+    "pending": "Pendiente",
+    "preparing": "Preparando",
+    "prepared": "Preparado",
+    "dispatched": "Despachado",
+    "canceled": "Cancelado",
+    "returned": "Devuelto",
+    "refunded": "Reembolsado",
+    "in_delivery": "En Viaje",
+    "delivered": "Entregado"
+  },
+  "statusColors": {
+    "pending": "bg-red-50 text-red-700 border-red-200",
+    "preparing": "bg-yellow-50 text-yellow-700 border-yellow-200",
+    "prepared": "bg-green-50 text-green-700 border-green-200",
+    "dispatched": "bg-purple-50 text-purple-700 border-purple-200",
+    "canceled": "bg-red-100 text-red-800 border-red-300",
+    "returned": "bg-yellow-100 text-yellow-800 border-yellow-300",
+    "refunded": "bg-orange-50 text-orange-700 border-orange-200",
+    "in_delivery": "bg-blue-50 text-blue-700 border-blue-200",
+    "delivered": "bg-blue-100 text-blue-800 border-blue-300"
+  },
+  "statusTransitions": {
+    "pending": ["preparing", "canceled"],
+    "preparing": ["prepared", "canceled"],
+    "prepared": ["dispatched", "canceled"],
+    "dispatched": ["in_delivery", "canceled", "returned"],
+    "in_delivery": ["delivered", "canceled", "returned"],
+    "delivered": ["returned", "refunded"],
+    "canceled": [],
+    "returned": ["refunded"],
+    "refunded": []
+  },
+  "stockOperations": {
+    "pending": "RESERVE",
+    "preparing": "NO_CHANGE",
+    "prepared": "NO_CHANGE", 
+    "dispatched": "CONFIRM",
+    "canceled": "RELEASE",
+    "returned": "RELEASE_AND_RESTORE",
+    "refunded": "NO_CHANGE",
+    "in_delivery": "NO_CHANGE",
+    "delivered": "NO_CHANGE"
+  }
+}
+```
+
+### Métodos Principales
+
+#### `loadStatesConfig(): Promise<OrderStatesConfig>`
+Carga la configuración desde el archivo JSON. Debe llamarse una vez al inicializar.
+
+#### `getStatusOptions(plan: BusinessPlan): Array<{value: string, label: string}>`
+Retorna opciones de estado formateadas para selectores.
+
+#### `getBulkActionStatuses(plan: BusinessPlan): Array<{value: string, label: string}>`
+Retorna estados disponibles para acciones masivas.
+
+#### `getValidTransitions(status: string): string[]`
+Retorna transiciones válidas desde un estado dado.
+
+#### `getStatusLabel(status: string): string`
+Retorna la etiqueta traducida de un estado.
+
+#### `getStatusClasses(status: string): string`
+Retorna las clases CSS para styling del estado.
+
+#### `getStockOperation(status: string): StockOperation`
+Retorna la operación de stock requerida para un estado.
+
+#### `isValidTransition(fromStatus: string, toStatus: string): boolean`
+Valida si una transición entre estados es permitida.
+
+### Ventajas del Patrón JSON Estático
+
+1. **Performance Superior**:
+   - Zero consultas Firebase para configuración
+   - Carga única al inicializar aplicación
+   - Cache automático del navegador
+
+2. **Mantenibilidad**:
+   - Configuración centralizada en un archivo
+   - Versionado y control de cambios
+   - Fácil actualización sin redeploy
+
+3. **Escalabilidad**:
+   - Plan-based configuration
+   - Extensible sin cambios de código
+   - Backward compatible
+
+4. **Deploy Simplificado**:
+   - Assets estáticos en build
+   - Sin dependencias de Firebase para configuración
+   - CDN-friendly
+
+### Cuándo Usar Este Patrón
+
+✅ **SÍ usar para**:
+- Configuraciones que no cambian frecuentemente
+- Catálogos estáticos (países, estados, etc.)
+- Estados de flujos de trabajo
+- Plantillas y texto estático
+- Opciones de negocio predefinidas
+
+❌ **NO usar para**:
+- Datos dinámicos de usuarios
+- Información en tiempo real
+- Datos que cambian constantemente
+- Configuraciones específicas por negocio
+- Datos que requieren autenticación
+
+### Ejemplo de Implementación Completa
+
+```typescript
+// orders.page.ts
+export class OrdersPage implements OnInit {
+  currentBusinessPlan: BusinessPlan = 'premium';
+
+  constructor(
+    private orderStatesService: OrderStatesService
+  ) {}
+
+  async ngOnInit() {
+    // Cargar configuración una sola vez
+    await this.orderStatesService.loadStatesConfig();
+    await this.loadOrders();
+  }
+
+  // Getters dinámicos basados en plan
+  get orderStatuses() {
+    return this.orderStatesService.getStatusOptions(this.currentBusinessPlan);
+  }
+
+  get bulkActionStatuses() {
+    return this.orderStatesService.getBulkActionStatuses(this.currentBusinessPlan);
+  }
+
+  // Métodos helpers
+  getStatusLabel(status: string): string {
+    return this.orderStatesService.getStatusLabel(status);
+  }
+
+  getStatusClasses(status: string): string {
+    return this.orderStatesService.getStatusClasses(status);
+  }
+
+  getAvailableTransitions(status: string): string[] {
+    return this.orderStatesService.getValidTransitions(status);
+  }
+
+  canChangeStatus(order: Order, newStatus: string): boolean {
+    if (!this.canManageOrders) return false;
+    return this.orderStatesService.isValidTransition(order.status, newStatus);
+  }
+}
+```
+
+### Lecciones Aprendidas
+
+**LO QUE NO HACER en el futuro**:
+- ❌ Hardcodear configuraciones en constants
+- ❌ Usar Firebase para datos estáticos
+- ❌ Crear servicios de cache duplicados
+- ❌ Ignorar arquitectura existente
+
+**LO QUE SÍ HACER**:
+- ✅ Evaluar si los datos pueden ser estáticos
+- ✅ Usar JSON para configuraciones estáticas
+- ✅ Integrar con servicios existentes
+- ✅ Documentar patrones para el futuro
+
+**Este patrón debe ser la referencia para futuras implementaciones de configuraciones estáticas.** 🎯

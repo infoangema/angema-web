@@ -3,8 +3,8 @@
 
 export const environment = {
   production: false,
-  version: '0.9.5',
-  buildDate: '2025-07-16',
+  version: '0.10.5',
+  buildDate: '2025-07-21',
   buildTime: '12:00:00',
   firebase: {
     apiKey: 'AIzaSyAEDW7vh5YTDV6sEkOfhdYTAEG7kosAM4Q',

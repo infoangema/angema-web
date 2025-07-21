@@ -7,9 +7,11 @@ import { BusinessService } from '../../../core/services/business.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { CacheService } from '../../../core/services/cache.service';
 import { ChangeDetectionService } from '../../../core/services/change-detection.service';
+import { CacheInvalidationService } from '../../../core/services/cache-invalidation.service';
 import { RootBusinessSelectorService } from './root-business-selector.service';
 import { CustomerService } from './customer.service';
 import { ProductService } from './product.service';
+import { OrderStatesService } from './order-states.service';
 import {
   Order,
   OrderItem,
@@ -29,7 +31,9 @@ import {
   SortField,
   SortDirection,
   OrderUtils,
-  ORDER_STATUS_TRANSITIONS
+  ORDER_STATUS_TRANSITIONS,
+  PlanBasedOrderStatus,
+  StockOperation
 } from '../models/order.model';
 import { Customer } from '../models/customer.model';
 import { SKU } from '../models/sku.model';
@@ -44,9 +48,11 @@ export class OrderService {
     private authService: AuthService,
     private cacheService: CacheService,
     private changeDetectionService: ChangeDetectionService,
+    private cacheInvalidationService: CacheInvalidationService,
     private rootBusinessSelector: RootBusinessSelectorService,
     private customerService: CustomerService,
-    private productService: ProductService
+    private productService: ProductService,
+    private orderStatesService: OrderStatesService
   ) {}
 
   /**
@@ -93,6 +99,7 @@ export class OrderService {
   private getAllOrdersForRoot(): Observable<Order[]> {
     return this.databaseService.getAll<Order>('orders', 'createdAt', 'desc')
       .pipe(
+        map((orders: Order[]) => this.processOrderDates(orders)),
         tap((orders: Order[]) => {
           console.log(`OrderService: All orders loaded for root user: ${orders.length} orders`);
         }),
@@ -110,6 +117,7 @@ export class OrderService {
     // Simplificar la consulta para evitar índices compuestos
     return this.databaseService.getWhere<Order>('orders', 'businessId', '==', businessId)
       .pipe(
+        map((orders: Order[]) => this.processOrderDates(orders)),
         map((orders: Order[]) => orders.sort((a: Order, b: Order) => 
           new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         )),
@@ -143,6 +151,7 @@ export class OrderService {
     const startTime = Date.now();
     return from(this.databaseService.getOnce<Order>('orders', where('businessId', '==', businessId)))
       .pipe(
+        map((orders: Order[]) => this.processOrderDates(orders)),
         map((orders: Order[]) => orders.sort((a: Order, b: Order) => 
           new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         )),
@@ -209,8 +218,11 @@ export class OrderService {
       // Simplificar consulta para evitar índices compuestos - solo filtrar por businessId
       const docs = await this.databaseService.getOnce<Order>('orders', where('businessId', '==', businessId));
       
+      // Procesar fechas desde Firestore
+      const processedOrders = this.processOrderDates(docs);
+      
       // Aplicar filtros del lado del cliente
-      let filteredItems = docs;
+      let filteredItems = processedOrders;
 
       // Filtro por estado
       if (filters.status && filters.status !== '') {
@@ -399,9 +411,14 @@ export class OrderService {
       // Reservar stock para items de la orden
       await this.reserveOrderStock(createdOrder);
 
-      // Invalidar cache de órdenes y productos
-      this.invalidateOrderCache(businessId);
-      await this.productService.invalidateProductCache(businessId);
+      // Invalidar cache usando el sistema existente
+      this.changeDetectionService.notifyChange({
+        collection: 'orders',
+        action: 'create',
+        businessId,
+        timestamp: Date.now(),
+        userId: currentUser?.uid
+      });
 
       return { success: true, order: createdOrder };
 
@@ -422,7 +439,7 @@ export class OrderService {
       }
 
       // Validar transición de estado si se está cambiando
-      if (request.status && !OrderUtils.isValidStatusTransition(existingOrder.status, request.status)) {
+      if (request.status && this.isKnownOrderStatus(existingOrder.status) && this.isKnownOrderStatus(request.status) && !OrderUtils.isValidStatusTransition(existingOrder.status, request.status)) {
         return { 
           success: false, 
           errors: [`Invalid status transition from ${existingOrder.status} to ${request.status}`] 
@@ -453,25 +470,38 @@ export class OrderService {
         updateData.total = totals.total;
       }
 
+      // Get current user for tracking purposes
+      const currentUser = this.authService.getCurrentUserProfile();
+
       // Actualizar estado si se proporciona
       if (request.status) {
-        const currentUser = this.authService.getCurrentUserProfile();
         const statusChange: StatusChange = {
           status: request.status,
           timestamp: new Date(),
           userId: currentUser?.uid || '',
           userName: currentUser?.displayName || 'Unknown',
-          reason: request.statusReason || ''
+          reason: request.statusReason || '',
+          userEmail: currentUser?.email || '', // Enterprise tracking
+          isAutomatic: false // Manual change from web app
         };
 
         updateData.status = request.status;
         updateData.statusHistory = [...existingOrder.statusHistory, statusChange];
+        
+        // Enterprise plan features - track last status change
+        updateData.lastStatusChangedBy = currentUser?.displayName || 'Unknown';
+        updateData.lastStatusChangeAt = new Date();
 
         // Manejar cambios de stock según el estado
-        await this.handleStockOnStatusChange(existingOrder, request.status);
+        if (this.isKnownOrderStatus(request.status)) {
+          await this.handleStockOnStatusChange(existingOrder, request.status as OrderStatus);
+        } else if (OrderUtils.isPlanBasedStatus(request.status)) {
+          await this.handlePlanBasedStockOnStatusChange(existingOrder, request.status as PlanBasedOrderStatus);
+        }
         
         // Invalidar cache de productos si el estado afecta el stock
-        if (request.status === 'delivered' || request.status === 'cancelled') {
+        if (request.status === 'delivered' || request.status === 'cancelled' || 
+            request.status === 'dispatched' || request.status === 'canceled' || request.status === 'returned') {
           await this.productService.invalidateProductCache(existingOrder.businessId);
         }
       }
@@ -495,8 +525,14 @@ export class OrderService {
       // Obtener la orden actualizada
       const updatedOrder = await this.getOrderById(orderId);
 
-      // Invalidar cache de órdenes
-      this.invalidateOrderCache(existingOrder.businessId);
+      // Invalidar cache usando el sistema existente
+      this.changeDetectionService.notifyChange({
+        collection: 'orders',
+        action: 'update',
+        businessId: existingOrder.businessId,
+        timestamp: Date.now(),
+        userId: currentUser?.uid
+      });
 
       return { success: true, order: updatedOrder || undefined };
 
@@ -529,9 +565,10 @@ export class OrderService {
   async getOrderStats(businessId: string): Promise<OrderStats> {
     try {
       const orders = await this.databaseService.getOnce<Order>('orders', where('businessId', '==', businessId));
+      const processedOrders = this.processOrderDates(orders);
 
       const stats: OrderStats = {
-        totalOrders: orders.length,
+        totalOrders: processedOrders.length,
         pendingOrders: 0,
         preparingOrders: 0,
         shippedOrders: 0,
@@ -548,8 +585,11 @@ export class OrderService {
         }
       };
 
-      orders.forEach(order => {
-        stats.ordersByStatus[order.status]++;
+      processedOrders.forEach(order => {
+        // Solo contar si es un estado conocido
+        if (this.isKnownOrderStatus(order.status)) {
+          stats.ordersByStatus[order.status as OrderStatus]++;
+        }
         
         switch (order.status) {
           case 'pending':
@@ -809,7 +849,8 @@ export class OrderService {
         if (selection.showAll) {
           // Usuario root quiere ver todas las órdenes
           const orders = await this.databaseService.getOnce<Order>('orders');
-          const sortedOrders = orders.sort((a: Order, b: Order) => 
+          const processedOrders = this.processOrderDates(orders);
+          const sortedOrders = processedOrders.sort((a: Order, b: Order) => 
             new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
           );
           console.log(`OrderService: Force reloaded ${sortedOrders.length} orders for root (all businesses)`);
@@ -820,7 +861,8 @@ export class OrderService {
           const orders = await this.databaseService.getOnce<Order>('orders', 
             where('businessId', '==', selection.businessId)
           );
-          const sortedOrders = orders.sort((a: Order, b: Order) => 
+          const processedOrders = this.processOrderDates(orders);
+          const sortedOrders = processedOrders.sort((a: Order, b: Order) => 
             new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
           );
           console.log(`OrderService: Force reloaded ${sortedOrders.length} orders for ${selection.businessId}`);
@@ -841,7 +883,8 @@ export class OrderService {
         const orders = await this.databaseService.getOnce<Order>('orders', 
           where('businessId', '==', businessId)
         );
-        const sortedOrders = orders.sort((a: Order, b: Order) => 
+        const processedOrders = this.processOrderDates(orders);
+        const sortedOrders = processedOrders.sort((a: Order, b: Order) => 
           new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         );
         
@@ -861,5 +904,146 @@ export class OrderService {
     const cacheKey = `orders_${businessId}`;
     this.cacheService.remove(cacheKey, 'sessionStorage');
     this.changeDetectionService.invalidateCollection('orders', businessId);
+  }
+
+  /**
+   * Procesar fechas de órdenes desde Firestore
+   */
+  private processOrderDates(orders: Order[]): Order[] {
+    return orders.map(order => ({
+      ...order,
+      createdAt: this.convertToDate(order.createdAt) || new Date(),
+      updatedAt: this.convertToDate(order.updatedAt) || new Date(),
+      statusHistory: order.statusHistory?.map(status => ({
+        ...status,
+        timestamp: this.convertToDate(status.timestamp) || new Date()
+      })) || []
+    }));
+  }
+
+  /**
+   * Verificar si un estado es conocido del modelo OrderStatus
+   */
+  private isKnownOrderStatus(status: string): status is OrderStatus {
+    return ['pending', 'preparing', 'shipped', 'delivered', 'cancelled'].includes(status);
+  }
+
+  /**
+   * Convertir timestamp de Firestore a Date
+   */
+  private convertToDate(timestamp: any): Date | undefined {
+    if (!timestamp) {
+      return undefined;
+    }
+
+    // Si ya es una instancia Date
+    if (timestamp instanceof Date) {
+      return timestamp;
+    }
+
+    // Si es un Firestore Timestamp
+    if (timestamp && typeof timestamp.toDate === 'function') {
+      return timestamp.toDate();
+    }
+
+    // Si es un objeto plano con seconds (formato de Firestore)
+    if (timestamp && typeof timestamp === 'object' && timestamp.seconds) {
+      return new Date(timestamp.seconds * 1000);
+    }
+
+    // Si es string o number
+    if (typeof timestamp === 'string' || typeof timestamp === 'number') {
+      const date = new Date(timestamp);
+      return isNaN(date.getTime()) ? undefined : date;
+    }
+
+    return undefined;
+  }
+
+  /**
+   * Manejar cambios de stock según estado de orden plan-based
+   */
+  private async handlePlanBasedStockOnStatusChange(order: Order, newStatus: PlanBasedOrderStatus): Promise<void> {
+    const stockOperation = this.orderStatesService.getStockOperation(newStatus);
+    
+    switch (stockOperation) {
+      case StockOperation.RESERVE:
+        // Reservar stock (estado pending)
+        await this.reserveOrderStock(order);
+        break;
+        
+      case StockOperation.CONFIRM:
+        // Confirmar venta: descontar del stock current y reserved (estado dispatched)
+        for (const item of order.items) {
+          try {
+            const product = await this.databaseService.getById<SKU>('products', item.skuId);
+            if (product) {
+              const updatedStock = {
+                ...product.stock,
+                current: product.stock.current - item.quantity,
+                reserved: Math.max(0, product.stock.reserved - item.quantity)
+              };
+
+              await this.databaseService.update('products', item.skuId, {
+                stock: updatedStock,
+                updatedAt: new Date()
+              });
+            }
+          } catch (error) {
+            console.error(`Error confirming stock for ${item.skuId}:`, error);
+          }
+        }
+        break;
+        
+      case StockOperation.RELEASE:
+        // Liberar stock reservado (estados canceled)
+        for (const item of order.items) {
+          try {
+            const product = await this.databaseService.getById<SKU>('products', item.skuId);
+            if (product) {
+              const updatedStock = {
+                ...product.stock,
+                reserved: Math.max(0, product.stock.reserved - item.quantity)
+              };
+
+              await this.databaseService.update('products', item.skuId, {
+                stock: updatedStock,
+                updatedAt: new Date()
+              });
+            }
+          } catch (error) {
+            console.error(`Error releasing stock for ${item.skuId}:`, error);
+          }
+        }
+        break;
+        
+      case StockOperation.RELEASE_AND_RESTORE:
+        // Liberar stock reservado y restaurar current (estado returned)
+        for (const item of order.items) {
+          try {
+            const product = await this.databaseService.getById<SKU>('products', item.skuId);
+            if (product) {
+              const updatedStock = {
+                ...product.stock,
+                current: product.stock.current + item.quantity,
+                reserved: Math.max(0, product.stock.reserved - item.quantity)
+              };
+
+              await this.databaseService.update('products', item.skuId, {
+                stock: updatedStock,
+                updatedAt: new Date()
+              });
+            }
+          } catch (error) {
+            console.error(`Error releasing and restoring stock for ${item.skuId}:`, error);
+          }
+        }
+        break;
+        
+      case StockOperation.NO_CHANGE:
+      default:
+        // No cambios en el stock
+        break;
+    }
   }
 }
