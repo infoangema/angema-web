@@ -51,13 +51,13 @@ export class LoginComponent {
       
       // Check if user is root and needs business selection
       if (this.authService.isRoot()) {
-        console.log('Login: Usuario root detectado, navegando a dashboard...');
-        // Para simplificar, navegar directamente al dashboard
-        const navigationResult = await this.router.navigate(['/app/dashboard']);
+        console.log('Login: Usuario root detectado, navegando a orders...');
+        // Para simplificar, navegar directamente a orders
+        const navigationResult = await this.router.navigate(['/app/orders']);
         console.log('Login: Resultado de navegación:', navigationResult);
       } else {
-        console.log('Login: Usuario regular, navegando a dashboard...');
-        const navigationResult = await this.router.navigate(['/app/dashboard']);
+        console.log('Login: Usuario regular, navegando a orders...');
+        const navigationResult = await this.router.navigate(['/app/orders']);
         console.log('Login: Resultado de navegación:', navigationResult);
       }
     } catch (error: any) {
@@ -80,20 +80,20 @@ export class LoginComponent {
         // Show business selector modal
         this.showBusinessSelector = true;
       } else {
-        // Navigate directly to dashboard
-        await this.router.navigate(['/app/dashboard']);
+        // Navigate directly to orders
+        await this.router.navigate(['/app/orders']);
       }
     } catch (error) {
       console.error('Error handling root user login:', error);
-      // Navigate to dashboard anyway
-      await this.router.navigate(['/app/dashboard']);
+      // Navigate to orders anyway
+      await this.router.navigate(['/app/orders']);
     }
   }
 
   onBusinessSelectorClosed(): void {
     this.showBusinessSelector = false;
-    // Navigate to dashboard after business selection
-    this.router.navigate(['/app/dashboard']);
+    // Navigate to orders after business selection
+    this.router.navigate(['/app/orders']);
   }
 
   async sendPasswordReset() {

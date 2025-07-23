@@ -129,7 +129,7 @@ export class CompleteProfileComponent {
       });
 
       this.notificationService.success('Perfil completado exitosamente');
-      this.router.navigate(['/app/dashboard']);
+      this.router.navigate(['/app/orders']);
     } catch (error: any) {
       console.error('Error completing profile:', error);
       this.notificationService.error('Error al completar el perfil: ' + (error.message || 'Error desconocido'));

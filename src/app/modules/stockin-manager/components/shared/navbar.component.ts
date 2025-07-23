@@ -28,57 +28,105 @@ import { environment } from '../../../../../environments/environment';
         </div>
       </div>
       <nav class="flex items-center gap-6">
-        <a
-          routerLink="/app/dashboard"
-          routerLinkActive="text-blue-600 dark:text-blue-400 font-semibold"
-          [routerLinkActiveOptions]="{exact: true}"
-          class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 text-lg font-medium leading-normal transition-colors">
-          Dashboard
-        </a>
-        <a
-          routerLink="/app/products"
-          routerLinkActive="text-blue-600 dark:text-blue-400 font-semibold"
-          class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 text-lg font-medium leading-normal transition-colors">
-          Productos
-        </a>
-        <a
-          routerLink="/app/categories"
-          routerLinkActive="text-blue-600 dark:text-blue-400 font-semibold"
-          class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 text-lg font-medium leading-normal transition-colors">
-          Categorías
-        </a>
-        <a
-          routerLink="/app/warehouses"
-          routerLinkActive="text-blue-600 dark:text-blue-400 font-semibold"
-          class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 text-lg font-medium leading-normal transition-colors">
-          Almacenes
-        </a>
-        @if (canManageAttributes()) {
-          <a
-            routerLink="/app/attributes"
-            routerLinkActive="text-blue-600 dark:text-blue-400 font-semibold"
-            class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 text-lg font-medium leading-normal transition-colors">
-            Atributos
-          </a>
-        }
+        <!-- Dashboard removido del menú (oculto) -->
+        
+        <!-- 1. Pedidos - Nuevo primer elemento -->
         <a
           routerLink="/app/orders"
           routerLinkActive="text-blue-600 dark:text-blue-400 font-semibold"
           class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 text-lg font-medium leading-normal transition-colors">
           Pedidos
         </a>
+        
+        <!-- 2. Productos -->
+        <a
+          routerLink="/app/products"
+          routerLinkActive="text-blue-600 dark:text-blue-400 font-semibold"
+          class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 text-lg font-medium leading-normal transition-colors">
+          Productos
+        </a>
+        
+        <!-- 3. Clientes -->
         <a
           routerLink="/app/customers"
           routerLinkActive="text-blue-600 dark:text-blue-400 font-semibold"
           class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 text-lg font-medium leading-normal transition-colors">
           Clientes
         </a>
+        
+        <!-- 4. Reportes -->
         <a
           routerLink="/app/reports"
           routerLinkActive="text-blue-600 dark:text-blue-400 font-semibold"
           class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 text-lg font-medium leading-normal transition-colors">
           Reportes
         </a>
+        
+        <!-- 5. Configuraciones Dropdown (solo admin/root) -->
+        @if (canManageAttributes()) {
+          <div class="relative">
+            <button
+              (click)="toggleConfigMenu()"
+              class="flex items-center gap-1 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 text-lg font-medium leading-normal transition-colors"
+              [class.text-blue-600]="showConfigMenu"
+              [class.dark:text-blue-400]="showConfigMenu"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+              </svg>
+              Configuraciones
+              <svg class="w-4 h-4 transition-transform duration-200" [class.rotate-180]="showConfigMenu" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </button>
+            
+            <!-- Dropdown Menu -->
+            @if (showConfigMenu) {
+              <div class="absolute left-0 mt-2 w-48 bg-white dark:bg-dark-800 rounded-md shadow-lg py-1 z-50 border border-gray-200 dark:border-dark-600">
+                <a
+                  routerLink="/app/categories"
+                  routerLinkActive="bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400"
+                  (click)="showConfigMenu = false"
+                  class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-dark-700 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                >
+                  <div class="flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+                    </svg>
+                    Categorías
+                  </div>
+                </a>
+                <a
+                  routerLink="/app/warehouses"
+                  routerLinkActive="bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400"
+                  (click)="showConfigMenu = false"
+                  class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-dark-700 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                >
+                  <div class="flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-4m-5 0H9m0 0H5m0 0H3"></path>
+                    </svg>
+                    Almacenes
+                  </div>
+                </a>
+                <a
+                  routerLink="/app/attributes"
+                  routerLinkActive="bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400"
+                  (click)="showConfigMenu = false"
+                  class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-dark-700 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                >
+                  <div class="flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM21 5a2 2 0 00-2-2h-4a2 2 0 00-2 2v12a4 4 0 004 4h4a2 2 0 002-2V5z"></path>
+                    </svg>
+                    Atributos
+                  </div>
+                </a>
+              </div>
+            }
+          </div>
+        }
         @if (isRoot()) {
           <a
             routerLink="/app/root-admin"
@@ -189,6 +237,7 @@ import { environment } from '../../../../../environments/environment';
 })
 export class StockinNavbarComponent {
   showUserMenu = false;
+  showConfigMenu = false; // Nueva propiedad para dropdown Configuraciones
   isDarkMode$;
   version = environment.version;
 
@@ -205,6 +254,14 @@ export class StockinNavbarComponent {
 
   toggleUserMenu() {
     this.showUserMenu = !this.showUserMenu;
+    // Cerrar dropdown de configuraciones si está abierto
+    this.showConfigMenu = false;
+  }
+
+  toggleConfigMenu() {
+    this.showConfigMenu = !this.showConfigMenu;
+    // Cerrar dropdown de usuario si está abierto
+    this.showUserMenu = false;
   }
 
   getUserDisplayName(): string {

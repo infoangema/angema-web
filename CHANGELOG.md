@@ -5,7 +5,22 @@ Todos los cambios importantes de este proyecto serán documentados en este archi
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 y este proyecto adhiere al [Versionado Semántico](https://semver.org/spec/v2.0.0.html).
 
-## [v.0.10.8] - 2025-07-23
+## [v.0.11.1] - 2025-07-23
+
+### 🔄 Cambiado
+- **Reordenación del Menú de Navegación**: Reorganización completa del menú principal para mejorar UX
+  - **Dashboard oculto**: Removido del menú principal (sigue accesible vía URL directa)
+  - **Órdenes como página principal**: Ahora es el primer elemento y página de inicio por defecto
+  - **Nuevo orden**: Órdenes → Productos → Clientes → Reportes → Configuraciones → Root Admin/Firebase Monitor
+  - **Dropdown Configuraciones**: Nuevo submenu que agrupa Categorías, Almacenes y Atributos (solo admin/root)
+  - **Redirección por defecto**: `/app` ahora redirige a `/app/orders` en lugar de `/app/dashboard`
+
+### 🎨 Mejorado
+- **Experiencia de Usuario**: Acceso más rápido a funcionalidades principales
+- **Organización Lógica**: Configuraciones agrupadas en submenu específico
+- **Navegación Optimizada**: Flujo más natural centrado en gestión de órdenes
+
+## [v.0.11.0] - 2025-07-23
 
 ### 🐛 Corregido
 - **Cálculo de Ingresos Totales**: Corregido para incluir todas las órdenes válidas

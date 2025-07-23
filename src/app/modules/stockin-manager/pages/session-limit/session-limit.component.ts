@@ -204,8 +204,8 @@ export class SessionLimitComponent implements OnInit {
     try {
       const result = await this.sessionControlService.registerSession();
       if (result.success) {
-        // Sesión registrada exitosamente, redirigir al dashboard
-        this.router.navigate(['/app/dashboard']);
+        // Sesión registrada exitosamente, redirigir a orders
+        this.router.navigate(['/app/orders']);
       } else {
         // Actualizar mensaje de error
         this.errorMessage = result.message;

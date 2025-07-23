@@ -18,6 +18,11 @@ export const routes: Routes = [
     path: 'app',
     children: [
       {
+        path: '',
+        redirectTo: 'orders',
+        pathMatch: 'full'
+      },
+      {
         path: 'login',
         loadComponent: () => import('./modules/stockin-manager/pages/login/login.component').then(m => m.LoginComponent)
       },

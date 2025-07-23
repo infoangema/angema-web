@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  version: '0.11.0',
+  version: '0.11.1',
   buildDate: '2025-07-23',
   buildTime: '12:00:00',
   firebase: {
