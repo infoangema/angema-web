@@ -9,85 +9,182 @@
       [actions]="headerActions">
     </stockin-page-header>
 
-    <!-- Stats Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
-      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-        <div class="flex items-center">
-          <div class="flex-shrink-0">
-            <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-              <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-              </svg>
+    <!-- Stats Cards Carousel -->
+    <div class="mb-6">
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center space-x-3">
+          <h3 class="text-lg font-medium text-gray-900">Estadísticas por Estado</h3>
+          <div class="flex items-center space-x-1">
+            @for (indicator of carouselIndicators; track $index; let i = $index) {
+              <button
+                (click)="goToCarouselPage(i)"
+                [class]="i === currentCarouselPage ? 'bg-blue-600' : 'bg-gray-300'"
+                class="w-2 h-2 rounded-full transition-colors duration-300 hover:bg-blue-400"
+                [title]="'Ir a página ' + (i + 1)"
+              ></button>
+            }
+          </div>
+        </div>
+        <div class="flex items-center space-x-2">
+          <button
+            (click)="navigateCarouselLeft()"
+            [disabled]="!canNavigateLeft"
+            class="group p-2 rounded-lg border border-gray-300 disabled:bg-gray-50 disabled:text-gray-400 hover:bg-blue-50 hover:border-blue-300 transition-all duration-300 disabled:cursor-not-allowed"
+            title="Anterior"
+          >
+            <svg class="w-5 h-5 group-hover:text-blue-600 transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+            </svg>
+          </button>
+          <button
+            (click)="navigateCarouselRight()"
+            [disabled]="!canNavigateRight"
+            class="group p-2 rounded-lg border border-gray-300 disabled:bg-gray-50 disabled:text-gray-400 hover:bg-blue-50 hover:border-blue-300 transition-all duration-300 disabled:cursor-not-allowed"
+            title="Siguiente"
+          >
+            <svg class="w-5 h-5 group-hover:text-blue-600 transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Cards Container with Slide Animation -->
+      <div class="relative overflow-hidden rounded-xl">
+        <div 
+          class="flex transition-transform duration-700 ease-in-out"
+          [style.transform]="'translateX(-' + (currentCarouselIndex * (100 / cardsPerView)) + '%)'"
+          [style.width]="statusCardsData.length * (100 / cardsPerView) + '%'"
+        >
+          @for (card of statusCardsData; track card.status; let i = $index) {
+            <div 
+              class="flex-shrink-0 px-2"
+              [style.width]="(100 / statusCardsData.length) + '%'"
+            >
+              <div 
+                (click)="filterByStatus(card.status)"
+                [class]="card.isTotal ? 
+                  (isStatusFiltered(card.status) ? 
+                    'bg-gradient-to-br from-blue-100 to-indigo-100 border-blue-400 shadow-lg scale-105 ring-2 ring-blue-300 ring-opacity-50' : 
+                    'bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200 hover:shadow-lg hover:scale-105 hover:border-blue-300 hover:from-blue-100 hover:to-indigo-100'
+                  ) :
+                  (isStatusFiltered(card.status) ? 
+                    'bg-blue-50 border-blue-300 shadow-md scale-105 ' + card.color.split(' ')[0] + ' ' + card.color.split(' ')[1] : 
+                    'bg-white border-gray-200 hover:shadow-lg hover:scale-105 hover:border-gray-300'
+                  )"
+                class="rounded-lg shadow-sm border p-4 transition-all duration-300 cursor-pointer group relative overflow-hidden"
+              >
+                <!-- Active filter indicator -->
+                @if (isStatusFiltered(card.status)) {
+                  @if (card.isTotal) {
+                    <!-- Crown icon for total card when active -->
+                    <div class="absolute top-2 right-2 w-5 h-5">
+                      <svg class="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M5,16L3,5L8,10L12,4L16,10L21,5L19,16H5M19,19A1,1 0 0,1 18,20H6A1,1 0 0,1 5,19V18H19V19Z"></path>
+                      </svg>
+                    </div>
+                  } @else {
+                    <!-- Regular indicator for status cards -->
+                    <div class="absolute top-0 right-0 w-4 h-4 bg-blue-600 transform rotate-45 translate-x-2 -translate-y-2"></div>
+                    <div class="absolute top-1.5 right-1.5 w-2 h-2 bg-white rounded-full"></div>
+                  }
+                }
+                
+                <div class="flex items-center relative z-10">
+                  <div class="flex-shrink-0">
+                    <div [class]="'w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110 ' + 
+                         (isStatusFiltered(card.status) ? 'shadow-lg scale-110 ' : 'group-hover:shadow-md ') +
+                         card.color.split(' ')[0] + ' ' + card.color.split(' ')[1]">
+                      <svg class="w-6 h-6 transition-transform duration-300 group-hover:scale-110" [class]="card.color.split(' ')[1]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" [attr.d]="card.icon"></path>
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="ml-3 flex-1">
+                    <p [class]="card.isTotal ? 
+                         (isStatusFiltered(card.status) ? 'text-blue-800 font-bold' : 'text-blue-700 font-semibold group-hover:text-blue-800') :
+                         (isStatusFiltered(card.status) ? 'text-blue-700 font-semibold' : 'text-gray-500 group-hover:text-gray-700')"
+                       class="text-sm font-medium truncate transition-colors duration-300">
+                      {{ card.label }}
+                    </p>
+                    <p [class]="card.isTotal ? 
+                         (isStatusFiltered(card.status) ? 'text-blue-900' : 'text-blue-800 group-hover:text-blue-900') :
+                         (isStatusFiltered(card.status) ? 'text-blue-800' : 'text-gray-900 group-hover:text-blue-600')"
+                       class="text-xl font-bold transition-colors duration-300">
+                      {{ card.count }}
+                    </p>
+                  </div>
+                  
+                  <!-- Click to filter hint -->
+                  <div class="ml-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    @if (isStatusFiltered(card.status)) {
+                      <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                      </svg>
+                    } @else {
+                      <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.707A1 1 0 013 7V4z"></path>
+                      </svg>
+                    }
+                  </div>
+                </div>
+                
+                <!-- Animated underline -->
+                <div [class]="isStatusFiltered(card.status) ? 
+                     'opacity-100 bg-gradient-to-r from-blue-300 via-blue-500 to-blue-300' : 
+                     'opacity-0 group-hover:opacity-100 bg-gradient-to-r from-transparent via-gray-200 to-transparent'"
+                     class="mt-3 h-1 transition-all duration-300">
+                </div>
+                
+                <!-- Tooltip -->
+                <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-1 bg-gray-900 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap z-20">
+                  @if (card.isTotal) {
+                    @if (isStatusFiltered(card.status)) {
+                      Mostrando todas las órdenes
+                    } @else {
+                      Click para limpiar todos los filtros
+                    }
+                  } @else {
+                    @if (isStatusFiltered(card.status)) {
+                      Click para limpiar filtro
+                    } @else {
+                      Click para filtrar por {{ card.label.toLowerCase() }}
+                    }
+                  }
+                  <div class="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
+                </div>
+              </div>
             </div>
-          </div>
-          <div class="ml-3">
-            <p class="text-sm font-medium text-gray-500">Total</p>
-            <p class="text-lg font-semibold text-gray-900">{{ orderStats.totalOrders }}</p>
-          </div>
+          }
         </div>
       </div>
 
-      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-        <div class="flex items-center">
-          <div class="flex-shrink-0">
-            <div class="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
-              <svg class="w-8 h-8 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-              </svg>
+      <!-- Total Revenue Card with Enhanced Animation -->
+      <div class="mt-6">
+        <div class="bg-gradient-to-r from-emerald-50 via-green-50 to-emerald-50 rounded-xl shadow-sm border border-emerald-200 p-6 hover:shadow-lg hover:scale-[1.02] transition-all duration-500 cursor-pointer group overflow-hidden relative">
+          <!-- Animated background -->
+          <div class="absolute inset-0 bg-gradient-to-r from-emerald-100/20 via-transparent to-green-100/20 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+          
+          <div class="relative flex items-center">
+            <div class="flex-shrink-0">
+              <div class="w-14 h-14 bg-gradient-to-br from-emerald-100 to-green-100 rounded-xl flex items-center justify-center transition-all duration-500 group-hover:scale-110 group-hover:rotate-3 shadow-md group-hover:shadow-lg">
+                <svg class="w-8 h-8 text-emerald-600 transition-all duration-500 group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                </svg>
+              </div>
+            </div>
+            <div class="ml-4 flex-1">
+              <p class="text-sm font-medium text-gray-600 group-hover:text-emerald-700 transition-colors duration-300">Ingresos Totales</p>
+              <p class="text-2xl font-bold text-emerald-700 group-hover:text-emerald-800 transition-colors duration-300">{{ orderStats.totalRevenue | argentineCurrency:true }}</p>
+            </div>
+            <div class="ml-6 text-right">
+              <p class="text-xs text-gray-500 group-hover:text-gray-600 transition-colors duration-300">Promedio por orden</p>
+              <p class="text-lg font-semibold text-gray-700 group-hover:text-emerald-600 transition-colors duration-300">{{ orderStats.averageOrderValue | argentineCurrency:false }}</p>
             </div>
           </div>
-          <div class="ml-3">
-            <p class="text-sm font-medium text-gray-500">Pendientes</p>
-            <p class="text-lg font-semibold text-gray-900">{{ orderStats.pendingOrders }}</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-        <div class="flex items-center">
-          <div class="flex-shrink-0">
-            <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-              <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-              </svg>
-            </div>
-          </div>
-          <div class="ml-3">
-            <p class="text-sm font-medium text-gray-500">Preparando</p>
-            <p class="text-lg font-semibold text-gray-900">{{ orderStats.preparingOrders }}</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-        <div class="flex items-center">
-          <div class="flex-shrink-0">
-            <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
-              <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-              </svg>
-            </div>
-          </div>
-          <div class="ml-3">
-            <p class="text-sm font-medium text-gray-500">Entregadas</p>
-            <p class="text-lg font-semibold text-gray-900">{{ orderStats.deliveredOrders }}</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-        <div class="flex items-center">
-          <div class="flex-shrink-0">
-            <div class="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
-              <svg class="w-8 h-8 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
-              </svg>
-            </div>
-          </div>
-          <div class="ml-3">
-            <p class="text-sm font-medium text-gray-500">Ingresos</p>
-            <p class="text-lg font-semibold text-gray-900">{{ orderStats.totalRevenue | currency:'ARS':'symbol':'1.2-2' }}</p>
-          </div>
+          
+          <!-- Subtle pulse effect indicator -->
+          <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-300 via-green-400 to-emerald-300 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
         </div>
       </div>
     </div>
@@ -318,7 +415,7 @@
                   }
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {{ order.total | currency:'ARS':'symbol':'1.2-2' }}
+                  {{ order.total | argentineCurrency:true }}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {{ order.createdAt | date:'dd/MM/yy HH:mm' }}
@@ -399,7 +496,7 @@
               </div>
               <div class="flex justify-between">
                 <span class="text-sm text-gray-500">Total:</span>
-                <span class="text-sm font-medium text-gray-900">{{ order.total | currency:'ARS':'symbol':'1.2-2' }}</span>
+                <span class="text-sm font-medium text-gray-900">{{ order.total | argentineCurrency:true }}</span>
               </div>
               <div class="flex justify-between">
                 <span class="text-sm text-gray-500">Origen:</span>

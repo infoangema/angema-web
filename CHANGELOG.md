@@ -5,6 +5,107 @@ Todos los cambios importantes de este proyecto serán documentados en este archi
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 y este proyecto adhiere al [Versionado Semántico](https://semver.org/spec/v2.0.0.html).
 
+## [v.0.10.8] - 2025-07-23
+
+### 🐛 Corregido
+- **Cálculo de Ingresos Totales**: Corregido para incluir todas las órdenes válidas
+  - Incluye: pending, preparing, prepared, dispatched, in_delivery, delivered
+  - Excluye: canceled, cancelled, returned, refunded
+  - Valor promedio por orden ahora calculado solo con órdenes válidas
+  - Refleja correctamente la sumatoria de los totales de órdenes activas
+
+- **Error de Currency Pipe**: Corregido error de formateo de moneda en sección Ingresos Totales
+  - Formato corregido de '1.2-2' a '1.0-2' para ingresos totales
+  - Formato corregido de '1.2-0' a '1.0-0' para promedio por orden
+  - Elimina error RuntimeError NG02100 de pipe de currency inválido
+
+- **Pipe Personalizado de Moneda Argentina**: Creado pipe personalizado para formato exacto argentino
+  - Pipe `argentineCurrency` para formato preciso sin dependencia de locales de Angular
+  - Coma para decimales y punto para separadores de miles (ej: $17.900,00)
+  - Parámetro configurable para mostrar/ocultar decimales
+  - Elimina completamente errores de locale faltante (NG0701)
+  - Aplicado consistentemente en: Ingresos Totales, Promedio por orden, Tabla de órdenes, Vista móvil
+
+### ✨ Agregado
+- **Card de Total de Órdenes**: Nueva card especial al inicio del carrusel con funcionalidad de limpiar todos los filtros
+  - Posición prominente: Primera card del carrusel con diseño diferenciado 
+  - Estilo visual único: Gradiente azul y corona dorada como indicador cuando está activa
+  - Funcionalidad "Clear All": Click para limpiar todos los filtros aplicados
+  - Tooltip específico: "Click para limpiar todos los filtros" / "Mostrando todas las órdenes"
+  - Sincronización con sistema de filtros existente
+
+- **Filtrado Interactivo por Stats Cards**: Click en cualquier card para filtrar órdenes por estado
+  - Toggle filter: Click nuevamente en la misma card para limpiar el filtro
+  - Scroll automático a tabla de órdenes al aplicar filtro
+  - Notificaciones informativas con conteo de resultados filtrados
+  - Sincronización completa con selector de filtros existing
+
+- **Feedback Visual Avanzado**: Indicadores visuales para cards activas/filtradas
+  - Cards filtradas con fondo azul y escala aumentada
+  - Indicador de esquina con rombo azul para filtros activos
+  - Tooltips contextuales: "Click para filtrar" / "Click para limpiar filtro"
+  - Iconos dinámicos: filtro/cancelar según estado de la card
+  - Underline animado azul para filtros activos vs gris para hover
+
+- **Carrusel de Stats Cards**: Sistema completo de carrusel responsive para estadísticas por estado
+  - Cards dinámicas para todos los estados plan-based (Basic: 7 estados, Premium/Enterprise: 9 estados)
+  - Navegación con controles anterior/siguiente con estados disabled inteligentes
+  - Responsive design adaptativo: 1 card en móvil hasta 5 cards en desktop
+  - Card especial de Ingresos Totales con gradiente y valor promedio por orden
+  
+- **Iconografía Específica**: Iconos SVG únicos para cada estado de orden
+  - pending: Clock (reloj) - amarillo suave
+  - preparing: Package (paquete) - amarillo suave  
+  - prepared: Check circle - verde suave
+  - dispatched: Truck (camión) - morado suave
+  - in_delivery: Info circle - azul suave
+  - delivered: Check - azul fuerte
+  - canceled: X - rojo fuerte
+  - returned: Return arrow - amarillo fuerte
+  - refunded: Dollar sign - naranja suave
+
+### 🔧 Mejorado
+- **Paginación Optimizada**: Incrementado de 10 a 20 registros por defecto en módulo de órdenes
+- **Performance de Stats**: Sistema de cálculo dinámico completamente implementado
+  - Método `calculateOrderStatsFromLocalData()` para cálculo optimizado client-side
+  - Stats actualizadas automáticamente después de crear/actualizar/cambiar estado de órdenes
+  - Soporte para estados plan-based (Basic/Premium/Enterprise) en cálculos
+  - Fallback automático a servicio si no hay datos locales disponibles
+  - Cálculo instantáneo desde array `orders[]` cargado en memoria
+  - Reducción significativa de latencia en actualización de estadísticas
+  - Sincronización automática con cambios de datos en tiempo real
+
+### 📊 Optimizado
+- **Cálculo de Ingresos**: Mejorado cálculo de `totalRevenue` con soporte multi-estado
+  - Incluye estados `delivered` y `dispatched` como ingresos confirmados
+  - Manejo robusto de valores `null/undefined` en totales de órdenes
+- **Valor Promedio de Órdenes**: Implementado cálculo de `averageOrderValue` dinámico
+- **Conteo por Estados**: Sistema inteligente de mapeo de estados plan-based a estadísticas base
+
+### 🏗️ Arquitectura
+- **SessionStorage Aprovechado**: Optimizado uso del sistema de cache existente
+  - TTL de 10 minutos ya implementado mantenido
+  - Invalidación automática mediante `ChangeDetectionService` preservada
+  - No duplicación de lógica de persistencia
+
+- **Sistema de Filtrado Integrado**: Filtros por cards sincronizados con filtros existing
+  - Método `filterByStatus()` que actualiza `filters.status` existente
+  - Función `isStatusFiltered()` para feedback visual en tiempo real
+  - Compatible con todos los filtros existing (búsqueda, fechas, etc.)
+  - Preserva funcionalidad de filtros combinados
+
+- **Carrusel Responsive**: Sistema adaptativo para diferentes tamaños de pantalla
+  - Detección automática de resize de ventana
+  - Ajuste dinámico de cards visibles: sm(1), md(2), lg(3), xl(4), 2xl(5)
+  - Navegación inteligente que se ajusta al contenido disponible
+  - Memory cleanup en ngOnDestroy para event listeners
+
+### 📝 Documentación
+- **claude/steps.md**: Actualizado progreso de órdenes a 99%+ con carrusel implementado
+- **claude/task.md**: Documentado análisis de carrusel responsive y estadísticas por estado
+- **CHANGELOG.md**: Nueva versión v.0.10.7 con funcionalidades de carrusel
+- **Estado general**: Sistema de estadísticas completamente optimizado
+
 ## [v.0.9.4] - 2025-07-16
 
 ### 🔧 Mejorado

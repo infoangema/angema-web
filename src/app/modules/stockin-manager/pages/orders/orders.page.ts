@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy, ViewChild, ViewContainerRef, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ArgentineCurrencyPipe } from '../../../../shared/pipes/argentine-currency.pipe';
 import { Subject, takeUntil } from 'rxjs';
 
 import { StockinNavbarComponent } from '../../components/shared/navbar.component';
@@ -25,13 +26,17 @@ import {
   OrderUtils,
   SortField,
   SortDirection,
-  BusinessPlan
+  BusinessPlan,
+  PlanBasedOrderStatus,
+  BUSINESS_PLAN_STATUSES,
+  PLAN_BASED_STATUS_LABELS,
+  PLAN_BASED_STATUS_COLORS
 } from '../../models/order.model';
 
 @Component({
   selector: 'stockin-orders-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, StockinNavbarComponent, PageHeaderComponent, CreateOrderModalComponent],
+  imports: [CommonModule, FormsModule, StockinNavbarComponent, PageHeaderComponent, CreateOrderModalComponent, ArgentineCurrencyPipe],
   templateUrl: './orders.page.html'
 })
 export class StockinOrdersPage implements OnInit, OnDestroy, AfterViewInit {
@@ -134,7 +139,7 @@ export class StockinOrdersPage implements OnInit, OnDestroy, AfterViewInit {
 
   // Pagination
   currentPage = 1;
-  pageSize = 10;
+  pageSize = 20;
 
   get totalPages(): number {
     return Math.ceil(this.filteredOrders.length / this.pageSize);
@@ -149,6 +154,10 @@ export class StockinOrdersPage implements OnInit, OnDestroy, AfterViewInit {
   // Business plan configuration - TODO: Get from business service
   currentBusinessPlan: BusinessPlan = 'premium'; // Default to premium for now
   
+  // Stats Cards carousel control
+  currentCarouselIndex = 0;
+  cardsPerView = 5; // Desktop default
+  
   // Options for dropdowns - dynamically generated based on plan
   get orderStatuses() {
     return this.orderStatesService.getStatusOptions(this.currentBusinessPlan);
@@ -157,6 +166,62 @@ export class StockinOrdersPage implements OnInit, OnDestroy, AfterViewInit {
   // Bulk actions available statuses - dynamically generated based on plan
   get bulkActionStatuses() {
     return this.orderStatesService.getBulkActionStatuses(this.currentBusinessPlan);
+  }
+
+  // Get all status cards data for carousel (including total card)
+  get statusCardsData() {
+    const statuses = BUSINESS_PLAN_STATUSES[this.currentBusinessPlan];
+    
+    // Create total orders card first
+    const totalCard = {
+      status: 'total' as const,
+      label: 'Total de Órdenes',
+      color: 'bg-gradient-to-br from-blue-50 to-indigo-50 text-blue-800 border-blue-200',
+      count: this.orders?.length || 0,
+      icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z', // Document icon
+      isTotal: true
+    };
+    
+    // Create status cards
+    const statusCards = statuses.map(status => ({
+      status,
+      label: PLAN_BASED_STATUS_LABELS[status],
+      color: PLAN_BASED_STATUS_COLORS[status],
+      count: this.getStatusCount(status),
+      icon: this.getStatusIcon(status),
+      isTotal: false
+    }));
+    
+    // Return total card first, then status cards
+    return [totalCard, ...statusCards];
+  }
+
+  // Get visible cards for current carousel view
+  get visibleStatusCards() {
+    const start = this.currentCarouselIndex;
+    const end = start + this.cardsPerView;
+    return this.statusCardsData.slice(start, end);
+  }
+
+  // Check if can navigate left
+  get canNavigateLeft(): boolean {
+    return this.currentCarouselIndex > 0;
+  }
+
+  // Check if can navigate right  
+  get canNavigateRight(): boolean {
+    return this.currentCarouselIndex + this.cardsPerView < this.statusCardsData.length;
+  }
+
+  // Get current carousel page for indicators
+  get currentCarouselPage(): number {
+    return Math.floor(this.currentCarouselIndex / this.cardsPerView);
+  }
+
+  // Get carousel indicators array
+  get carouselIndicators(): number[] {
+    const totalPages = Math.ceil(this.statusCardsData.length / this.cardsPerView);
+    return Array.from({ length: totalPages }, (_, i) => i);
   }
 
   orderSources = [
@@ -185,10 +250,51 @@ export class StockinOrdersPage implements OnInit, OnDestroy, AfterViewInit {
 
   async ngOnInit() {
     await this.loadOrderStatesConfig();
+    // Inicializar stats con valores por defecto
+    this.initializeDefaultStats();
+    console.log('📊 Stats inicializadas con valores por defecto:', this.orderStats);
     await this.loadOrders();
-    await this.loadOrderStats();
+    this.updateCarouselCardsPerView();
+  }
+
+  ngAfterViewInit() {
+    if (this.modalContainer) {
+      this.modalService.setModalContainer(this.modalContainer);
+    }
+    
+    // Listen for window resize to update cards per view
+    window.addEventListener('resize', () => this.updateCarouselCardsPerView());
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+    window.removeEventListener('resize', () => this.updateCarouselCardsPerView());
   }
   
+  /**
+   * Inicializar stats con valores por defecto
+   */
+  private initializeDefaultStats() {
+    this.orderStats = {
+      totalOrders: 0,
+      pendingOrders: 0,
+      preparingOrders: 0,
+      shippedOrders: 0,
+      deliveredOrders: 0,
+      cancelledOrders: 0,
+      totalRevenue: 0,
+      averageOrderValue: 0,
+      ordersByStatus: {
+        pending: 0,
+        preparing: 0,
+        shipped: 0,
+        delivered: 0,
+        cancelled: 0
+      }
+    };
+  }
+
   /**
    * Cargar configuración de estados desde archivo JSON
    */
@@ -202,16 +308,6 @@ export class StockinOrdersPage implements OnInit, OnDestroy, AfterViewInit {
     }
   }
   
-  ngAfterViewInit() {
-    if (this.modalContainer) {
-      this.modalService.setModalContainer(this.modalContainer);
-    }
-  }
-
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
 
   async loadOrders() {
     this.loading = true;
@@ -220,8 +316,12 @@ export class StockinOrdersPage implements OnInit, OnDestroy, AfterViewInit {
         .pipe(takeUntil(this.destroy$))
         .subscribe({
           next: (orders) => {
+            console.log('📦 Órdenes recibidas del servicio:', orders.length);
             this.orders = orders;
             this.applyFilters();
+            console.log('🔢 Ejecutando cálculo de stats...');
+            this.calculateOrderStatsFromLocalData(); // Recalcular stats después de cargar datos
+            console.log('📊 Stats actualizadas:', this.orderStats);
             this.loading = false;
           },
           error: (error) => {
@@ -242,6 +342,7 @@ export class StockinOrdersPage implements OnInit, OnDestroy, AfterViewInit {
       const orders = await this.orderService.forceReloadOrders();
       this.orders = orders;
       this.applyFilters();
+      this.calculateOrderStatsFromLocalData(); // Recalcular stats después de forzar recarga
       this.notificationService.showSuccess('Órdenes actualizadas');
     } catch (error) {
       console.error('Error force reloading orders:', error);
@@ -251,18 +352,105 @@ export class StockinOrdersPage implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  async loadOrderStats() {
-    try {
-      const businessId = this.isRoot
-        ? this.rootBusinessSelector.getEffectiveBusinessId()
-        : await this.orderService['businessService'].getCurrentBusinessId();
 
-      if (businessId) {
-        this.orderStats = await this.orderService.getOrderStats(businessId);
-      }
-    } catch (error) {
-      console.error('Error loading order stats:', error);
+  /**
+   * Calcular estadísticas dinámicamente desde los datos cargados
+   */
+  private calculateOrderStatsFromLocalData() {
+    if (!this.orders || this.orders.length === 0) {
+      return;
     }
+
+    // Calcular stats basadas en estados plan-based
+    const deliveredStatuses = ['delivered', 'dispatched'];
+    const preparingStatuses = ['preparing', 'prepared'];
+    // Estados que NO deben contar para ingresos totales
+    const excludedFromRevenueStatuses = ['canceled', 'cancelled', 'returned', 'refunded'];
+    
+    // Filtrar órdenes válidas para ingresos
+    const validOrdersForRevenue = this.orders.filter(o => !excludedFromRevenueStatuses.includes(o.status));
+    
+    const totalRevenue = validOrdersForRevenue.reduce((sum, o) => {
+      const orderTotal = o.total || 0;
+      return sum + orderTotal;
+    }, 0);
+    
+    this.orderStats = {
+      totalOrders: this.orders.length,
+      pendingOrders: this.orders.filter(o => o.status === 'pending').length,
+      preparingOrders: this.orders.filter(o => preparingStatuses.includes(o.status)).length,
+      shippedOrders: this.orders.filter(o => o.status === 'shipped').length,
+      deliveredOrders: this.orders.filter(o => deliveredStatuses.includes(o.status)).length,
+      cancelledOrders: this.orders.filter(o => o.status === 'cancelled').length,
+      totalRevenue: totalRevenue,
+      averageOrderValue: this.calculateAverageOrderValueForRevenue(),
+      ordersByStatus: this.calculateOrdersByStatus()
+    };
+  }
+
+  /**
+   * Calcular valor promedio de órdenes
+   */
+  private calculateAverageOrderValue(): number {
+    if (!this.orders || this.orders.length === 0) return 0;
+    
+    const totalValue = this.orders.reduce((sum, o) => sum + (o.total || 0), 0);
+    return totalValue / this.orders.length;
+  }
+
+  /**
+   * Calcular valor promedio de órdenes que cuentan para ingresos (excluyendo canceladas y devueltas)
+   */
+  private calculateAverageOrderValueForRevenue(): number {
+    if (!this.orders || this.orders.length === 0) return 0;
+    
+    const excludedFromRevenueStatuses = ['canceled', 'cancelled', 'returned', 'refunded'];
+    const validOrders = this.orders.filter(o => !excludedFromRevenueStatuses.includes(o.status));
+    
+    if (validOrders.length === 0) return 0;
+    
+    const totalValue = validOrders.reduce((sum, o) => sum + (o.total || 0), 0);
+    return totalValue / validOrders.length;
+  }
+
+  /**
+   * Calcular órdenes por estado
+   */
+  private calculateOrdersByStatus(): Record<OrderStatus, number> {
+    const statusCounts: Record<OrderStatus, number> = {
+      pending: 0,
+      preparing: 0,
+      shipped: 0,
+      delivered: 0,
+      cancelled: 0
+    };
+
+    if (!this.orders) return statusCounts;
+
+    this.orders.forEach(order => {
+      if (order.status in statusCounts) {
+        statusCounts[order.status as OrderStatus]++;
+      } else {
+        // Para estados plan-based, mapear a estados base
+        switch (order.status) {
+          case 'prepared':
+            statusCounts['preparing']++;
+            break;
+          case 'dispatched':
+          case 'in_delivery':
+            statusCounts['delivered']++;
+            break;
+          case 'canceled':
+            statusCounts['cancelled']++;
+            break;
+          default:
+            // Para estados no reconocidos, no hacer nada o mapear a pending
+            console.warn(`Estado no reconocido: ${order.status}`);
+        }
+      }
+    });
+
+    return statusCounts;
   }
 
   applyFilters() {
@@ -282,7 +470,7 @@ export class StockinOrdersPage implements OnInit, OnDestroy, AfterViewInit {
       );
     }
 
-    // Status filter
+    // Status filter (works with both plan-based and legacy statuses)
     if (this.filters.status && this.filters.status !== '') {
       filtered = filtered.filter(order => order.status === this.filters.status);
     }
@@ -504,6 +692,7 @@ export class StockinOrdersPage implements OnInit, OnDestroy, AfterViewInit {
       
       if (result.success) {
         this.notificationService.success('Estado actualizado correctamente');
+        this.calculateOrderStatsFromLocalData(); // Recalcular stats después de cambio de estado
         this.closeStatusChangeModal();
       } else {
         this.notificationService.error(result.errors?.join(', ') || 'Error al actualizar estado');
@@ -565,6 +754,7 @@ export class StockinOrdersPage implements OnInit, OnDestroy, AfterViewInit {
         this.notificationService.warning(`${successful} orden(es) actualizadas, ${failed} fallaron`);
       }
       
+      this.calculateOrderStatsFromLocalData(); // Recalcular stats después de cambios masivos
       this.selectedOrders.clear();
       this.closeBulkStatusChangeModal();
     } catch (error) {
@@ -663,11 +853,10 @@ export class StockinOrdersPage implements OnInit, OnDestroy, AfterViewInit {
   // Event handlers for modal callbacks
   onOrderCreated() {
     this.closeModals();
-    this.loadOrderStats(); // Recargar estadísticas
     
     // Forzar recarga como respaldo en caso de que el tiempo real no funcione
     setTimeout(() => {
-      this.forceReloadOrders();
+      this.forceReloadOrders(); // Ya incluye recálculo de stats
     }, 1000);
     
     this.notificationService.showSuccess('Orden creada correctamente');
@@ -675,11 +864,133 @@ export class StockinOrdersPage implements OnInit, OnDestroy, AfterViewInit {
 
   onOrderUpdated() {
     this.closeModals();
-    this.loadOrderStats(); // Solo recargar estadísticas, las órdenes se actualizan automáticamente
+    // Las órdenes se actualizan automáticamente via watchOrders() que ya recalcula stats
     this.notificationService.showSuccess('Orden actualizada correctamente');
   }
 
   onModalClosed() {
     this.closeModals();
+  }
+
+  // Carousel navigation methods
+  navigateCarouselLeft() {
+    if (this.canNavigateLeft) {
+      this.currentCarouselIndex--;
+    }
+  }
+
+  navigateCarouselRight() {
+    if (this.canNavigateRight) {
+      this.currentCarouselIndex++;
+    }
+  }
+
+  // Navigate to specific carousel page
+  goToCarouselPage(pageIndex: number) {
+    const newIndex = pageIndex * this.cardsPerView;
+    if (newIndex >= 0 && newIndex < this.statusCardsData.length) {
+      this.currentCarouselIndex = newIndex;
+    }
+  }
+
+  // Filter orders by status when clicking on a stats card or clear all filters
+  filterByStatus(status: PlanBasedOrderStatus | 'total') {
+    // Si es la card total, limpiar todos los filtros
+    if (status === 'total') {
+      this.clearFilters();
+      this.notificationService.showSuccess('Todos los filtros eliminados - Mostrando todas las órdenes');
+      return;
+    }
+    
+    const wasFiltered = this.filters.status === status;
+    
+    // Si ya está filtrado por este estado, limpiar el filtro
+    if (wasFiltered) {
+      this.filters.status = '';
+      this.notificationService.showSuccess('Filtro eliminado - Mostrando todas las órdenes');
+    } else {
+      // Aplicar nuevo filtro
+      this.filters.status = status;
+      const statusLabel = this.orderStatesService.getStatusLabel(status);
+      const filteredCount = this.orders.filter(order => order.status === status).length;
+      this.notificationService.showSuccess(`Filtrado por ${statusLabel} - ${filteredCount} orden(es) encontrada(s)`);
+    }
+    
+    // Aplicar filtros y resetear paginación
+    this.applyFilters();
+    
+    // Scroll suavemente a la tabla de órdenes si se aplicó un filtro
+    if (!wasFiltered) {
+      setTimeout(() => {
+        const ordersTable = document.querySelector('.md\\:block');
+        if (ordersTable) {
+          ordersTable.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 100);
+    }
+  }
+
+  // Check if a status is currently being filtered
+  isStatusFiltered(status: PlanBasedOrderStatus | 'total'): boolean {
+    if (status === 'total') {
+      // La card total está "activa" cuando NO hay filtros aplicados
+      return !this.hasActiveFilters();
+    }
+    return this.filters.status === status;
+  }
+
+  // Get count for specific status
+  private getStatusCount(status: PlanBasedOrderStatus): number {
+    if (!this.orders) return 0;
+    return this.orders.filter(order => order.status === status).length;
+  }
+
+  // Get icon for specific status
+  private getStatusIcon(status: PlanBasedOrderStatus): string {
+    switch (status) {
+      case 'pending':
+        return 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z'; // Clock
+      case 'preparing':
+        return 'M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16'; // Package
+      case 'prepared':
+        return 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'; // Check circle
+      case 'dispatched':
+        return 'M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2v0a2 2 0 01-2-2v-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2'; // Truck
+      case 'in_delivery':
+        return 'M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z'; // Info circle (in transit)
+      case 'delivered':
+        return 'M5 13l4 4L19 7'; // Check
+      case 'canceled':
+        return 'M6 18L18 6M6 6l12 12'; // X
+      case 'returned':
+        return 'M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6'; // Return arrow
+      case 'refunded':
+        return 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1'; // Dollar sign
+      default:
+        return 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z'; // Document
+    }
+  }
+
+  // Update cards per view based on screen size with mobile optimization
+  private updateCarouselCardsPerView() {
+    const width = window.innerWidth;
+    
+    if (width < 640) { // sm - Mobile optimization
+      this.cardsPerView = 1;
+    } else if (width < 768) { // md - Small tablet
+      this.cardsPerView = 2;
+    } else if (width < 1024) { // lg - Large tablet
+      this.cardsPerView = 3;
+    } else if (width < 1280) { // xl - Small desktop
+      this.cardsPerView = 4;
+    } else { // 2xl - Large desktop
+      this.cardsPerView = Math.min(5, this.statusCardsData.length);
+    }
+    
+    // Reset carousel index if needed
+    const maxStartIndex = Math.max(0, this.statusCardsData.length - this.cardsPerView);
+    if (this.currentCarouselIndex > maxStartIndex) {
+      this.currentCarouselIndex = maxStartIndex;
+    }
   }
 } 
