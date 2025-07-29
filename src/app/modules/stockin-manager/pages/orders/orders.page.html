@@ -722,3 +722,10 @@
     </div>
   </div>
 }
+
+<!-- Business Selector Modal for Root Users -->
+@if (showBusinessSelector) {
+  <app-business-selector-modal
+    (modalClose)="onBusinessSelectorClosed()"
+  ></app-business-selector-modal>
+}

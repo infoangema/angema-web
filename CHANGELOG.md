@@ -5,6 +5,28 @@ Todos los cambios importantes de este proyecto serán documentados en este archi
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 y este proyecto adhiere al [Versionado Semántico](https://semver.org/spec/v2.0.0.html).
 
+## [v.0.11.2] - 2025-07-29
+
+### ✨ Agregado
+- **Modal de Selección de Negocio en Página de Órdenes**: Implementado sistema de selección automática para usuarios root
+  - **Verificación automática**: Detecta usuarios root sin negocio seleccionado al acceder a `/app/orders`
+  - **Modal automático**: Aparece automáticamente si no hay selección válida (< 24 horas)
+  - **Experiencia consistente**: Misma lógica que dashboard usando `RootBusinessSelectorService`
+  - **Funcionalidad completa**: Permite seleccionar negocio específico o "Ver Todos"
+  - **Persistencia**: Selección se mantiene por 24 horas en sessionStorage
+
+### 🎨 Mejorado
+- **Experiencia de Usuario Root**: Navegación fluida entre dashboard y órdenes sin pérdida de contexto
+- **Consistencia de Sistema**: Modal reutilizable con mismo comportamiento en todas las páginas principales
+- **Flujo de Trabajo**: Usuarios root pueden cambiar contexto de negocio desde la nueva página de inicio
+
+### 🔧 Técnico
+- **Archivos Modificados**:
+  - `orders.page.ts`: Agregada lógica de verificación y manejo del modal
+  - `orders.page.html`: Agregado modal condicional con sintaxis Angular 17+
+- **Compatibilidad**: Sin impacto en usuarios admin/user, solo activo para usuarios root
+- **Reutilización**: Aprovecha componente `BusinessSelectorModalComponent` existente
+
 ## [v.0.11.1] - 2025-07-23
 
 ### 🔄 Cambiado

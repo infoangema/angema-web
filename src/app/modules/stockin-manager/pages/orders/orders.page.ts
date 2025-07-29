@@ -8,6 +8,7 @@ import { StockinNavbarComponent } from '../../components/shared/navbar.component
 import { PageHeaderComponent, PageHeaderAction } from '../../components/shared/page-header.component';
 import { PageHeaderIcons } from '../../components/shared/page-header-icons';
 import { CreateOrderModalComponent } from './create-order/create-order.modal';
+import { BusinessSelectorModalComponent } from '../../components/business-selector-modal/business-selector-modal.component';
 import { OrderService } from '../../services/order.service';
 import { AuthService } from '../../../../core/services/auth.service';
 import { NotificationService } from '../../../../core/services/notification.service';
@@ -36,7 +37,7 @@ import {
 @Component({
   selector: 'stockin-orders-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, StockinNavbarComponent, PageHeaderComponent, CreateOrderModalComponent, ArgentineCurrencyPipe],
+  imports: [CommonModule, FormsModule, StockinNavbarComponent, PageHeaderComponent, CreateOrderModalComponent, BusinessSelectorModalComponent, ArgentineCurrencyPipe],
   templateUrl: './orders.page.html'
 })
 export class StockinOrdersPage implements OnInit, OnDestroy, AfterViewInit {
@@ -75,6 +76,7 @@ export class StockinOrdersPage implements OnInit, OnDestroy, AfterViewInit {
   isViewModalVisible = false;
   isStatusChangeModalVisible = false;
   isBulkStatusChangeModalVisible = false;
+  showBusinessSelector = false;
   
   // Status change modal data
   statusChangeData: {
@@ -250,6 +252,10 @@ export class StockinOrdersPage implements OnInit, OnDestroy, AfterViewInit {
 
   async ngOnInit() {
     await this.loadOrderStatesConfig();
+    // Verificar selección de negocio para usuarios root
+    if (this.isRoot) {
+      this.checkBusinessSelection();
+    }
     // Inicializar stats con valores por defecto
     this.initializeDefaultStats();
     console.log('📊 Stats inicializadas con valores por defecto:', this.orderStats);
@@ -293,6 +299,24 @@ export class StockinOrdersPage implements OnInit, OnDestroy, AfterViewInit {
         cancelled: 0
       }
     };
+  }
+
+  /**
+   * Verificar si el usuario root tiene negocio seleccionado
+   */
+  private checkBusinessSelection(): void {
+    // Verificar si el usuario root tiene negocio seleccionado
+    if (!this.rootBusinessSelector.hasValidSelection()) {
+      console.log('Orders: Usuario root sin negocio seleccionado, mostrando selector...');
+      this.showBusinessSelector = true;
+    }
+  }
+
+  /**
+   * Manejar cierre del modal de selección de negocio
+   */
+  onBusinessSelectorClosed(): void {
+    this.showBusinessSelector = false;
   }
 
   /**

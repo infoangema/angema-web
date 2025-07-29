@@ -220,3 +220,113 @@ Si estás de acuerdo con el plan detallado, implementaré los cambios en el sigu
 2. Modificar navbar.component.ts (reordenar y agregar dropdown)
 3. Actualizar app.routes.ts (cambiar redirección por defecto)  
 4. Probar que todo funcione correctamente
+
+
+## Nuevo ajuste:
+Quiero que analices la logica de la pantalla del dashboard del modal que aparecia para el usuario root que podia elegir el negocio que queria administrar, y lleves esa misma logica
+a la nueva pantalla de inicio que es la de pedidos.
+
+## ✅ IMPLEMENTACIÓN COMPLETADA
+
+### 🎯 Cambios Realizados
+
+#### 1. **Archivo `/src/app/modules/stockin-manager/pages/orders/orders.page.ts`**
+
+**Imports agregados:**
+```typescript
+import { BusinessSelectorModalComponent } from '../../components/business-selector-modal/business-selector-modal.component';
+```
+
+**Propiedades agregadas:**
+```typescript
+showBusinessSelector = false;
+```
+
+**Lógica implementada en ngOnInit:**
+```typescript
+async ngOnInit() {
+  await this.loadOrderStatesConfig();
+  // Verificar selección de negocio para usuarios root
+  if (this.isRoot) {
+    this.checkBusinessSelection();
+  }
+  // ... resto del código existente
+}
+```
+
+**Métodos agregados:**
+```typescript
+/**
+ * Verificar si el usuario root tiene negocio seleccionado
+ */
+private checkBusinessSelection(): void {
+  // Verificar si el usuario root tiene negocio seleccionado
+  if (!this.rootBusinessSelector.hasValidSelection()) {
+    console.log('Orders: Usuario root sin negocio seleccionado, mostrando selector...');
+    this.showBusinessSelector = true;
+  }
+}
+
+/**
+ * Manejar cierre del modal de selección de negocio
+ */
+onBusinessSelectorClosed(): void {
+  this.showBusinessSelector = false;
+}
+```
+
+**Component imports actualizados:**
+```typescript
+imports: [CommonModule, FormsModule, StockinNavbarComponent, PageHeaderComponent, CreateOrderModalComponent, BusinessSelectorModalComponent, ArgentineCurrencyPipe]
+```
+
+#### 2. **Archivo `/src/app/modules/stockin-manager/pages/orders/orders.page.html`**
+
+**Modal agregado al final del template:**
+```html
+<!-- Business Selector Modal for Root Users -->
+@if (showBusinessSelector) {
+  <app-business-selector-modal
+    (modalClose)="onBusinessSelectorClosed()"
+  ></app-business-selector-modal>
+}
+```
+
+### 🔄 Funcionalidad Implementada
+
+**Flujo de trabajo:**
+1. **Usuario root accede** a `/app/orders` (nueva página de inicio)
+2. **Verificación automática** si el usuario tiene negocio seleccionado válido
+3. **Modal aparece automáticamente** si no hay selección válida
+4. **Usuario selecciona negocio** o "Ver Todos"
+5. **Modal se cierra** y usuario puede continuar usando la página de órdenes
+6. **Selección persiste** por 24 horas en sessionStorage
+
+### ✨ Características Técnicas
+
+- **Misma lógica** que en dashboard utilizando `RootBusinessSelectorService`
+- **Verificación de validez** de selección (expira en 24 horas)
+- **Modal reutilizable** - mismo componente usado en dashboard
+- **Compatibilidad completa** con el sistema de selección de negocio existente
+- **No afecta** la funcionalidad existente de la página de órdenes
+- **Solo aparece** para usuarios root sin selección válida
+
+### 🎯 Estado del Sistema
+
+- ✅ **Dashboard**: Modal de selección funcionando
+- ✅ **Órdenes**: Modal de selección implementado
+- ✅ **Login**: Modal automático para usuarios root
+- ✅ **Navbar**: Selector manual disponible
+- ✅ **RootBusinessSelectorService**: Centralizado y consistente
+
+### 📝 Impacto en Usuario
+
+**Para usuarios root:**
+- Al acceder a `/app/orders` verán el modal si no tienen negocio seleccionado
+- Experiencia consistente entre dashboard y órdenes
+- Navegación fluida una vez seleccionado el negocio
+
+**Para usuarios admin/user:**
+- Sin cambios - funcionalidad normal sin modal
+
+La implementación está **completa y lista** para usar.
